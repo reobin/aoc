@@ -22,6 +22,30 @@ defmodule Orbit do
         if by_parent_body, do: orbit.parent_body == attr, else: orbit.satellite == attr
       end)
 
+  def get_orbit_in_common(orbits, orbit_1, orbit_2) do
+    origin = find_orbit(orbits, "COM")
+
+    path_1 = get_path_to_origin(orbits, origin, orbit_1)
+    path_2 = get_path_to_origin(orbits, origin, orbit_2)
+
+    in_common = Enum.filter(path_1, fn o_1 -> Enum.find(path_2, fn o_2 -> o_1 == o_2 end) end)
+
+    Enum.at(in_common, Enum.count(in_common) - 1)
+  end
+
+  def get_path_to_origin(orbits, origin, orbit) do
+    if orbit == origin do
+      [origin]
+    else
+      previous_orbit =
+        Enum.find(orbits, fn o ->
+          o.satellite == orbit.parent_body
+        end)
+
+      get_path_to_origin(orbits, origin, previous_orbit) ++ [orbit]
+    end
+  end
+
   def get_distance_to_origin(orbits, origin, orbit) do
     if orbit == origin do
       1
