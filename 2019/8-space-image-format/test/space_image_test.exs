@@ -28,4 +28,9 @@ defmodule SpaceImageTest do
     assert SpaceImage.count_digit(layer, "1") == 1
     assert SpaceImage.count_digit(layer, "4") == 3
   end
+
+  test "decode image" do
+    layers = ["0222", "1122", "2212", "0000"]
+    assert SpaceImage.decode_image(layers) == "0110"
+  end
 end

@@ -39,4 +39,34 @@ defmodule SpaceImage do
       layers ++ [String.slice(pixels, start_index..end_index)]
     end)
   end
+
+  def decode_image(layers) do
+    [head | tail] = layers
+
+    Enum.reduce(tail, head, fn layer, acc ->
+      acc
+      |> String.split("", trim: true)
+      |> Enum.with_index()
+      |> Enum.map(fn {char, index} ->
+        if String.at(acc, index) == "2",
+          do: String.at(layer, index),
+          else: char
+      end)
+      |> Enum.join()
+    end)
+  end
+
+  def draw(decoded_image, width, height) do
+    Enum.each(0..(height - 1), fn y ->
+      start_index = y * width
+      end_index = (y + 1) * width - 1
+
+      IO.puts(
+        decoded_image
+        |> String.slice(start_index..end_index)
+        |> String.replace("0", "█")
+        |> String.replace("1", " ")
+      )
+    end)
+  end
 end
