@@ -8,7 +8,7 @@ import (
 	"os"
 	"strconv"
 
-	dayRunner "github.com/reobin/aoc/day"
+	dayRunner "github.com/reobin/aoc/2020/day"
 )
 
 const minDayNumber = 1

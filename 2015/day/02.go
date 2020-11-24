@@ -1,8 +1,6 @@
 package day
 
 import (
-	"errors"
-	"log"
 	"strconv"
 	"strings"
 
@@ -28,11 +26,7 @@ func RunDay02(input string) (string, string) {
 			continue
 		}
 
-		dimensions, err := getDimensions(string(spec))
-		if err != nil {
-			log.Printf("Error getting dimensions for %s", spec)
-			return "error", "error"
-		}
+		dimensions := getDimensions(string(spec))
 
 		surfaceArea := computeSurfaceArea(dimensions)
 		totalSurfaceArea += surfaceArea
@@ -44,28 +38,28 @@ func RunDay02(input string) (string, string) {
 	return strconv.Itoa(totalSurfaceArea), strconv.Itoa(totalRibbonLength)
 }
 
-func getDimensions(spec string) (Dimensions, error) {
+func getDimensions(spec string) Dimensions {
 	strDimensions := strings.Split(spec, "x")
 	if len(strDimensions) < 3 {
-		return Dimensions{}, errors.New("Not enough dimensions in specification")
+		return Dimensions{}
 	}
 
 	length, err := strconv.Atoi(strDimensions[0])
 	if err != nil {
-		return Dimensions{}, err
+		return Dimensions{}
 	}
 
 	width, err := strconv.Atoi(strDimensions[1])
 	if err != nil {
-		return Dimensions{}, err
+		return Dimensions{}
 	}
 
 	height, err := strconv.Atoi(strDimensions[2])
 	if err != nil {
-		return Dimensions{}, err
+		return Dimensions{}
 	}
 
-	return Dimensions{length: length, width: width, height: height}, nil
+	return Dimensions{length: length, width: width, height: height}
 }
 
 func computeSurfaceArea(dimensions Dimensions) int {

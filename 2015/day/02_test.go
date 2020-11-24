@@ -33,9 +33,10 @@ func TestGetDimensions(t *testing.T) {
 	t.Run("sample test 2x3x4", func(t *testing.T) {
 		spec := "2x3x4"
 
-		dimensions, err := getDimensions(spec)
-		if err != nil {
-			t.Errorf("Incorrect result for getDimensions, got error: %s", err)
+		dimensions := getDimensions(spec)
+		emptyDimensions := Dimensions{}
+		if dimensions == emptyDimensions {
+			t.Errorf("Incorrect result for getDimensions, got empty dimensions")
 		}
 
 		expectedDimensions := Dimensions{length: 2, width: 3, height: 4}
@@ -47,9 +48,10 @@ func TestGetDimensions(t *testing.T) {
 	t.Run("sample test 1x1x10", func(t *testing.T) {
 		spec := "1x1x10"
 
-		dimensions, err := getDimensions(spec)
-		if err != nil {
-			t.Errorf("Incorrect result for getDimensions, got error: %s", err)
+		dimensions := getDimensions(spec)
+		emptyDimensions := Dimensions{}
+		if dimensions == emptyDimensions {
+			t.Errorf("Incorrect result for getDimensions, got empty dimensions")
 		}
 
 		expectedDimensions := Dimensions{length: 1, width: 1, height: 10}
