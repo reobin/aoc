@@ -10,8 +10,8 @@ import (
 	dayRunner "github.com/reobin/aoc/day"
 )
 
-const MIN_DAY_NUMBER = 1
-const MAX_DAY_NUMBER = 25
+const minDayNumber = 1
+const maxDayNumber = 25
 
 var dayRunnerMap = map[int]interface{}{
 	1: dayRunner.RunDay01,
@@ -47,8 +47,8 @@ func getDayValue(dayArg string) (int, error) {
 		return -1, errors.New("Please provide a valid day number")
 	}
 
-	if day < MIN_DAY_NUMBER || day > MAX_DAY_NUMBER {
-		return -1, errors.New(fmt.Sprintf("Please provide a day number between %d and %d", MIN_DAY_NUMBER, MAX_DAY_NUMBER))
+	if day < minDayNumber || day > maxDayNumber {
+		return -1, fmt.Errorf("Please provide a day number between %d and %d", minDayNumber, maxDayNumber)
 	}
 
 	return day, nil

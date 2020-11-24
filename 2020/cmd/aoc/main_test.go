@@ -58,7 +58,7 @@ func TestGetDayValue(t *testing.T) {
 	})
 
 	t.Run("should return error if argument number is out of bounds", func(t *testing.T) {
-		day, err := getDayValue(strconv.Itoa(MAX_DAY_NUMBER + 1))
+		day, err := getDayValue(strconv.Itoa(maxDayNumber + 1))
 
 		if err == nil {
 			t.Error("Incorrect result for getDayValue; got no error")
