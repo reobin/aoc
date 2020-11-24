@@ -8,7 +8,7 @@ import (
 	"os"
 	"strconv"
 
-	dayRunner "github.com/reobin/aoc/day"
+	dayRunner "github.com/reobin/aoc/2015/day"
 )
 
 const minDayNumber = 1
@@ -16,6 +16,7 @@ const maxDayNumber = 25
 
 var dayRunnerMap = map[int]interface{}{
 	1: dayRunner.RunDay01,
+	2: dayRunner.RunDay02,
 }
 
 func main() {
