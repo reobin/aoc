@@ -1,6 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"runtime"
 	"strconv"
 	"testing"
 )
@@ -67,5 +71,124 @@ func TestGetDayValue(t *testing.T) {
 		if day != -1 {
 			t.Errorf("Incorrect result for getDayValue; got: %d, want: %d", day, -1)
 		}
+	})
+}
+
+var (
+	_, b, _, _ = runtime.Caller(0)
+	basepath   = filepath.Dir(b)
+)
+
+// set working directory to project root
+func setWdToRoot() {
+	os.Chdir("../..")
+}
+
+// set working directory back to this test file
+func resetWd() {
+	os.Chdir(basepath)
+}
+
+func cleanUp(target string) {
+	if _, err := os.Stat(target); !os.IsNotExist(err) {
+		os.Remove(target)
+	}
+}
+
+func TestGetDayInput(t *testing.T) {
+	t.Run("should return input if day (>= 10) file exists", func(t *testing.T) {
+		setWdToRoot()
+
+		workingDirectory, err := os.Getwd()
+		if err != nil {
+			t.Errorf("Incorrect result for getDayInput, error getting wd: %s", err)
+		}
+
+		target := fmt.Sprintf("%s/input/.tmp.10.txt", workingDirectory)
+
+		cleanUp(target)
+
+		expectedFileContent := "file content"
+
+		file, err := os.Create(target)
+		if err != nil {
+			t.Errorf("Incorrect result for getDayInput, error creating file: %s", err)
+		}
+
+		if _, err := os.Stat(target); os.IsNotExist(err) {
+			t.Error("Incorrect result for getDayInput, did not create file")
+		}
+
+		_, err = file.WriteString(expectedFileContent)
+		if err != nil {
+			t.Errorf("Incorrect result for getDayInput, error writing to file: %s", err)
+		}
+
+		input, err := getDayInput(10, ".tmp.")
+		if err != nil {
+			t.Errorf("Incorrect result for getDayInput, got error: %s", err)
+		}
+
+		if input != expectedFileContent {
+			t.Errorf("Incorrect result for getDayInput, got: %s, want: %s", input, expectedFileContent)
+		}
+
+		cleanUp(target)
+
+		resetWd()
+	})
+
+	t.Run("should return input if day (< 10) file exists", func(t *testing.T) {
+		setWdToRoot()
+
+		workingDirectory, err := os.Getwd()
+		if err != nil {
+			t.Errorf("Incorrect result for getDayInput, error getting wd: %s", err)
+		}
+
+		target := fmt.Sprintf("%s/input/.tmp.01.txt", workingDirectory)
+
+		cleanUp(target)
+
+		expectedFileContent := "file content"
+
+		file, err := os.Create(target)
+		if err != nil {
+			t.Errorf("Incorrect result for getDayInput, error creating file: %s", err)
+		}
+
+		if _, err := os.Stat(target); os.IsNotExist(err) {
+			t.Error("Incorrect result for getDayInput, did not create file")
+		}
+
+		_, err = file.WriteString(expectedFileContent)
+		if err != nil {
+			t.Errorf("Incorrect result for getDayInput, error writing to file: %s", err)
+		}
+
+		input, err := getDayInput(1, ".tmp.")
+		if err != nil {
+			t.Errorf("Incorrect result for getDayInput, got error: %s", err)
+		}
+
+		if input != expectedFileContent {
+			t.Errorf("Incorrect result for getDayInput, got: %s, want: %s", input, expectedFileContent)
+		}
+
+		cleanUp(target)
+
+		resetWd()
+	})
+
+	t.Run("should return error if day input does not exist", func(t *testing.T) {
+		setWdToRoot()
+
+		_, err := getDayInput(1, ".tmp.")
+
+		if err == nil {
+			t.Error("Incorrect result for getDayInput, did not get error")
+		}
+
+		resetWd()
 	})
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
@@ -30,6 +31,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	input, err := getDayInput(day, "")
+	if err != nil {
+		log.Print(err)
+		os.Exit(1)
+	}
+
 	runner := dayRunnerMap[day]
 	if runner == nil {
 		log.Print("The specified day might not have been implemented yet")
@@ -37,8 +44,31 @@ func main() {
 	}
 
 	log.Printf("Running day %s", dayArg)
-	runner.(func())()
+	part1Answer, part2Answer := runner.(func(input string) (string, string))(input)
+	log.Printf("Part 1 answer is: %s", part1Answer)
+	log.Printf("Part 2 answer is: %s", part2Answer)
 	log.Print(":wq")
+}
+
+func getDayInput(day int, fileNamePrefix string) (string, error) {
+	workingDirectory, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+
+	dayKey := strconv.Itoa(day)
+	if day < 10 {
+		dayKey = fmt.Sprintf("0%s", dayKey)
+	}
+
+	inputPath := fmt.Sprintf("%s/input/%s%s.txt", workingDirectory, fileNamePrefix, dayKey)
+
+	input, err := ioutil.ReadFile(inputPath)
+	if err != nil {
+		return "", err
+	}
+
+	return string(input), nil
 }
 
 func getDayValue(dayArg string) (int, error) {
