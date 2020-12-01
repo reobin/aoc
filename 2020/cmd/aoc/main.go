@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"regexp"
 	"strconv"
 
 	dayRunner "github.com/reobin/aoc/2020/day"
@@ -68,7 +69,12 @@ func getDayInput(day int, fileNamePrefix string) (string, error) {
 		return "", err
 	}
 
-	return string(input), nil
+	return removeEmptyLines(string(input)), nil
+}
+
+func removeEmptyLines(value string) string {
+	re := regexp.MustCompile(`(?m)^\s*$[\r\n]*|[\r\n]+\s+\z`)
+	return re.ReplaceAllString(value, "")
 }
 
 func getDayValue(dayArg string) (int, error) {
