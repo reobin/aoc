@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/reobin/aoc/2020/internal/number"
+	"github.com/reobin/aoc/2020/pkg/number"
 )
 
 // RunDay01 runs aoc day 1 challenge
