@@ -23,12 +23,7 @@ func RunDay02(input string) (string, string) {
 
 	validPasswordCountPart1 := 0
 	validPasswordCountPart2 := 0
-
 	for _, passwordEntry := range passwordEntries {
-		if passwordEntry == "" {
-			continue
-		}
-
 		policy, err := getPasswordPolicy(passwordEntry)
 		if err != nil {
 			log.Printf("Error getting policy: %s", err)

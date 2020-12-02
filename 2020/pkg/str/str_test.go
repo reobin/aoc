@@ -39,3 +39,52 @@ func TestCountCharactersInString(t *testing.T) {
 		}
 	})
 }
+
+func TestRemoveEmptyLines(t *testing.T) {
+	t.Run("should remove first line if it's empty", func(t *testing.T) {
+		input := `
+test`
+
+		trimmed := RemoveEmptyLines(input)
+
+		if trimmed != "test" {
+			t.Errorf("Incorrect result for RemoveEmptyLines, got: %s, want: %s", trimmed, "test")
+		}
+	})
+
+	t.Run("should remove line in the middle if it's empty", func(t *testing.T) {
+		input := `hey
+
+test`
+
+		trimmed := RemoveEmptyLines(input)
+
+		expectedTrimmed := `hey
+test`
+
+		if trimmed != expectedTrimmed {
+			t.Errorf("Incorrect result for RemoveEmptyLines, got: %s, want: %s", trimmed, expectedTrimmed)
+		}
+	})
+
+	t.Run("should remove last line if it's empty", func(t *testing.T) {
+		input := `test
+`
+
+		trimmed := RemoveEmptyLines(input)
+
+		if trimmed != "test" {
+			t.Errorf("Incorrect result for RemoveEmptyLines, got: %s, want: %s", trimmed, "test")
+		}
+	})
+
+	t.Run("should remove nothing if there's no empty line", func(t *testing.T) {
+		input := "test"
+
+		trimmed := RemoveEmptyLines(input)
+
+		if trimmed != "test" {
+			t.Errorf("Incorrect result for RemoveEmptyLines, got: %s, want: %s", trimmed, "test")
+		}
+	})
+}
