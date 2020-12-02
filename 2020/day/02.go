@@ -14,7 +14,6 @@ type passwordPolicy struct {
 	character    string
 	firstNumber  int
 	secondNumber int
-	password     string
 }
 
 // RunDay02 runs aoc day 2 challenge
@@ -24,17 +23,17 @@ func RunDay02(input string) (string, string) {
 	validPasswordCountPart1 := 0
 	validPasswordCountPart2 := 0
 	for _, passwordEntry := range passwordEntries {
-		policy, err := getPasswordPolicy(passwordEntry)
+		password, policy, err := interpretPaswordEntry(passwordEntry)
 		if err != nil {
-			log.Printf("Error getting policy: %s", err)
+			log.Printf("Error interprating password entry: %s", err)
 			continue
 		}
 
-		if isPasswordValidPart1(policy) {
+		if isPasswordValidPart1(password, policy) {
 			validPasswordCountPart1++
 		}
 
-		if isPasswordValidPart2(policy) {
+		if isPasswordValidPart2(password, policy) {
 			validPasswordCountPart2++
 		}
 	}
@@ -42,45 +41,46 @@ func RunDay02(input string) (string, string) {
 	return strconv.Itoa(validPasswordCountPart1), strconv.Itoa(validPasswordCountPart2)
 }
 
-func getPasswordPolicy(entry string) (passwordPolicy, error) {
+func interpretPaswordEntry(entry string) (string, passwordPolicy, error) {
 	expression := regexp.MustCompile("(\\d+)-(\\d+) (\\w): (.*)")
 	matches := expression.FindAllStringSubmatch(entry, 4)
 	if len(matches) < 1 || len(matches[0]) < 5 {
-		return passwordPolicy{}, errors.New("Could not find a valid password policy")
+		return "", passwordPolicy{}, errors.New("Could not find a valid password policy")
 	}
 
 	firstNumber, err := strconv.Atoi(matches[0][1])
 	if err != nil {
-		return passwordPolicy{}, err
+		return "", passwordPolicy{}, err
 	}
 	secondNumber, err := strconv.Atoi(matches[0][2])
 	if err != nil {
-		return passwordPolicy{}, err
+		return "", passwordPolicy{}, err
 	}
 
-	return passwordPolicy{
-		character:    matches[0][3],
-		firstNumber:  firstNumber,
-		secondNumber: secondNumber,
-		password:     matches[0][4],
-	}, nil
+	return matches[0][4],
+		passwordPolicy{
+			character:    matches[0][3],
+			firstNumber:  firstNumber,
+			secondNumber: secondNumber,
+		},
+		nil
 }
 
-func isPasswordValidPart1(policy passwordPolicy) bool {
-	characterCount := str.CountCharactersInString(policy.password, policy.character)
+func isPasswordValidPart1(password string, policy passwordPolicy) bool {
+	characterCount := str.CountCharactersInString(password, policy.character)
 	if characterCount < policy.firstNumber || characterCount > policy.secondNumber {
 		return false
 	}
 	return true
 }
 
-func isPasswordValidPart2(policy passwordPolicy) bool {
-	if len(policy.password) < policy.secondNumber {
+func isPasswordValidPart2(password string, policy passwordPolicy) bool {
+	if len(password) < policy.secondNumber {
 		return false
 	}
 
-	firstPositionContains := string(policy.password[policy.firstNumber-1]) == policy.character
-	secondPositionContains := string(policy.password[policy.secondNumber-1]) == policy.character
+	firstPositionContains := string(password[policy.firstNumber-1]) == policy.character
+	secondPositionContains := string(password[policy.secondNumber-1]) == policy.character
 
 	if firstPositionContains && secondPositionContains || !firstPositionContains && !secondPositionContains {
 		return false
