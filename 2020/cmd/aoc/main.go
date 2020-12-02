@@ -17,6 +17,7 @@ const maxDayNumber = 25
 
 var dayRunnerMap = map[int]interface{}{
 	1: dayRunner.RunDay01,
+	2: dayRunner.RunDay02,
 }
 
 func main() {
