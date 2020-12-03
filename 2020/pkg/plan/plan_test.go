@@ -25,7 +25,7 @@ func TestGetNextPosition(t *testing.T) {
 		if nextPosition.X != expectedPosition.X || nextPosition.Y != expectedPosition.Y {
 			t.Errorf("Incorrect result for GetNextPosition, got: %d, want: %d", nextPosition, expectedPosition)
 		}
-	 })
+	})
 
 	t.Run("should return next position restarting from left if far right has passed", func(t *testing.T) {
 		currentPosition := Coordinates{X: 5, Y: 1}
@@ -38,7 +38,7 @@ func TestGetNextPosition(t *testing.T) {
 		if nextPosition.X != expectedPosition.X || nextPosition.Y != expectedPosition.Y {
 			t.Errorf("Incorrect result for GetNextPosition, got: %d, want: %d", nextPosition, expectedPosition)
 		}
-	 })
+	})
 
 	t.Run("should return next position staying at bottom if bottom had been reached", func(t *testing.T) {
 		currentPosition := Coordinates{X: 5, Y: 5}

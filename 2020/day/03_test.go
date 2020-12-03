@@ -1,10 +1,15 @@
 package day
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/reobin/aoc/2020/pkg/str"
+)
 
 func TestRunDay03(t *testing.T) {
 	t.Run("sample test 1", func(t *testing.T) {
-		input := `..##.......
+		input := str.RemoveEmptyLines(`
+..##.......
 #...#...#..
 .#....#..#.
 ..#.#...#.#
@@ -14,7 +19,7 @@ func TestRunDay03(t *testing.T) {
 .#........#
 #.##...#...
 #...##....#
-.#..#...#.#`
+.#..#...#.#`)
 
 		answerPart1, answerPart2 := RunDay03(input)
 		if answerPart1 != "7" {
