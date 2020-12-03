@@ -23,7 +23,7 @@ func RunDay03(plan string) (string, string) {
 	return strconv.Itoa(treeHitsPart1), strconv.Itoa(treeHitsPart2)
 }
 
-func countTreeHits(plan string, planSize planHelper.PlanSize, slope planHelper.Slope) int {
+func countTreeHits(plan string, planSize planHelper.Size, slope planHelper.Slope) int {
 	currentPosition := planHelper.Coordinates{X: 1, Y: 1}
 	treeCount := 0
 	for currentPosition.Y < planSize.Height {

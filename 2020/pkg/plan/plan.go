@@ -11,8 +11,8 @@ type Coordinates struct {
 	Y int
 }
 
-// PlanSize represents the 2d size of a plan
-type PlanSize struct {
+// Size represents the 2d size of a plan
+type Size struct {
 	Width  int
 	Height int
 }
@@ -25,14 +25,14 @@ type Slope struct {
 
 // GetPlanSize returns the 2d size of a string plan
 // Note: assumes the plan has the same width from top to bottom
-func GetPlanSize(plan string) PlanSize {
+func GetPlanSize(plan string) Size {
 	lines := strings.Split(plan, "\n")
-	return PlanSize{Width: len(lines[0]), Height: len(lines)}
+	return Size{Width: len(lines[0]), Height: len(lines)}
 }
 
 // GetNextPosition returns the next position after computing 1 instance of the slope
 // Note: If the right end has been reached, it starts back at the complete left
-func GetNextPosition(position Coordinates, planSize PlanSize, slope Slope) Coordinates {
+func GetNextPosition(position Coordinates, planSize Size, slope Slope) Coordinates {
 	nextX := position.X + slope.X
 	if nextX > planSize.Width {
 		nextX = nextX - planSize.Width

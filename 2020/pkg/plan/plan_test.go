@@ -6,7 +6,7 @@ func TestGetPlanSize(t *testing.T) {
 	t.Run("should return size of a valid plan", func(t *testing.T) {
 		plan := "1234\n1234\n1234"
 		size := GetPlanSize(plan)
-		expectedSize := PlanSize{Width: 4, Height: 3}
+		expectedSize := Size{Width: 4, Height: 3}
 		if size.Width != expectedSize.Width || size.Height != expectedSize.Height {
 			t.Errorf("Incorrect result for GetPlanSize, got: %d, want: %d", size, expectedSize)
 		}
@@ -16,7 +16,7 @@ func TestGetPlanSize(t *testing.T) {
 func TestGetNextPosition(t *testing.T) {
 	t.Run("should return next position if values are valid", func(t *testing.T) {
 		currentPosition := Coordinates{X: 1, Y: 1}
-		planSize := PlanSize{Width: 5, Height: 5}
+		planSize := Size{Width: 5, Height: 5}
 		slope := Slope{X: 1, Y: 1}
 
 		nextPosition := GetNextPosition(currentPosition, planSize, slope)
@@ -29,7 +29,7 @@ func TestGetNextPosition(t *testing.T) {
 
 	t.Run("should return next position restarting from left if far right has passed", func(t *testing.T) {
 		currentPosition := Coordinates{X: 5, Y: 1}
-		planSize := PlanSize{Width: 5, Height: 5}
+		planSize := Size{Width: 5, Height: 5}
 		slope := Slope{X: 2, Y: 1}
 
 		nextPosition := GetNextPosition(currentPosition, planSize, slope)
@@ -42,7 +42,7 @@ func TestGetNextPosition(t *testing.T) {
 
 	t.Run("should return next position staying at bottom if bottom had been reached", func(t *testing.T) {
 		currentPosition := Coordinates{X: 5, Y: 5}
-		planSize := PlanSize{Width: 5, Height: 5}
+		planSize := Size{Width: 5, Height: 5}
 		slope := Slope{X: 2, Y: 1}
 
 		nextPosition := GetNextPosition(currentPosition, planSize, slope)
