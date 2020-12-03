@@ -1,6 +1,7 @@
 package day
 
 import (
+	"log"
 	"strconv"
 
 	planHelper "github.com/reobin/aoc/2020/pkg/plan"
@@ -27,7 +28,11 @@ func countTreeHits(plan string, planSize planHelper.PlanSize, slope planHelper.S
 	treeCount := 0
 	for currentPosition.Y < planSize.Height {
 		currentPosition = planHelper.GetNextPosition(currentPosition, planSize, slope)
-		element := planHelper.GetElementAt(plan, currentPosition)
+		element, err := planHelper.GetElementAt(plan, currentPosition)
+		if err != nil {
+			log.Printf("Error getting element at %d: %s", currentPosition, err)
+			continue
+		}
 		if element == "#" {
 			treeCount++
 		}
