@@ -18,7 +18,7 @@ type passwordPolicy struct {
 
 // RunDay02 runs aoc day 2 challenge
 func RunDay02(input string) (string, string) {
-	passwordEntries := strings.Split(input, "\n")
+	passwordEntries := strings.Split(str.RemoveEmptyLines(input), "\n")
 
 	validPasswordCountPart1 := 0
 	validPasswordCountPart2 := 0

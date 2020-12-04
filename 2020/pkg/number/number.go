@@ -4,6 +4,11 @@ import (
 	"strconv"
 )
 
+type Range struct {
+	Minimum int
+	Maximum int
+}
+
 // ComputeProduct takes in a list of numbers and computes their product
 func ComputeProduct(numbers []int) int {
 	product := 1
@@ -35,4 +40,9 @@ func ConvertToNumbers(numbersStr []string) []int {
 		numbers = append(numbers, n)
 	}
 	return numbers
+}
+
+// IsNumberInRange returns true if the number is within the range
+func IsNumberInRange(value int, valueRange Range) bool {
+	return value >= valueRange.Minimum && value <= valueRange.Maximum
 }

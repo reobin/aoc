@@ -5,11 +5,12 @@ import (
 	"strings"
 
 	"github.com/reobin/aoc/2020/pkg/number"
+	"github.com/reobin/aoc/2020/pkg/str"
 )
 
 // RunDay01 runs aoc day 1 challenge
 func RunDay01(input string) (string, string) {
-	lines := strings.Split(input, "\n")
+	lines := strings.Split(str.RemoveEmptyLines(input), "\n")
 
 	expenseReport := number.ConvertToNumbers(lines)
 

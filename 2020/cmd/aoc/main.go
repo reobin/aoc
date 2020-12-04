@@ -9,7 +9,6 @@ import (
 	"strconv"
 
 	dayRunner "github.com/reobin/aoc/2020/day"
-	"github.com/reobin/aoc/2020/pkg/str"
 )
 
 const minDayNumber = 1
@@ -19,6 +18,7 @@ var dayRunnerMap = map[int]interface{}{
 	1: dayRunner.RunDay01,
 	2: dayRunner.RunDay02,
 	3: dayRunner.RunDay03,
+	4: dayRunner.RunDay04,
 }
 
 func main() {
@@ -71,7 +71,7 @@ func getDayInput(day int, fileNamePrefix string) (string, error) {
 		return "", err
 	}
 
-	return str.RemoveEmptyLines(string(input)), nil
+	return string(input), nil
 }
 
 func getDayValue(dayArg string) (int, error) {

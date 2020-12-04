@@ -5,11 +5,12 @@ import (
 	"strconv"
 
 	planHelper "github.com/reobin/aoc/2020/pkg/plan"
+	"github.com/reobin/aoc/2020/pkg/str"
 )
 
 // RunDay03 runs aoc day 3 challenge
 func RunDay03(plan string) (string, string) {
-	planSize := planHelper.GetPlanSize(plan)
+	planSize := planHelper.GetPlanSize(str.RemoveEmptyLines(plan))
 
 	treeHitsPart1 := countTreeHits(plan, planSize, planHelper.Slope{X: 3, Y: 1})
 

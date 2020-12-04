@@ -27,3 +27,13 @@ func RemoveEmptyLines(value string) string {
 
 	return strings.Join(result, "\n")
 }
+
+// Contains returns true if the value was found in the list
+func Contains(values []string, value string) bool {
+	for _, v := range values {
+		if v == value {
+			return true
+		}
+	}
+	return false
+}
