@@ -77,7 +77,7 @@ func TestIsFieldValueValid(t *testing.T) {
 	t.Run("byr", func(t *testing.T) {
 		valid := "2002"
 		invalid := "2003"
-		
+
 		if !isFieldValueValid("byr", valid) {
 			t.Errorf("Incorrect result for isFieldValueValid (byr), got false for %s", valid)
 		}
@@ -92,7 +92,7 @@ func TestIsFieldValueValid(t *testing.T) {
 		valid2 := "190cm"
 		invalid1 := "190in"
 		invalid2 := "190"
-		
+
 		if !isFieldValueValid("hgt", valid1) {
 			t.Errorf("Incorrect result for isFieldValueValid (hgt), got false for %s", valid1)
 		}
@@ -114,7 +114,7 @@ func TestIsFieldValueValid(t *testing.T) {
 		valid1 := "#123abc"
 		invalid1 := "#123abz"
 		invalid2 := "123abc"
-		
+
 		if !isFieldValueValid("hcl", valid1) {
 			t.Errorf("Incorrect result for isFieldValueValid (hcl), got false for %s", valid1)
 		}
@@ -131,7 +131,7 @@ func TestIsFieldValueValid(t *testing.T) {
 	t.Run("hcl", func(t *testing.T) {
 		valid1 := "brn"
 		invalid1 := "wat"
-		
+
 		if !isFieldValueValid("ecl", valid1) {
 			t.Errorf("Incorrect result for isFieldValueValid (ecl), got false for %s", valid1)
 		}
@@ -144,7 +144,7 @@ func TestIsFieldValueValid(t *testing.T) {
 	t.Run("pid", func(t *testing.T) {
 		valid1 := "000000001"
 		invalid1 := "0123456789"
-		
+
 		if !isFieldValueValid("pid", valid1) {
 			t.Errorf("Incorrect result for isFieldValueValid (pid), got false for %s", valid1)
 		}

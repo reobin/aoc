@@ -4,6 +4,7 @@ import (
 	"strconv"
 )
 
+// Range represents an integer range from min to max
 type Range struct {
 	Minimum int
 	Maximum int

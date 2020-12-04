@@ -78,7 +78,7 @@ func TestConvertToNumbers(t *testing.T) {
 		expectedNumbers := []int{2, 3, 4}
 		numbers := ConvertToNumbers(values)
 		if !reflect.DeepEqual(expectedNumbers, numbers) {
-			t.Errorf("Incorrect result for ConvertToNumbers, got :%d, want: %d", numbers, expectedNumbers)
+			t.Errorf("Incorrect result for ConvertToNumbers, got: %d, want: %d", numbers, expectedNumbers)
 		}
 	})
 
@@ -87,7 +87,7 @@ func TestConvertToNumbers(t *testing.T) {
 		expectedNumbers := []int{2, 3, 4, 5}
 		numbers := ConvertToNumbers(values)
 		if !reflect.DeepEqual(expectedNumbers, numbers) {
-			t.Errorf("Incorrect result for ConvertToNumbers, got :%d, want: %d", numbers, expectedNumbers)
+			t.Errorf("Incorrect result for ConvertToNumbers, got: %d, want: %d", numbers, expectedNumbers)
 		}
 	})
 
@@ -96,7 +96,49 @@ func TestConvertToNumbers(t *testing.T) {
 		expectedNumbers := []int{2, -3, 4}
 		numbers := ConvertToNumbers(values)
 		if !reflect.DeepEqual(expectedNumbers, numbers) {
-			t.Errorf("Incorrect result for ConvertToNumbers, got :%d, want: %d", numbers, expectedNumbers)
+			t.Errorf("Incorrect result for ConvertToNumbers, got: %d, want: %d", numbers, expectedNumbers)
+		}
+	})
+}
+
+func TestIsNumberInRange(t *testing.T) {
+	t.Run("should return true if number is inside range", func(t *testing.T) {
+		valueRange := Range{Minimum: 120, Maximum: 150}
+		value := 130
+		if !IsNumberInRange(value, valueRange) {
+			t.Errorf("Incorrect result for IsNumberInRange, got: %v, want: %v", true, false)
+		}
+	})
+
+	t.Run("should return false if number is outside range", func(t *testing.T) {
+		valueRange := Range{Minimum: 120, Maximum: 150}
+		value := 170
+		if IsNumberInRange(value, valueRange) {
+			t.Errorf("Incorrect result for IsNumberInRange, got: %v, want: %v", false, true)
+		}
+	})
+
+	t.Run("should return true if negative number is inside range", func(t *testing.T) {
+		valueRange := Range{Minimum: -150, Maximum: -120}
+		value := -130
+		if !IsNumberInRange(value, valueRange) {
+			t.Errorf("Incorrect result for IsNumberInRange, got: %v, want: %v", true, false)
+		}
+	})
+
+	t.Run("should return true if number is equal to min range", func(t *testing.T) {
+		valueRange := Range{Minimum: 120, Maximum: 150}
+		value := 120
+		if !IsNumberInRange(value, valueRange) {
+			t.Errorf("Incorrect result for IsNumberInRange, got: %v, want: %v", true, false)
+		}
+	})
+
+	t.Run("should return true if number is equal to max range", func(t *testing.T) {
+		valueRange := Range{Minimum: 120, Maximum: 150}
+		value := 150
+		if !IsNumberInRange(value, valueRange) {
+			t.Errorf("Incorrect result for IsNumberInRange, got: %v, want: %v", true, false)
 		}
 	})
 }
