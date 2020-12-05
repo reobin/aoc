@@ -142,3 +142,50 @@ func TestIsNumberInRange(t *testing.T) {
 		}
 	})
 }
+
+func TestGetMiddle(t *testing.T) {
+	t.Run("should return middle of even numbers", func(t *testing.T) {
+		middle := GetMiddle(Range{Minimum: 100, Maximum: 200}, true)
+		if middle != 150 {
+			t.Errorf("Incorrect result for GetMiddle, got: %d, want: %d", middle, 150)
+		}
+	})
+
+	t.Run("should return ceiling middle of uneven division", func(t *testing.T) {
+		middle := GetMiddle(Range{Minimum: 2, Maximum: 3}, true)
+		if middle != 3 {
+			t.Errorf("Incorrect result for GetMiddle, got: %d, want: %d", middle, 3)
+		}
+	})
+
+	t.Run("should return floor middle of uneven division", func(t *testing.T) {
+		middle := GetMiddle(Range{Minimum: 2, Maximum: 3}, false)
+		if middle != 2 {
+			t.Errorf("Incorrect result for GetMiddle, got: %d, want: %d", middle, 2)
+		}
+	})
+}
+
+func TestConvertToMap(t *testing.T) {
+	t.Run("should convert a slice of numbers to a map", func(t *testing.T) {
+		slice := []int{1, 2, 3}
+		converted := ConvertToMap(slice)
+		expected := map[int]bool{
+			1: true,
+			2: true,
+			3: true,
+		}
+		if !reflect.DeepEqual(converted, expected) {
+			t.Errorf("Incorrect result for ConvertToMap, got: %v, want: %v", converted, expected)
+		}
+	})
+
+	t.Run("should convert an empty slice of numbers to a map", func(t *testing.T) {
+		slice := []int{}
+		converted := ConvertToMap(slice)
+		expected := map[int]bool{}
+		if !reflect.DeepEqual(converted, expected) {
+			t.Errorf("Incorrect result for ConvertToMap, got: %v, want: %v", converted, expected)
+		}
+	})
+}
