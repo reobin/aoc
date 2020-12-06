@@ -3,10 +3,10 @@ package day
 import (
 	"errors"
 	"log"
-	"regexp"
 	"strconv"
 	"strings"
 
+	"github.com/reobin/aoc/2020/pkg/regex"
 	"github.com/reobin/aoc/2020/pkg/str"
 )
 
@@ -42,24 +42,24 @@ func RunDay02(input string) (string, string) {
 }
 
 func interpretPaswordEntry(entry string) (string, passwordPolicy, error) {
-	expression := regexp.MustCompile("(\\d+)-(\\d+) (\\w): (.*)")
-	matches := expression.FindAllStringSubmatch(entry, 4)
-	if len(matches) < 1 || len(matches[0]) < 5 {
+	matches := regex.FindAll(entry, `(\d+)-(\d+) (\w): (.*)`)
+	if len(matches) < 4 {
 		return "", passwordPolicy{}, errors.New("Could not find a valid password policy")
 	}
 
-	firstNumber, err := strconv.Atoi(matches[0][1])
-	if err != nil {
-		return "", passwordPolicy{}, err
-	}
-	secondNumber, err := strconv.Atoi(matches[0][2])
+	firstNumber, err := strconv.Atoi(matches[0])
 	if err != nil {
 		return "", passwordPolicy{}, err
 	}
 
-	return matches[0][4],
+	secondNumber, err := strconv.Atoi(matches[1])
+	if err != nil {
+		return "", passwordPolicy{}, err
+	}
+
+	return matches[3],
 		passwordPolicy{
-			character:    matches[0][3],
+			character:    matches[2],
 			firstNumber:  firstNumber,
 			secondNumber: secondNumber,
 		},

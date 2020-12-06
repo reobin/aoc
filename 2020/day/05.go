@@ -2,11 +2,11 @@ package day
 
 import (
 	"errors"
-	"regexp"
 	"strconv"
 	"strings"
 
 	"github.com/reobin/aoc/2020/pkg/number"
+	"github.com/reobin/aoc/2020/pkg/regex"
 	"github.com/reobin/aoc/2020/pkg/str"
 )
 
@@ -68,12 +68,13 @@ func findMySeatID(seatIDs []int) int {
 }
 
 func splitSeatValue(value string) (seatValues, error) {
-	expression := regexp.MustCompile(`^(\w{7})(\w{3})$`)
-	matches := expression.FindAllStringSubmatch(value, 2)
-	if len(matches) < 1 || len(matches[0]) < 3 {
+	matches := regex.FindAll(value, `^(\w{7})(\w{3})$`)
+
+	if len(matches) < 2 {
 		return seatValues{}, errors.New("Could not get partioned seat value")
 	}
-	return seatValues{rowValues: string(matches[0][1]), columnValues: string(matches[0][2])}, nil
+
+	return seatValues{rowValues: matches[0], columnValues: matches[1]}, nil
 }
 
 func partitionBinarySpace(values string, index int, valueRange number.Range) int {
