@@ -67,8 +67,8 @@ func interpretPaswordEntry(entry string) (string, passwordPolicy, error) {
 }
 
 func isPasswordValidPart1(password string, policy passwordPolicy) bool {
-	characterCount := str.CountCharactersInString(password, policy.character)
-	if characterCount < policy.firstNumber || characterCount > policy.secondNumber {
+	characterCount := str.CountCharacters(password)
+	if characterCount[policy.character] < policy.firstNumber || characterCount[policy.character] > policy.secondNumber {
 		return false
 	}
 	return true

@@ -15,22 +15,19 @@ func RunDay06(input string) (string, string) {
 	questionCountSumPart2 := 0
 
 	for _, group := range groups {
-		peopleEntries := strings.Split(str.RemoveEmptyLines(group), "\n")
+		group = str.RemoveEmptyLines(group)
 
-		uniqueQuestions := make(map[string]int)
+		peopleCount := len(strings.Split(group, "\n"))
 
-		for _, personEntry := range peopleEntries {
-			questions := strings.Split(personEntry, "")
+		questions := strings.ReplaceAll(group, "\n", "")
 
-			for _, question := range questions {
-				uniqueQuestions[string(question)]++
-				if uniqueQuestions[string(question)] == len(peopleEntries) {
-					questionCountSumPart2++
-				}
+		uniqueQuestionCount := str.CountCharacters(questions)
+		for _, questionCount := range uniqueQuestionCount {
+			questionCountSumPart1++
+			if questionCount == peopleCount {
+				questionCountSumPart2++
 			}
 		}
-
-		questionCountSumPart1 += len(uniqueQuestions)
 	}
 
 	return strconv.Itoa(questionCountSumPart1), strconv.Itoa(questionCountSumPart2)

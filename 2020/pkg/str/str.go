@@ -4,15 +4,13 @@ import (
 	"strings"
 )
 
-// CountCharactersInString counts the number of a certain character in a string
-func CountCharactersInString(value string, character string) int {
-	count := 0
-	for _, c := range value {
-		if string(c) == character {
-			count++
-		}
+// CountCharacters counts the occurences of each character in a string
+func CountCharacters(value string) map[string]int {
+	characterCount := make(map[string]int)
+	for _, character := range value {
+		characterCount[string(character)]++
 	}
-	return count
+	return characterCount
 }
 
 // RemoveEmptyLines removes all empty lines in a string
