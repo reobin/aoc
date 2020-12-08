@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	dayRunner "github.com/reobin/aoc/2020/day"
 )
@@ -37,6 +38,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	startTimeWithFile := time.Now()
+
 	input, err := getDayInput(day, "")
 	if err != nil {
 		log.Print(err)
@@ -49,10 +52,14 @@ func main() {
 		os.Exit(1)
 	}
 
+	startTime := time.Now()
+
 	log.Printf("Running day %s", dayArg)
 	part1Answer, part2Answer := runner.(func(input string) (string, string))(input)
 	log.Printf("Part 1 answer is: %s", part1Answer)
 	log.Printf("Part 2 answer is: %s", part2Answer)
+	log.Printf("Elapsed time: %s", time.Since(startTime))
+	log.Printf("Elapsed time (with file loading): %s", time.Since(startTimeWithFile))
 	log.Print(":wq")
 }
 
