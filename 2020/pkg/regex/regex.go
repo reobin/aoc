@@ -4,12 +4,20 @@ import (
 	"regexp"
 )
 
-// FindAll returns all values searched with regex target groups
-func FindAll(value string, expression string) []string {
+// Find returns all values of different target groups in a string
+func Find(value string, expression string) []string {
 	compiled := regexp.MustCompile(expression)
 	matches := compiled.FindStringSubmatch(value)
-	if len(matches) < 2 {
+	if len(matches) < 1 {
 		return []string{}
 	}
-	return matches[1:]
+	return matches
+}
+
+// FindAll returns all values in the string that match the regex
+func FindAll(value string, expression string) [][]string {
+	compiled := regexp.MustCompile(expression)
+	matches := compiled.FindAllStringSubmatch(value, -1)
+
+	return matches
 }

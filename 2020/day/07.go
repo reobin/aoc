@@ -2,7 +2,6 @@ package day
 
 import (
 	"errors"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -81,21 +80,20 @@ func computeColorPolicies(values []string) colorPolicies {
 }
 
 func getColorPolicy(value string) (string, []colorQuantityPolicy, error) {
-	split := regex.FindAll(value, `(\w+ \w+) bags contain ((\d+ \w+ \w+ bags?,? ?)*).*\.`)
+	split := regex.Find(value, `(\w+ \w+) bags contain ((\d+ \w+ \w+ bags?,? ?)*).*\.`)
 
-	if len(split) < 1 {
+	if len(split) < 2 {
 		return "", []colorQuantityPolicy{}, errors.New("No main color found")
 	}
 
-	mainColor := split[0]
+	mainColor := split[1]
 
 	if len(split) < 2 {
 		// contains no other bags
 		return mainColor, []colorQuantityPolicy{}, nil
 	}
 
-	expression := regexp.MustCompile(`(\d+) (\w+ \w+) bags? ?,?`)
-	matches := expression.FindAllStringSubmatch(split[1], -1)
+	matches := regex.FindAll(split[2], `(\d+) (\w+ \w+) bags? ?,?`)
 
 	var quantityPolicies []colorQuantityPolicy
 

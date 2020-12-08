@@ -68,13 +68,13 @@ func findMySeatID(seatIDs []int) int {
 }
 
 func splitSeatValue(value string) (seatValues, error) {
-	matches := regex.FindAll(value, `^(\w{7})(\w{3})$`)
+	matches := regex.Find(value, `^(\w{7})(\w{3})$`)
 
-	if len(matches) < 2 {
+	if len(matches) < 3 {
 		return seatValues{}, errors.New("Could not get partioned seat value")
 	}
 
-	return seatValues{rowValues: matches[0], columnValues: matches[1]}, nil
+	return seatValues{rowValues: matches[1], columnValues: matches[2]}, nil
 }
 
 func partitionBinarySpace(values string, index int, valueRange number.Range) int {

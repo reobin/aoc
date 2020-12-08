@@ -42,24 +42,24 @@ func RunDay02(input string) (string, string) {
 }
 
 func interpretPaswordEntry(entry string) (string, passwordPolicy, error) {
-	matches := regex.FindAll(entry, `(\d+)-(\d+) (\w): (.*)`)
-	if len(matches) < 4 {
+	matches := regex.Find(entry, `(\d+)-(\d+) (\w): (.*)`)
+	if len(matches) < 5 {
 		return "", passwordPolicy{}, errors.New("Could not find a valid password policy")
 	}
 
-	firstNumber, err := strconv.Atoi(matches[0])
+	firstNumber, err := strconv.Atoi(matches[1])
 	if err != nil {
 		return "", passwordPolicy{}, err
 	}
 
-	secondNumber, err := strconv.Atoi(matches[1])
+	secondNumber, err := strconv.Atoi(matches[2])
 	if err != nil {
 		return "", passwordPolicy{}, err
 	}
 
-	return matches[3],
+	return matches[4],
 		passwordPolicy{
-			character:    matches[2],
+			character:    matches[3],
 			firstNumber:  firstNumber,
 			secondNumber: secondNumber,
 		},
