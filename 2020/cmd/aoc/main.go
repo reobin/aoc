@@ -23,6 +23,7 @@ var dayRunnerMap = map[int]interface{}{
 	5: dayRunner.RunDay05,
 	6: dayRunner.RunDay06,
 	7: dayRunner.RunDay07,
+	8: dayRunner.RunDay08,
 }
 
 func main() {
