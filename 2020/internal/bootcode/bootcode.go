@@ -17,17 +17,26 @@ type Instruction struct {
 
 // Run runs instructions on a bootcode computer until an error happens or until
 // the program terminates
-func Run(instructions []Instruction) (int, error) {
-	accumulator := 0
+func Run(instructions []Instruction, offByAccepted int) (int, error) {
+	return run(instructions, 0, 0, offByAccepted)
+}
+
+func run(instructions []Instruction, nextInstructionIndex int, accumulator int, offByAccepted int) (int, error) {
 	operations := make(map[int][]int)
-
-	nextInstructionIndex := 0
 	index := 0
-
 	for {
+		if nextInstructionIndex < 0 || nextInstructionIndex >= len(instructions) {
+			return accumulator, errors.New("Went out of bounds")
+		}
+
 		nextInstruction := instructions[nextInstructionIndex]
 		if len(operations[nextInstructionIndex]) > 0 {
 			return accumulator, errors.New("Infinite loop detected")
+		}
+
+		potentialAccumulator, err := checkOffRun(nextInstructionIndex, instructions, accumulator, offByAccepted)
+		if err == nil {
+			return potentialAccumulator, nil
 		}
 
 		operations[nextInstructionIndex] = append(operations[nextInstructionIndex], index)
@@ -46,6 +55,33 @@ func Run(instructions []Instruction) (int, error) {
 	}
 
 	return accumulator, nil
+}
+
+// Checks alternative runs by changing some operations
+func checkOffRun(nextInstructionIndex int, instructions []Instruction, accumulator int, offByAccepted int) (int, error) {
+	if nextInstructionIndex >= len(instructions) {
+		return 0, errors.New("out of bounds")
+	}
+
+	nextInstruction := instructions[nextInstructionIndex]
+
+	if offByAccepted > 0 && (nextInstruction.Operation == "nop" || nextInstruction.Operation == "jmp") {
+		newOperation := "jmp"
+		if nextInstruction.Operation == "jmp" {
+			newOperation = "nop"
+		}
+
+		newInstructions := copyInstructions(instructions)
+		newInstructions[nextInstructionIndex] = Instruction{Operation: newOperation, Argument: nextInstruction.Argument}
+
+		potentialAccumulator, err := run(newInstructions, nextInstructionIndex, accumulator, offByAccepted-1)
+		if err == nil {
+			// Found alternative that terminates the program successfully
+			return potentialAccumulator, nil
+		}
+	}
+
+	return accumulator, errors.New("No success route found")
 }
 
 func runInstruction(instruction Instruction) (int, int) {
@@ -77,4 +113,10 @@ func ParseInstructions(input string) []Instruction {
 	}
 
 	return instructions
+}
+
+func copyInstructions(instructions []Instruction) []Instruction {
+	instructionsCopy := make([]Instruction, len(instructions))
+	copy(instructionsCopy, instructions)
+	return instructionsCopy
 }

@@ -21,7 +21,7 @@ acc +6`
 		}
 
 		if answerPart2 != "8" {
-			t.Errorf("Incorrect result for RunDay08 (part 1), got: %s, want: %s", answerPart2, "8")
+			t.Errorf("Incorrect result for RunDay08 (part 2), got: %s, want: %s", answerPart2, "8")
 		}
 	})
 }

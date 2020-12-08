@@ -19,7 +19,7 @@ func TestRun(t *testing.T) {
 			{Operation: "acc", Argument: 6},
 		}
 
-		accumulator, err := Run(instructions)
+		accumulator, err := Run(instructions, 0)
 
 		if err != nil {
 			t.Errorf("Incorrect result for Run, got error: %s", err)
@@ -43,7 +43,7 @@ func TestRun(t *testing.T) {
 			{Operation: "acc", Argument: 6},
 		}
 
-		accumulator, err := Run(instructions)
+		accumulator, err := Run(instructions, 0)
 
 		if err == nil {
 			t.Error("Incorrect result for Run, got no error on infinite loop")
@@ -51,6 +51,30 @@ func TestRun(t *testing.T) {
 
 		if accumulator != 5 {
 			t.Errorf("Incorrect result for Run, got: %d, want: %d", accumulator, 5)
+		}
+	})
+
+	t.Run("should return accumulator when off error is allowed", func(t *testing.T) {
+		instructions := []Instruction{
+			{Operation: "nop", Argument: 0},
+			{Operation: "acc", Argument: 1},
+			{Operation: "jmp", Argument: 4},
+			{Operation: "acc", Argument: 3},
+			{Operation: "jmp", Argument: -3},
+			{Operation: "acc", Argument: -99},
+			{Operation: "acc", Argument: 1},
+			{Operation: "jmp", Argument: -4},
+			{Operation: "acc", Argument: 6},
+		}
+
+		accumulator, err := Run(instructions, 1)
+
+		if err != nil {
+			t.Errorf("Incorrect result for Run, got error: %s", err)
+		}
+
+		if accumulator != 8 {
+			t.Errorf("Incorrect result for Run, got: %d, want: %d", accumulator, 0)
 		}
 	})
 }
