@@ -2,6 +2,11 @@ package bootcode
 
 import (
 	"errors"
+	"strconv"
+	"strings"
+
+	"github.com/reobin/aoc/2020/pkg/regex"
+	"github.com/reobin/aoc/2020/pkg/str"
 )
 
 // Instruction represents a bootcode computer instruction
@@ -54,4 +59,22 @@ func runInstruction(instruction Instruction) (int, int) {
 		return instruction.Argument, 0
 	}
 	return 0, 0
+}
+
+// ParseInstructions takes in an input file and returns bootcode instructions
+func ParseInstructions(input string) []Instruction {
+	lines := strings.Split(str.RemoveEmptyLines(input), "\n")
+
+	var instructions []Instruction
+	for _, line := range lines {
+		match := regex.Find(line, `(\w{3}) ((\+|-)\d+)`)
+		argument, err := strconv.Atoi(match[2])
+		if err != nil {
+			continue
+		}
+		instruction := Instruction{Operation: match[1], Argument: argument}
+		instructions = append(instructions, instruction)
+	}
+
+	return instructions
 }
