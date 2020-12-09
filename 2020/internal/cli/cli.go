@@ -13,6 +13,7 @@ import (
 const minDayNumber = 1
 const maxDayNumber = 25
 
+// DayRunnerMap maps a day number to a function to run
 var DayRunnerMap = map[int]interface{}{
 	1: day.RunDay01,
 	2: day.RunDay02,
@@ -50,6 +51,7 @@ func getDayValue(dayArg string) (int, error) {
 	return day, nil
 }
 
+// GetDayInput returns the input file content for the day
 func GetDayInput(day int, fileNamePrefix string) (string, error) {
 	workingDirectory, err := os.Getwd()
 	if err != nil {
