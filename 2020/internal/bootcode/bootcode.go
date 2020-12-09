@@ -63,11 +63,11 @@ func runInstruction(instruction Instruction) (int, int) {
 
 // ParseInstructions takes in an input file and returns bootcode instructions
 func ParseInstructions(input string) []Instruction {
-	lines := strings.Split(str.RemoveEmptyLines(input), "\n")
+	lines := strings.ReplaceAll(str.RemoveEmptyLines(input), "\n", "")
 
 	var instructions []Instruction
-	for _, line := range lines {
-		match := regex.Find(line, `(\w{3}) ((\+|-)\d+)`)
+	matches := regex.FindAll(lines, `(\w{3}) ((\+|-)\d+)`)
+	for _, match := range matches {
 		argument, err := strconv.Atoi(match[2])
 		if err != nil {
 			continue
