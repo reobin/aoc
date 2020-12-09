@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/reobin/aoc/2020/pkg/regex"
-	"github.com/reobin/aoc/2020/pkg/str"
 )
 
 // Instruction represents a bootcode computer instruction
@@ -99,7 +98,7 @@ func runInstruction(instruction Instruction) (int, int) {
 
 // ParseInstructions takes in an input file and returns bootcode instructions
 func ParseInstructions(input string) []Instruction {
-	lines := strings.ReplaceAll(str.RemoveEmptyLines(input), "\n", "")
+	lines := strings.ReplaceAll(input, "\n", "")
 
 	var instructions []Instruction
 	matches := regex.FindAll(lines, `(\w{3}) ((\+|-)\d+)`)
