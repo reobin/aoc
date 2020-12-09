@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/reobin/aoc/2020/internal/cli"
 )
@@ -26,9 +27,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	log.Printf("Running day %d", day)
-	part1Answer, part2Answer := runner.(func(input string) (string, string))(input)
-	log.Printf("Part 1 answer is: %s", part1Answer)
-	log.Printf("Part 2 answer is: %s", part2Answer)
+	var times []time.Duration
+	for i := 0; i < 1000; i++ {
+		startTime := time.Now()
+		runner.(func(input string) (string, string))(input)
+		times = append(times, time.Since(startTime))
+	}
+
+	var totalTime time.Duration
+	for _, elapsedTime := range times {
+		totalTime += elapsedTime
+	}
+
+	log.Printf("Running day %d 1000 times", day)
+	log.Printf("Average elapsed time (1000 runs): %s", totalTime/1000)
 	log.Print(":wq")
 }
