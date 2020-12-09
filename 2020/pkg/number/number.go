@@ -20,6 +20,15 @@ func ComputeProduct(numbers []int) int {
 	return product
 }
 
+// ComputeSum takes in a list of numbers and computes their product
+func ComputeSum(numbers []int) int {
+	sum := 0
+	for _, n := range numbers {
+		sum += n
+	}
+	return sum
+}
+
 // Contains returns true if the number was found in the list
 func Contains(numbers []int, element int) bool {
 	for _, n := range numbers {
@@ -67,4 +76,19 @@ func ConvertToMap(numbers []int) map[int]bool {
 		converted[number] = true
 	}
 	return converted
+}
+
+// MinMax returns both minimum and maximum value from a list of numbers
+func MinMax(numbers []int) (int, int) {
+	minimum := -1
+	maximum := -1
+	for _, n := range numbers {
+		if minimum == -1 || n < minimum {
+			minimum = n
+		}
+		if maximum == -1 || n > maximum {
+			maximum = n
+		}
+	}
+	return minimum, maximum
 }

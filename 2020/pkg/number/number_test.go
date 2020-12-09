@@ -43,6 +43,35 @@ func TestComputeProduct(t *testing.T) {
 	})
 }
 
+func TestComputeSum(t *testing.T) {
+	t.Run("should return sum of 2 integers", func(t *testing.T) {
+		numbers := []int{2, 3}
+		expectedSum := 5
+		sum := ComputeSum(numbers)
+		if sum != expectedSum {
+			t.Errorf("Incorrect result for ComputeSum, got: %d, want: %d", sum, expectedSum)
+		}
+	})
+
+	t.Run("should return product of 6 integers", func(t *testing.T) {
+		numbers := []int{2, 3, 5, 6, 199, 100}
+		expectedSum := 315
+		sum := ComputeSum(numbers)
+		if sum != expectedSum {
+			t.Errorf("Incorrect result for ComputeSum, got: %d, want: %d", sum, expectedSum)
+		}
+	})
+
+	t.Run("should handle negative numbers", func(t *testing.T) {
+		numbers := []int{2, 3, -1, -1, -1}
+		expectedSum := 2
+		sum := ComputeSum(numbers)
+		if sum != expectedSum {
+			t.Errorf("Incorrect result for ComputeSum, got: %d, want: %d", sum, expectedSum)
+		}
+	})
+}
+
 func TestContains(t *testing.T) {
 	t.Run("should return true if number is in the list", func(t *testing.T) {
 		numbers := []int{1, 2, 3}
@@ -186,6 +215,56 @@ func TestConvertToMap(t *testing.T) {
 		expected := map[int]bool{}
 		if !reflect.DeepEqual(converted, expected) {
 			t.Errorf("Incorrect result for ConvertToMap, got: %v, want: %v", converted, expected)
+		}
+	})
+}
+
+func TestMinMax(t *testing.T) {
+	t.Run("should return min and max with different numbers", func(t *testing.T) {
+		n1 := 5
+		n2 := 10
+		n3 := 15
+
+		min, max := MinMax([]int{n1, n2, n3})
+
+		if min != n1 {
+			t.Errorf("Incorrect result for MinMax (min), got %d, want: %d", min, n1)
+		}
+
+		if max != n3 {
+			t.Errorf("Incorrect result for MinMax (max), got %d, want: %d", min, n3)
+		}
+	})
+
+	t.Run("should return min and max with some equal numbers", func(t *testing.T) {
+		n1 := 10
+		n2 := 10
+		n3 := 15
+
+		min, max := MinMax([]int{n1, n2, n3})
+
+		if min != n1 {
+			t.Errorf("Incorrect result for MinMax (min), got %d, want: %d", min, n1)
+		}
+
+		if max != n3 {
+			t.Errorf("Incorrect result for MinMax (max), got %d, want: %d", min, n3)
+		}
+	})
+
+	t.Run("should return min and max with all equal numbers", func(t *testing.T) {
+		n1 := 10
+		n2 := 10
+		n3 := 10
+
+		min, max := MinMax([]int{n1, n2, n3})
+
+		if min != n1 {
+			t.Errorf("Incorrect result for MinMax (min), got %d, want: %d", min, n1)
+		}
+
+		if max != n3 {
+			t.Errorf("Incorrect result for MinMax (max), got %d, want: %d", min, n3)
 		}
 	})
 }
