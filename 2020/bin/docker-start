@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+set -e
+
+BREAK_LINE="
+"
+
+if ! docker --version >/dev/null 2>&1; then
+  echo "Please install Docker Desktop"
+  echo "https://www.docker.com/products/docker-desktop/"
+  exit 1
+fi
+
+if ! docker info >/dev/null 2>&1; then
+  echo "Please run Docker Desktop"
+  echo "https://docs.docker.com/desktop/"
+  exit 1
+fi
+
+build_container=0
+day=1
+
+while getopts ":d:b h" opt; do
+  case $opt in
+    d)
+      day=$OPTARG ;;
+    b)
+      build_container=1 ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+
+echo "
+            ___         ______
+           /   | ____  / ____/
+          / /| |/ __ \/ /     
+         / ___ / /_/ / /___   
+        /_/  |_\____/\____/   
+
+"
+
+if [[ $build_container = 1 ]]; then
+  echo "${BREAK_LINE}Building the reobin/aoc/2020 container image$BREAK_LINE"
+  docker build -t reobin/aoc/2020 .
+fi;
+
+echo "${BREAK_LINE}Starting the reobin/aoc/2020 container$BREAK_LINE"
+docker run reobin/aoc/2020 $day

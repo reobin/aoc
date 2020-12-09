@@ -6,6 +6,8 @@
 
 - Go version 1.15
 
+_Note_: A docker setup is also available
+
 ### Run the solution for a specific day
 
 ```shell
@@ -39,3 +41,22 @@ bin/lint # Prints lint errors to fix
 ```shell
 bin/format # Formats and save all go files
 ```
+
+### Run a day with docker
+
+```shell
+bin/docker-start # Runs day 01 by default
+```
+
+Use the `-b` flag to build the container when you first run it, or when you make an update:
+
+```shell
+bin/docker-start -b
+```
+
+Choose the day you want to run with the `-d` flag:
+
+```shell
+bin/docker-start -j 8 # Runs day 08
+```
+
