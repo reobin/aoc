@@ -15,15 +15,16 @@ const maxDayNumber = 25
 
 // DayRunnerMap maps a day number to a function to run
 var DayRunnerMap = map[int]interface{}{
-	1: day.RunDay01,
-	2: day.RunDay02,
-	3: day.RunDay03,
-	4: day.RunDay04,
-	5: day.RunDay05,
-	6: day.RunDay06,
-	7: day.RunDay07,
-	8: day.RunDay08,
-	9: day.RunDay09,
+	1:  day.RunDay01,
+	2:  day.RunDay02,
+	3:  day.RunDay03,
+	4:  day.RunDay04,
+	5:  day.RunDay05,
+	6:  day.RunDay06,
+	7:  day.RunDay07,
+	8:  day.RunDay08,
+	9:  day.RunDay09,
+	10: day.RunDay10,
 }
 
 // GetDayArg gets day number from os arguments
