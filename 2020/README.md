@@ -57,6 +57,6 @@ bin/docker-start -b
 Choose the day you want to run with the `-d` flag:
 
 ```shell
-bin/docker-start -j 8 # Runs day 08
+bin/docker-start -d 8 # Runs day 08
 ```
 
