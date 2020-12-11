@@ -9,13 +9,14 @@ import (
 )
 
 // RunDay03 runs aoc day 3 challenge
-func RunDay03(plan string) (string, string) {
-	planSize := planHelper.GetPlanSize(str.RemoveEmptyLines(plan))
+func RunDay03(input string) (string, string) {
+	plan := planHelper.ConvertToPlan(str.RemoveEmptyLines(input))
+	planSize := planHelper.GetPlanSize(plan)
 
-	treeHitsPart1 := countTreeHits(plan, planSize, planHelper.Slope{X: 3, Y: 1})
+	treeHitsPart1 := countTreeHits(plan, planSize, planHelper.Direction{X: 3, Y: 1})
 
 	treeHitsPart2 := 1
-	slopes := []planHelper.Slope{{X: 1, Y: 1}, {X: 3, Y: 1}, {X: 5, Y: 1}, {X: 7, Y: 1}, {X: 1, Y: 2}}
+	slopes := []planHelper.Direction{{X: 1, Y: 1}, {X: 3, Y: 1}, {X: 5, Y: 1}, {X: 7, Y: 1}, {X: 1, Y: 2}}
 	for _, slope := range slopes {
 		treeHits := countTreeHits(plan, planSize, slope)
 		treeHitsPart2 *= treeHits
@@ -24,11 +25,11 @@ func RunDay03(plan string) (string, string) {
 	return strconv.Itoa(treeHitsPart1), strconv.Itoa(treeHitsPart2)
 }
 
-func countTreeHits(plan string, planSize planHelper.Size, slope planHelper.Slope) int {
-	currentPosition := planHelper.Coordinates{X: 1, Y: 1}
+func countTreeHits(plan planHelper.Plan, planSize planHelper.Size, slope planHelper.Direction) int {
+	currentPosition := planHelper.Coordinates{X: 0, Y: 0}
 	treeCount := 0
 	for currentPosition.Y < planSize.Height {
-		currentPosition = planHelper.GetNextPosition(currentPosition, planSize, slope)
+		currentPosition = planHelper.GetLoopedNextPosition(currentPosition, planSize, slope)
 		element, err := planHelper.GetElementAt(plan, currentPosition)
 		if err != nil {
 			log.Printf("Error getting element at %d: %s", currentPosition, err)

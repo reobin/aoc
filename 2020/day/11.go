@@ -116,7 +116,7 @@ func applyRulesPart2(seatMap plan.Plan) plan.Plan {
 func countDirectionalOccupiedSeats(position plan.Coordinates, seatMap plan.Plan) int {
 	directionalOccupiedSeatCount := 0
 
-	directions := []plan.Coordinates{
+	directions := []plan.Direction{
 		{X: -1, Y: -1},
 		{X: 0, Y: -1},
 		{X: +1, Y: -1},
@@ -141,12 +141,12 @@ func countDirectionalOccupiedSeats(position plan.Coordinates, seatMap plan.Plan)
 	return directionalOccupiedSeatCount
 }
 
-func getFirstNonEmptySeatInDirection(currentPosition plan.Coordinates, direction plan.Coordinates, seatMap plan.Plan) (plan.Coordinates, error) {
+func getFirstNonEmptySeatInDirection(currentPosition plan.Coordinates, direction plan.Direction, seatMap plan.Plan) (plan.Coordinates, error) {
 	for {
-		currentPosition = plan.Coordinates{X: currentPosition.X + direction.X, Y: currentPosition.Y + direction.Y}
-		seat := seatMap[currentPosition.X][currentPosition.Y]
+		currentPosition = plan.GetNextPosition(currentPosition, direction)
+		seat, err := plan.GetElementAt(seatMap, currentPosition)
 
-		if seat == "" {
+		if err != nil {
 			break
 		}
 

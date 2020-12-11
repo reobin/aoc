@@ -7,7 +7,12 @@ import (
 
 func TestGetPlanSize(t *testing.T) {
 	t.Run("should return size of a valid plan", func(t *testing.T) {
-		plan := "1234\n1234\n1234"
+		plan := Plan{
+			0: {0: "1", 1: "1", 2: "1"},
+			1: {0: "2", 1: "2", 2: "2"},
+			2: {0: "3", 1: "3", 2: "3"},
+			3: {0: "4", 1: "4", 2: "4"},
+		}
 		size := GetPlanSize(plan)
 		expectedSize := Size{Width: 4, Height: 3}
 		if size.Width != expectedSize.Width || size.Height != expectedSize.Height {
@@ -16,26 +21,53 @@ func TestGetPlanSize(t *testing.T) {
 	})
 }
 
-func TestGetNextPosition(t *testing.T) {
+func TestGetLoopedNextPosition(t *testing.T) {
 	t.Run("should return next position if values are valid", func(t *testing.T) {
 		currentPosition := Coordinates{X: 1, Y: 1}
 		planSize := Size{Width: 5, Height: 5}
-		slope := Slope{X: 1, Y: 1}
+		slope := Direction{X: 1, Y: 1}
 
-		nextPosition := GetNextPosition(currentPosition, planSize, slope)
+		nextPosition := GetLoopedNextPosition(currentPosition, planSize, slope)
 		expectedPosition := Coordinates{X: 2, Y: 2}
 
 		if nextPosition.X != expectedPosition.X || nextPosition.Y != expectedPosition.Y {
-			t.Errorf("Incorrect result for GetNextPosition, got: %d, want: %d", nextPosition, expectedPosition)
+			t.Errorf("Incorrect result for GetLoopedNextPosition, got: %d, want: %d", nextPosition, expectedPosition)
 		}
 	})
 
 	t.Run("should return next position restarting from left if far right has passed", func(t *testing.T) {
 		currentPosition := Coordinates{X: 5, Y: 1}
 		planSize := Size{Width: 5, Height: 5}
-		slope := Slope{X: 2, Y: 1}
+		slope := Direction{X: 2, Y: 1}
 
-		nextPosition := GetNextPosition(currentPosition, planSize, slope)
+		nextPosition := GetLoopedNextPosition(currentPosition, planSize, slope)
+		expectedPosition := Coordinates{X: 2, Y: 2}
+
+		if nextPosition.X != expectedPosition.X || nextPosition.Y != expectedPosition.Y {
+			t.Errorf("Incorrect result for GetLoopedNextPosition, got: %d, want: %d", nextPosition, expectedPosition)
+		}
+	})
+
+	t.Run("should return next position staying at bottom if bottom had been reached", func(t *testing.T) {
+		currentPosition := Coordinates{X: 5, Y: 5}
+		planSize := Size{Width: 5, Height: 5}
+		slope := Direction{X: 2, Y: 1}
+
+		nextPosition := GetLoopedNextPosition(currentPosition, planSize, slope)
+		expectedPosition := Coordinates{X: 2, Y: 5}
+
+		if nextPosition.X != expectedPosition.X || nextPosition.Y != expectedPosition.Y {
+			t.Errorf("Incorrect result for GetLoopedNextPosition, got: %d, want: %d", nextPosition, expectedPosition)
+		}
+	})
+}
+
+func TestGetNextPosition(t *testing.T) {
+	t.Run("should return next position if values are valid", func(t *testing.T) {
+		currentPosition := Coordinates{X: 1, Y: 1}
+		slope := Direction{X: 1, Y: 1}
+
+		nextPosition := GetNextPosition(currentPosition, slope)
 		expectedPosition := Coordinates{X: 2, Y: 2}
 
 		if nextPosition.X != expectedPosition.X || nextPosition.Y != expectedPosition.Y {
@@ -43,13 +75,12 @@ func TestGetNextPosition(t *testing.T) {
 		}
 	})
 
-	t.Run("should return next position staying at bottom if bottom had been reached", func(t *testing.T) {
-		currentPosition := Coordinates{X: 5, Y: 5}
-		planSize := Size{Width: 5, Height: 5}
-		slope := Slope{X: 2, Y: 1}
+	t.Run("should handle negative direction", func(t *testing.T) {
+		currentPosition := Coordinates{X: 0, Y: 1}
+		slope := Direction{X: -2, Y: -1}
 
-		nextPosition := GetNextPosition(currentPosition, planSize, slope)
-		expectedPosition := Coordinates{X: 2, Y: 5}
+		nextPosition := GetNextPosition(currentPosition, slope)
+		expectedPosition := Coordinates{X: -2, Y: 0}
 
 		if nextPosition.X != expectedPosition.X || nextPosition.Y != expectedPosition.Y {
 			t.Errorf("Incorrect result for GetNextPosition, got: %d, want: %d", nextPosition, expectedPosition)
@@ -59,7 +90,12 @@ func TestGetNextPosition(t *testing.T) {
 
 func TestGetElementAt(t *testing.T) {
 	t.Run("should return element at valid position", func(t *testing.T) {
-		plan := "1234\n1234\n1234"
+		plan := Plan{
+			0: {0: "1", 1: "1", 2: "1"},
+			1: {0: "2", 1: "2", 2: "2"},
+			2: {0: "3", 1: "3", 2: "3"},
+			3: {0: "4", 1: "4", 2: "4"},
+		}
 		position := Coordinates{X: 1, Y: 2}
 
 		element, err := GetElementAt(plan, position)
@@ -67,14 +103,19 @@ func TestGetElementAt(t *testing.T) {
 			t.Errorf("Incorrect return for GetElementAt, got error: %s", err)
 		}
 
-		expectedElement := "1"
+		expectedElement := "2"
 		if element != expectedElement {
 			t.Errorf("Incorrect return for GetElementAt, got: %s, want: %s", element, expectedElement)
 		}
 	})
 
 	t.Run("should return error if x is overflown", func(t *testing.T) {
-		plan := "1234\n1234\n1234"
+		plan := Plan{
+			0: {0: "1", 1: "1", 2: "1"},
+			1: {0: "2", 1: "2", 2: "2"},
+			2: {0: "3", 1: "3", 2: "3"},
+			3: {0: "4", 1: "4", 2: "4"},
+		}
 		position := Coordinates{X: 8, Y: 2}
 		_, err := GetElementAt(plan, position)
 		if err == nil {
@@ -83,7 +124,12 @@ func TestGetElementAt(t *testing.T) {
 	})
 
 	t.Run("should return error if y is overflown", func(t *testing.T) {
-		plan := "1234\n1234\n1234"
+		plan := Plan{
+			0: {0: "1", 1: "1", 2: "1"},
+			1: {0: "2", 1: "2", 2: "2"},
+			2: {0: "3", 1: "3", 2: "3"},
+			3: {0: "4", 1: "4", 2: "4"},
+		}
 		position := Coordinates{X: 2, Y: 5}
 		_, err := GetElementAt(plan, position)
 		if err == nil {
