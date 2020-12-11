@@ -48,16 +48,8 @@ func countArrangements(adapters []int) int {
 	adapterMap := make(map[int]int)
 	adapterMap[0] = 1
 
-	for index, adapter := range adapters {
-		for _, nextAdapter := range adapters[index+1:] {
-			difference := nextAdapter - adapter
-
-			if difference > 3 {
-				break
-			}
-
-			adapterMap[nextAdapter] += adapterMap[adapter]
-		}
+	for _, adapter := range adapters {
+		adapterMap[adapter] += adapterMap[adapter-1] + adapterMap[adapter-2] + adapterMap[adapter-3]
 	}
 
 	return adapterMap[adapters[len(adapters)-1]]
