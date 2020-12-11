@@ -5,6 +5,9 @@ import (
 	"strings"
 )
 
+// Plan represents a 2 dimensional map
+type Plan map[int]map[int]string
+
 // Coordinates represents cartesian coordinates
 type Coordinates struct {
 	X int
@@ -59,4 +62,48 @@ func GetElementAt(plan string, position Coordinates) (string, error) {
 	}
 
 	return string(line[position.X-1]), nil
+}
+
+// ConvertToPlan takes in a string representation of a plan and returns a map
+func ConvertToPlan(value string) Plan {
+	plan := make(Plan)
+
+	lines := strings.Split(value, "\n")
+
+	for y, line := range lines {
+		for x, character := range line {
+			if plan[x] == nil {
+				plan[x] = make(map[int]string)
+			}
+			plan[x][y] = string(character)
+		}
+	}
+
+	return plan
+}
+
+// CopyPlan returns a copy of the plan
+func CopyPlan(plan Plan) Plan {
+	result := make(Plan)
+
+	for x, column := range plan {
+		result[x] = make(map[int]string)
+		for y, character := range column {
+			result[x][y] = character
+		}
+	}
+
+	return result
+}
+
+// PrintPlan prints a plan nicely assuming it's squared
+func PrintPlan(plan Plan) {
+	columnCount := len(plan)
+
+	for i := 0; i < columnCount; i++ {
+		for j := 0; j < columnCount; j++ {
+			fmt.Print(plan[j][i])
+		}
+		fmt.Println()
+	}
 }

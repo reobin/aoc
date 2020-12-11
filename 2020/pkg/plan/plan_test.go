@@ -1,6 +1,9 @@
 package plan
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestGetPlanSize(t *testing.T) {
 	t.Run("should return size of a valid plan", func(t *testing.T) {
@@ -87,4 +90,78 @@ func TestGetElementAt(t *testing.T) {
 			t.Errorf("Incorrect return for GetElementAt, did not get error for position: %d", position)
 		}
 	})
+}
+
+func TestConvertToPlan(t *testing.T) {
+	t.Run("should convert to plan", func(t *testing.T) {
+		value := `LLLLLL.LLL
+....L.LL.L
+L.L.LLLLLL
+L..L.LLLLL
+L.LLLLLLL.
+LLLLLLLLLL
+L.LLL.LL.L
+.....LL...
+..LLLLLLLL
+L.L.LLLLLL`
+
+		expectedPlan := map[int]map[int]string{
+			0: {0: "L", 1: ".", 2: "L", 3: "L", 4: "L", 5: "L", 6: "L", 7: ".", 8: ".", 9: "L"},
+			1: {0: "L", 1: ".", 2: ".", 3: ".", 4: ".", 5: "L", 6: ".", 7: ".", 8: ".", 9: "."},
+			2: {0: "L", 1: ".", 2: "L", 3: ".", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
+			3: {0: "L", 1: ".", 2: ".", 3: "L", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "."},
+			4: {0: "L", 1: "L", 2: "L", 3: ".", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
+			5: {0: "L", 1: ".", 2: "L", 3: "L", 4: "L", 5: "L", 6: ".", 7: "L", 8: "L", 9: "L"},
+			6: {0: ".", 1: "L", 2: "L", 3: "L", 4: "L", 5: "L", 6: "L", 7: "L", 8: "L", 9: "L"},
+			7: {0: "L", 1: "L", 2: "L", 3: "L", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
+			8: {0: "L", 1: ".", 2: "L", 3: "L", 4: "L", 5: "L", 6: ".", 7: ".", 8: "L", 9: "L"},
+			9: {0: "L", 1: "L", 2: "L", 3: "L", 4: ".", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
+		}
+
+		plan := ConvertToPlan(value)
+
+		if !plansAreEqual(plan, expectedPlan) {
+			t.Error("Incorrect result for ConvertToPlan")
+			fmt.Println("got:")
+			PrintPlan(plan)
+			fmt.Println("want:")
+			PrintPlan(expectedPlan)
+		}
+	})
+}
+
+func TestCopyPlan(t *testing.T) {
+	t.Run("should convert to plan", func(t *testing.T) {
+		planA := map[int]map[int]string{
+			0: {0: "L", 1: ".", 2: "L", 3: "L", 4: "L", 5: "L", 6: "L", 7: ".", 8: ".", 9: "L"},
+			1: {0: "L", 1: ".", 2: ".", 3: ".", 4: ".", 5: "L", 6: ".", 7: ".", 8: ".", 9: "."},
+			2: {0: "L", 1: ".", 2: "L", 3: ".", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
+			3: {0: "L", 1: ".", 2: ".", 3: "L", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "."},
+			4: {0: "L", 1: "L", 2: "L", 3: ".", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
+			5: {0: "L", 1: ".", 2: "L", 3: "L", 4: "L", 5: "L", 6: ".", 7: "L", 8: "L", 9: "L"},
+			6: {0: ".", 1: "L", 2: "L", 3: "L", 4: "L", 5: "L", 6: "L", 7: "L", 8: "L", 9: "L"},
+			7: {0: "L", 1: "L", 2: "L", 3: "L", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
+			8: {0: "L", 1: ".", 2: "L", 3: "L", 4: "L", 5: "L", 6: ".", 7: ".", 8: "L", 9: "L"},
+			9: {0: "L", 1: "L", 2: "L", 3: "L", 4: ".", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
+		}
+
+		planB := CopyPlan(planA)
+
+		if !plansAreEqual(planA, planB) {
+			t.Errorf("Incorrect result for ConvertToPlan, got: %v, want: %v", false, true)
+		}
+	})
+}
+
+func plansAreEqual(planA Plan, planB Plan) bool {
+	for x, rowA := range planA {
+		for y, valueA := range rowA {
+			valueB := planB[x][y]
+			if valueA != valueB {
+				return false
+			}
+		}
+	}
+
+	return true
 }
