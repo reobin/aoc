@@ -2,14 +2,18 @@ package plan
 
 import (
 	"fmt"
+	"math"
+	"regexp"
 	"strings"
+
+	"github.com/reobin/aoc/2020/pkg/regex"
 )
 
 // Plan represents a 2 dimensional map
-type Plan map[int]map[int]string
+type Plan map[Point]string
 
-// Coordinates represents cartesian coordinates
-type Coordinates struct {
+// Point represents a point in a 2d map
+type Point struct {
 	X int
 	Y int
 }
@@ -20,97 +24,203 @@ type Size struct {
 	Height int
 }
 
-// Direction represents the velocity in x and y of a direction
-type Direction struct {
-	X int
-	Y int
+// All directions around a point
+var directions = [8]Point{
+	{X: -1, Y: -1}, {X: 0, Y: -1}, {X: 1, Y: -1},
+	{X: -1, Y: 0}, {X: 1, Y: 0},
+	{X: -1, Y: 1}, {X: 0, Y: 1}, {X: 1, Y: 1},
 }
 
-// GetPlanSize returns the 2d size of a plan
-func GetPlanSize(plan Plan) Size {
-	columnCount := len(plan)
-	firstColumnRowCount := len(plan[0])
-	return Size{Width: columnCount, Height: firstColumnRowCount}
-}
+// GetSize returns the 2d size of a plan
+func (plan Plan) GetSize() Size {
+	maxX := -1
+	maxY := -1
 
-// GetLoopedNextPosition returns the next position after computing 1 instance of the direction
-// Note: If the right end has been reached, it starts back at the complete left
-func GetLoopedNextPosition(position Coordinates, planSize Size, direction Direction) Coordinates {
-	nextX := position.X + direction.X
-	if nextX > planSize.Width {
-		nextX = nextX - planSize.Width
-	}
-	nextY := position.Y + direction.Y
-	if nextY > planSize.Height {
-		nextY = planSize.Height
-	}
-	return Coordinates{X: nextX, Y: nextY}
-}
+	for point := range plan {
+		if point.X > maxX {
+			maxX = point.X
+		}
 
-// GetNextPosition returns the next position after computing 1 instance of the direction
-// Note: Does not care about the size of the plan
-func GetNextPosition(position Coordinates, direction Direction) Coordinates {
-	nextX := position.X + direction.X
-	nextY := position.Y + direction.Y
-	return Coordinates{X: nextX, Y: nextY}
-}
-
-// GetElementAt returns the character at a position in a plan
-func GetElementAt(plan Plan, position Coordinates) (string, error) {
-	column := plan[position.X]
-
-	if len(column) == 0 {
-		return "", fmt.Errorf("Column %d does not exist", position.X)
-	}
-
-	character := column[position.Y]
-	if character == "" {
-		return "", fmt.Errorf("Row %d does not exist in column %d", position.X, position.Y)
-	}
-
-	return plan[position.X][position.Y], nil
-}
-
-// ConvertToPlan takes in a string representation of a plan and returns a 2d map
-func ConvertToPlan(value string) Plan {
-	plan := make(Plan)
-
-	lines := strings.Split(value, "\n")
-
-	for y, line := range lines {
-		for x, character := range line {
-			if plan[x] == nil {
-				plan[x] = make(map[int]string)
-			}
-			plan[x][y] = string(character)
+		if point.Y > maxY {
+			maxY = point.Y
 		}
 	}
 
-	return plan
+	return Size{Width: maxX + 1, Height: maxY + 1}
 }
 
-// CopyPlan returns a deep copy of the plan
-func CopyPlan(plan Plan) Plan {
-	result := make(Plan)
+// ConvertToString takes in a string representation of a plan and returns a 2d map
+func (plan Plan) ConvertToString() string {
+	result := ""
 
-	for x, column := range plan {
-		result[x] = make(map[int]string)
-		for y, character := range column {
-			result[x][y] = character
+	size := plan.GetSize()
+
+	for y := 0; y < size.Height; y++ {
+		for x := 0; x < size.Width; x++ {
+			result += plan[Point{X: x, Y: y}]
+		}
+		if y < size.Height-1 {
+			result += "\n"
 		}
 	}
 
 	return result
 }
 
-// PrintPlan prints a plan nicely assuming it's squared
-func PrintPlan(plan Plan) {
-	columnCount := len(plan)
+// Copy returns a deep copy of the plan
+func (plan Plan) Copy() Plan {
+	result := make(Plan)
 
-	for i := 0; i < columnCount; i++ {
-		for j := 0; j < columnCount; j++ {
-			fmt.Print(plan[j][i])
+	for point, character := range plan {
+		result[point] = character
+	}
+
+	return result
+}
+
+// IsEqualTo returns true if the plan is equal at all positions to a second plan
+func (plan Plan) IsEqualTo(planB Plan) bool {
+	for point, valueA := range plan {
+		valueB := planB[point]
+		if valueA != valueB {
+			return false
 		}
-		fmt.Println()
+	}
+	return true
+}
+
+// Print prints a plan nicely assuming it's squared
+func (plan Plan) Print() {
+	fmt.Println(plan.ConvertToString())
+}
+
+// ConvertToPlan takes in a string representation of a plan and returns a 2d map
+func ConvertToPlan(value string) Plan {
+	plan := make(Plan)
+	lines := strings.Split(value, "\n")
+	for y, line := range lines {
+		for x, character := range line {
+			plan[Point{X: x, Y: y}] = string(character)
+		}
+	}
+	return plan
+}
+
+// GetNeighbors returns all valid points around a point
+func (point Point) GetNeighbors(plan Plan) []Point {
+	var neighbors []Point
+	for _, direction := range directions {
+		nextPoint := point.Move(direction)
+		if plan[nextPoint] != "" {
+			neighbors = append(neighbors, nextPoint)
+		}
+	}
+	return neighbors
+}
+
+// CountMatchingNeighbors counts the immediate neighbors that match a regex
+func (point Point) CountMatchingNeighbors(expression string, plan Plan) int {
+	count := 0
+	for _, point := range point.GetNeighbors(plan) {
+		if regex.Match(plan[point], expression) {
+			count++
+		}
+	}
+	return count
+}
+
+// CountMatches counts the occurences of an element in any of the points
+func (plan Plan) CountMatches(expression string) int {
+	strValue := plan.ConvertToString()
+	matches := regex.FindAll(strValue, expression)
+	return len(matches)
+}
+
+// ComputeManhattanDistance computes the manhattan distance of a point
+func (point Point) ComputeManhattanDistance() int {
+	return int(math.Abs(float64(point.X)) + math.Abs(float64(point.Y)))
+}
+
+// Move returns the next point after going in a direction once
+func (point Point) Move(direction Point) Point {
+	return Point{X: point.X + direction.X, Y: point.Y + direction.Y}
+}
+
+// MoveWithLoopX returns the next point after going in a direction once
+// It loops back to 0 if the end of the plan has been reached
+func (point Point) MoveWithLoopX(direction Point, plan Plan) Point {
+	planSize := plan.GetSize()
+
+	nextX := point.X + direction.X
+	if nextX > planSize.Width-1 {
+		nextX = nextX - planSize.Width
+	}
+
+	nextY := point.Y + direction.Y
+	if nextY > planSize.Height-1 {
+		nextY = planSize.Height - 1
+	}
+
+	return Point{X: nextX, Y: nextY}
+}
+
+// IsEqualTo returns true if the points are deeply equal
+func (point Point) IsEqualTo(pointB Point) bool {
+	return point.X == pointB.X && point.Y == pointB.Y
+}
+
+// Rotate returns a point after it has been rotated around the {0, 0} axis
+// Only handles 90 degress based rotations
+func (point Point) Rotate(degrees int) Point {
+	isClockwise := degrees > 0
+
+	loopCount := int(math.Abs(float64(degrees / 90)))
+
+	for i := 0; i < loopCount; i++ {
+		if isClockwise {
+			point = Point{X: -point.Y, Y: point.X}
+			continue
+		}
+
+		point = Point{X: point.Y, Y: -point.X}
+	}
+
+	return point
+}
+
+// CountMatchesInDirections counts the matches in any of the 8 directions
+func (point Point) CountMatchesInDirections(expression string, ignoreExpression string, plan Plan) int {
+	count := 0
+
+	compiledExpression := regexp.MustCompile(expression)
+	compiledIgnoreExpression := regexp.MustCompile(ignoreExpression)
+
+	for _, direction := range directions {
+		isElementInDirection := point.isMatchInDirection(direction, compiledExpression, compiledIgnoreExpression, plan)
+		if isElementInDirection {
+			count++
+		}
+	}
+
+	return count
+}
+
+func (point Point) isMatchInDirection(direction Point, expression *regexp.Regexp, ignoreExpression *regexp.Regexp, plan Plan) bool {
+
+	for {
+		point = point.Move(direction)
+
+		element := plan[point]
+		if element == "" {
+			return false
+		}
+
+		if expression.MatchString(element) {
+			return true
+		}
+
+		if !ignoreExpression.MatchString(element) {
+			return false
+		}
 	}
 }

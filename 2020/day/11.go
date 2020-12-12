@@ -1,159 +1,78 @@
 package day
 
 import (
-	"errors"
 	"strconv"
 
 	"github.com/reobin/aoc/2020/pkg/plan"
 	"github.com/reobin/aoc/2020/pkg/str"
 )
 
+type ruleApplier func(seatMap plan.Plan) plan.Plan
+
 // RunDay11 runs aoc day 11 challenge
 func RunDay11(input string) (string, string) {
 	seatMap := plan.ConvertToPlan(str.RemoveEmptyLines(input))
-	previousOccupiedSeatCountPart1 := -1
-	for {
-		occupiedSeatCount := countOccupiedSeats(seatMap)
-		if occupiedSeatCount == previousOccupiedSeatCountPart1 {
-			break
-		}
-		previousOccupiedSeatCountPart1 = occupiedSeatCount
-		seatMap = applyRulesPart1(seatMap)
-	}
 
-	seatMap = plan.ConvertToPlan(str.RemoveEmptyLines(input))
-	previousOccupiedSeatCountPart2 := -1
-	for {
-		occupiedSeatCount := countOccupiedSeats(seatMap)
-		if occupiedSeatCount == previousOccupiedSeatCountPart2 {
-			break
-		}
-		previousOccupiedSeatCountPart2 = occupiedSeatCount
+	occupiedSeatCountPart1 := getStabilizeOccupiedSeats(seatMap, applyRulesPart1)
+	occupiedSeatCountPart2 := getStabilizeOccupiedSeats(seatMap, applyRulesPart2)
 
-		seatMap = applyRulesPart2(seatMap)
-	}
-
-	return strconv.Itoa(previousOccupiedSeatCountPart1), strconv.Itoa(previousOccupiedSeatCountPart2)
+	return strconv.Itoa(occupiedSeatCountPart1), strconv.Itoa(occupiedSeatCountPart2)
 }
 
-func countOccupiedSeats(seatMap plan.Plan) int {
-	occupiedSeatCount := 0
-	for _, column := range seatMap {
-		for _, seat := range column {
-			if seat == "#" {
-				occupiedSeatCount++
-			}
+func getStabilizeOccupiedSeats(seatMap plan.Plan, applyRules ruleApplier) int {
+	previousOccupiedSeatCount := -1
+	for {
+		occupiedSeatCount := seatMap.CountMatches(`(\#)`)
+		if occupiedSeatCount == previousOccupiedSeatCount {
+			break
 		}
+		previousOccupiedSeatCount = occupiedSeatCount
+
+		seatMap = applyRules(seatMap)
 	}
-	return occupiedSeatCount
+	return previousOccupiedSeatCount
 }
 
 func applyRulesPart1(seatMap plan.Plan) plan.Plan {
-	result := plan.CopyPlan(seatMap)
+	result := make(plan.Plan)
 
-	for x, column := range seatMap {
-		for y, seat := range column {
-			position := plan.Coordinates{X: x, Y: y}
-			adjacentOccupiedSeatCount := countAdjacentOccupiedSeats(position, seatMap)
+	for point, seat := range seatMap {
+		count := point.CountMatchingNeighbors(`\#`, seatMap)
 
-			if seat == "L" && adjacentOccupiedSeatCount == 0 {
-				result[x][y] = "#"
-			}
-
-			if seat == "#" && adjacentOccupiedSeatCount >= 4 {
-				result[x][y] = "L"
-			}
-		}
-	}
-
-	return result
-}
-
-func countAdjacentOccupiedSeats(position plan.Coordinates, seatMap plan.Plan) int {
-	adjacentOccupiedSeatCount := 0
-
-	adjacentPositions := []plan.Coordinates{
-		{X: position.X - 1, Y: position.Y - 1},
-		{X: position.X, Y: position.Y - 1},
-		{X: position.X + 1, Y: position.Y - 1},
-		{X: position.X - 1, Y: position.Y},
-		{X: position.X + 1, Y: position.Y},
-		{X: position.X - 1, Y: position.Y + 1},
-		{X: position.X, Y: position.Y + 1},
-		{X: position.X + 1, Y: position.Y + 1},
-	}
-
-	for _, position := range adjacentPositions {
-		if seatMap[position.X][position.Y] == "#" {
-			adjacentOccupiedSeatCount++
-		}
-	}
-
-	return adjacentOccupiedSeatCount
-}
-
-func applyRulesPart2(seatMap plan.Plan) plan.Plan {
-	result := plan.CopyPlan(seatMap)
-
-	for x, column := range seatMap {
-		for y, seat := range column {
-			position := plan.Coordinates{X: x, Y: y}
-			directionalOccupiedSeatCount := countDirectionalOccupiedSeats(position, seatMap)
-
-			if seat == "L" && directionalOccupiedSeatCount == 0 {
-				result[x][y] = "#"
-			}
-
-			if seat == "#" && directionalOccupiedSeatCount >= 5 {
-				result[x][y] = "L"
-			}
-		}
-	}
-
-	return result
-}
-
-func countDirectionalOccupiedSeats(position plan.Coordinates, seatMap plan.Plan) int {
-	directionalOccupiedSeatCount := 0
-
-	directions := []plan.Direction{
-		{X: -1, Y: -1},
-		{X: 0, Y: -1},
-		{X: +1, Y: -1},
-		{X: -1, Y: 0},
-		{X: +1, Y: 0},
-		{X: -1, Y: +1},
-		{X: 0, Y: +1},
-		{X: +1, Y: +1},
-	}
-
-	for _, direction := range directions {
-		seatPosition, err := getFirstNonEmptySeatInDirection(position, direction, seatMap)
-		if err != nil {
+		if seat == "L" && count == 0 {
+			result[point] = "#"
 			continue
 		}
 
-		if seatMap[seatPosition.X][seatPosition.Y] == "#" {
-			directionalOccupiedSeatCount++
+		if seat == "#" && count >= 4 {
+			result[point] = "L"
+			continue
 		}
+
+		result[point] = seat
 	}
 
-	return directionalOccupiedSeatCount
+	return result
 }
 
-func getFirstNonEmptySeatInDirection(currentPosition plan.Coordinates, direction plan.Direction, seatMap plan.Plan) (plan.Coordinates, error) {
-	for {
-		currentPosition = plan.GetNextPosition(currentPosition, direction)
-		seat, err := plan.GetElementAt(seatMap, currentPosition)
+func applyRulesPart2(seatMap plan.Plan) plan.Plan {
+	result := make(plan.Plan)
 
-		if err != nil {
-			break
+	for point, seat := range seatMap {
+		count := point.CountMatchesInDirections(`\#`, `\.`, seatMap)
+
+		if seat == "L" && count == 0 {
+			result[point] = "#"
+			continue
 		}
 
-		if seat != "." {
-			return currentPosition, nil
+		if seat == "#" && count >= 5 {
+			result[point] = "L"
+			continue
 		}
+
+		result[point] = seat
 	}
 
-	return plan.Coordinates{}, errors.New("No non-empty seat found in direction")
+	return result
 }

@@ -2,212 +2,408 @@ package plan
 
 import (
 	"fmt"
+	"reflect"
+	"regexp"
 	"testing"
 )
 
-func TestGetPlanSize(t *testing.T) {
+func TestGetSize(t *testing.T) {
 	t.Run("should return size of a valid plan", func(t *testing.T) {
 		plan := Plan{
-			0: {0: "1", 1: "1", 2: "1"},
-			1: {0: "2", 1: "2", 2: "2"},
-			2: {0: "3", 1: "3", 2: "3"},
-			3: {0: "4", 1: "4", 2: "4"},
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2", {X: 2, Y: 0}: "3", {X: 3, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
 		}
-		size := GetPlanSize(plan)
+		size := plan.GetSize()
 		expectedSize := Size{Width: 4, Height: 3}
 		if size.Width != expectedSize.Width || size.Height != expectedSize.Height {
-			t.Errorf("Incorrect result for GetPlanSize, got: %d, want: %d", size, expectedSize)
+			t.Errorf("Incorrect result for GetSize, got: %d, want: %d", size, expectedSize)
+		}
+	})
+
+	t.Run("should return size of an empty plan", func(t *testing.T) {
+		plan := Plan{}
+		size := plan.GetSize()
+		expectedSize := Size{Width: 0, Height: 0}
+		if !reflect.DeepEqual(size, expectedSize) {
+			t.Errorf("Incorrect result for GetSize, got: %d, want: %d", size, expectedSize)
 		}
 	})
 }
 
-func TestGetLoopedNextPosition(t *testing.T) {
-	t.Run("should return next position if values are valid", func(t *testing.T) {
-		currentPosition := Coordinates{X: 1, Y: 1}
-		planSize := Size{Width: 5, Height: 5}
-		slope := Direction{X: 1, Y: 1}
-
-		nextPosition := GetLoopedNextPosition(currentPosition, planSize, slope)
-		expectedPosition := Coordinates{X: 2, Y: 2}
-
-		if nextPosition.X != expectedPosition.X || nextPosition.Y != expectedPosition.Y {
-			t.Errorf("Incorrect result for GetLoopedNextPosition, got: %d, want: %d", nextPosition, expectedPosition)
+func TestConvertToString(t *testing.T) {
+	t.Run("should convert a valid plan to a string value", func(t *testing.T) {
+		plan := Plan{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2", {X: 2, Y: 0}: "3", {X: 3, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
 		}
-	})
+		expectedStringValue := `1234
+1234
+1234`
+		stringValue := plan.ConvertToString()
 
-	t.Run("should return next position restarting from left if far right has passed", func(t *testing.T) {
-		currentPosition := Coordinates{X: 5, Y: 1}
-		planSize := Size{Width: 5, Height: 5}
-		slope := Direction{X: 2, Y: 1}
-
-		nextPosition := GetLoopedNextPosition(currentPosition, planSize, slope)
-		expectedPosition := Coordinates{X: 2, Y: 2}
-
-		if nextPosition.X != expectedPosition.X || nextPosition.Y != expectedPosition.Y {
-			t.Errorf("Incorrect result for GetLoopedNextPosition, got: %d, want: %d", nextPosition, expectedPosition)
-		}
-	})
-
-	t.Run("should return next position staying at bottom if bottom had been reached", func(t *testing.T) {
-		currentPosition := Coordinates{X: 5, Y: 5}
-		planSize := Size{Width: 5, Height: 5}
-		slope := Direction{X: 2, Y: 1}
-
-		nextPosition := GetLoopedNextPosition(currentPosition, planSize, slope)
-		expectedPosition := Coordinates{X: 2, Y: 5}
-
-		if nextPosition.X != expectedPosition.X || nextPosition.Y != expectedPosition.Y {
-			t.Errorf("Incorrect result for GetLoopedNextPosition, got: %d, want: %d", nextPosition, expectedPosition)
+		if stringValue != expectedStringValue {
+			t.Errorf("Incorrect result for ConvertToString, got: %s, want: %s", stringValue, expectedStringValue)
 		}
 	})
 }
 
-func TestGetNextPosition(t *testing.T) {
-	t.Run("should return next position if values are valid", func(t *testing.T) {
-		currentPosition := Coordinates{X: 1, Y: 1}
-		slope := Direction{X: 1, Y: 1}
+func TestIsPlanEqualTo(t *testing.T) {
+	t.Run("should return true for equal plans", func(t *testing.T) {
+		planA := Plan{
+			{X: 0, Y: 0}: "L", {X: 1, Y: 0}: "L", {X: 2, Y: 0}: "L",
+			{X: 0, Y: 1}: ".", {X: 1, Y: 1}: ".", {X: 2, Y: 1}: ".",
+			{X: 0, Y: 2}: "L", {X: 1, Y: 2}: ".", {X: 2, Y: 2}: "L",
+			{X: 0, Y: 3}: "L", {X: 1, Y: 3}: ".", {X: 2, Y: 3}: ".",
+			{X: 0, Y: 4}: "L", {X: 1, Y: 4}: ".", {X: 2, Y: 4}: "L",
+		}
 
-		nextPosition := GetNextPosition(currentPosition, slope)
-		expectedPosition := Coordinates{X: 2, Y: 2}
+		planB := Plan{
+			{X: 0, Y: 0}: "L", {X: 1, Y: 0}: "L", {X: 2, Y: 0}: "L",
+			{X: 0, Y: 1}: ".", {X: 1, Y: 1}: ".", {X: 2, Y: 1}: ".",
+			{X: 0, Y: 2}: "L", {X: 1, Y: 2}: ".", {X: 2, Y: 2}: "L",
+			{X: 0, Y: 3}: "L", {X: 1, Y: 3}: ".", {X: 2, Y: 3}: ".",
+			{X: 0, Y: 4}: "L", {X: 1, Y: 4}: ".", {X: 2, Y: 4}: "L",
+		}
 
-		if nextPosition.X != expectedPosition.X || nextPosition.Y != expectedPosition.Y {
-			t.Errorf("Incorrect result for GetNextPosition, got: %d, want: %d", nextPosition, expectedPosition)
+		if !planA.IsEqualTo(planB) {
+			t.Errorf("Incorrect result for IsEqualTo, got: %v, want: %v", false, true)
 		}
 	})
 
-	t.Run("should handle negative direction", func(t *testing.T) {
-		currentPosition := Coordinates{X: 0, Y: 1}
-		slope := Direction{X: -2, Y: -1}
+	t.Run("should return false for unequal plans", func(t *testing.T) {
+		planA := Plan{
+			{X: 0, Y: 0}: "L", {X: 1, Y: 0}: "L", {X: 2, Y: 0}: "L",
+			{X: 0, Y: 1}: ".", {X: 1, Y: 1}: ".", {X: 2, Y: 1}: ".",
+			{X: 0, Y: 2}: "L", {X: 1, Y: 2}: ".", {X: 2, Y: 2}: "L",
+			{X: 0, Y: 3}: "L", {X: 1, Y: 3}: ".", {X: 2, Y: 3}: ".",
+			{X: 0, Y: 4}: "L", {X: 1, Y: 4}: ".", {X: 2, Y: 4}: "L",
+		}
 
-		nextPosition := GetNextPosition(currentPosition, slope)
-		expectedPosition := Coordinates{X: -2, Y: 0}
+		planB := Plan{
+			{X: 0, Y: 0}: "L", {X: 1, Y: 0}: "L", {X: 2, Y: 0}: "L",
+			{X: 0, Y: 1}: ".", {X: 1, Y: 1}: ".", {X: 2, Y: 1}: ".",
+			{X: 0, Y: 2}: "L", {X: 1, Y: 2}: ".", {X: 2, Y: 2}: "L",
+			{X: 0, Y: 3}: "L", {X: 1, Y: 3}: ".", {X: 2, Y: 3}: ".",
+		}
 
-		if nextPosition.X != expectedPosition.X || nextPosition.Y != expectedPosition.Y {
-			t.Errorf("Incorrect result for GetNextPosition, got: %d, want: %d", nextPosition, expectedPosition)
+		if planA.IsEqualTo(planB) {
+			t.Errorf("Incorrect result for IsEqualTo, got: %v, want: %v", true, false)
 		}
 	})
 }
 
-func TestGetElementAt(t *testing.T) {
-	t.Run("should return element at valid position", func(t *testing.T) {
-		plan := Plan{
-			0: {0: "1", 1: "1", 2: "1"},
-			1: {0: "2", 1: "2", 2: "2"},
-			2: {0: "3", 1: "3", 2: "3"},
-			3: {0: "4", 1: "4", 2: "4"},
-		}
-		position := Coordinates{X: 1, Y: 2}
-
-		element, err := GetElementAt(plan, position)
-		if err != nil {
-			t.Errorf("Incorrect return for GetElementAt, got error: %s", err)
+func TestCopy(t *testing.T) {
+	t.Run("should return an equal copy of plan", func(t *testing.T) {
+		planA := Plan{
+			{X: 0, Y: 0}: "L", {X: 1, Y: 0}: "L", {X: 2, Y: 0}: "L",
+			{X: 0, Y: 1}: ".", {X: 1, Y: 1}: ".", {X: 2, Y: 1}: ".",
+			{X: 0, Y: 2}: "L", {X: 1, Y: 2}: ".", {X: 2, Y: 2}: "L",
+			{X: 0, Y: 3}: "L", {X: 1, Y: 3}: ".", {X: 2, Y: 3}: ".",
+			{X: 0, Y: 4}: "L", {X: 1, Y: 4}: ".", {X: 2, Y: 4}: "L",
 		}
 
-		expectedElement := "2"
-		if element != expectedElement {
-			t.Errorf("Incorrect return for GetElementAt, got: %s, want: %s", element, expectedElement)
+		planB := planA.Copy()
+
+		if !planA.IsEqualTo(planB) {
+			t.Errorf("Incorrect result for Copy, got: %v, want: %v", false, true)
 		}
 	})
+}
 
-	t.Run("should return error if x is overflown", func(t *testing.T) {
+func TestCountMatches(t *testing.T) {
+	t.Run("should return match count", func(t *testing.T) {
 		plan := Plan{
-			0: {0: "1", 1: "1", 2: "1"},
-			1: {0: "2", 1: "2", 2: "2"},
-			2: {0: "3", 1: "3", 2: "3"},
-			3: {0: "4", 1: "4", 2: "4"},
+			{X: 0, Y: 0}: "L", {X: 1, Y: 0}: "L", {X: 2, Y: 0}: "L",
+			{X: 0, Y: 1}: ".", {X: 1, Y: 1}: ".", {X: 2, Y: 1}: ".",
+			{X: 0, Y: 2}: "L", {X: 1, Y: 2}: ".", {X: 2, Y: 2}: "L",
+			{X: 0, Y: 3}: "L", {X: 1, Y: 3}: ".", {X: 2, Y: 3}: ".",
+			{X: 0, Y: 4}: "L", {X: 1, Y: 4}: ".", {X: 2, Y: 4}: "L",
 		}
-		position := Coordinates{X: 8, Y: 2}
-		_, err := GetElementAt(plan, position)
-		if err == nil {
-			t.Errorf("Incorrect return for GetElementAt, did not get error for position: %d", position)
-		}
-	})
 
-	t.Run("should return error if y is overflown", func(t *testing.T) {
-		plan := Plan{
-			0: {0: "1", 1: "1", 2: "1"},
-			1: {0: "2", 1: "2", 2: "2"},
-			2: {0: "3", 1: "3", 2: "3"},
-			3: {0: "4", 1: "4", 2: "4"},
-		}
-		position := Coordinates{X: 2, Y: 5}
-		_, err := GetElementAt(plan, position)
-		if err == nil {
-			t.Errorf("Incorrect return for GetElementAt, did not get error for position: %d", position)
+		matchCount := plan.CountMatches(`(L)`)
+
+		if matchCount != 8 {
+			t.Errorf("Incorrect result for CountMatches, got: %d, want: %d", matchCount, 8)
 		}
 	})
 }
 
 func TestConvertToPlan(t *testing.T) {
-	t.Run("should convert to plan", func(t *testing.T) {
-		value := `LLLLLL.LLL
-....L.LL.L
-L.L.LLLLLL
-L..L.LLLLL
-L.LLLLLLL.
-LLLLLLLLLL
-L.LLL.LL.L
-.....LL...
-..LLLLLLLL
-L.L.LLLLLL`
-
-		expectedPlan := map[int]map[int]string{
-			0: {0: "L", 1: ".", 2: "L", 3: "L", 4: "L", 5: "L", 6: "L", 7: ".", 8: ".", 9: "L"},
-			1: {0: "L", 1: ".", 2: ".", 3: ".", 4: ".", 5: "L", 6: ".", 7: ".", 8: ".", 9: "."},
-			2: {0: "L", 1: ".", 2: "L", 3: ".", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
-			3: {0: "L", 1: ".", 2: ".", 3: "L", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "."},
-			4: {0: "L", 1: "L", 2: "L", 3: ".", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
-			5: {0: "L", 1: ".", 2: "L", 3: "L", 4: "L", 5: "L", 6: ".", 7: "L", 8: "L", 9: "L"},
-			6: {0: ".", 1: "L", 2: "L", 3: "L", 4: "L", 5: "L", 6: "L", 7: "L", 8: "L", 9: "L"},
-			7: {0: "L", 1: "L", 2: "L", 3: "L", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
-			8: {0: "L", 1: ".", 2: "L", 3: "L", 4: "L", 5: "L", 6: ".", 7: ".", 8: "L", 9: "L"},
-			9: {0: "L", 1: "L", 2: "L", 3: "L", 4: ".", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
-		}
+	t.Run("should convert string to an equivalent plan", func(t *testing.T) {
+		value := `1234
+1234
+1234`
 
 		plan := ConvertToPlan(value)
 
-		if !plansAreEqual(plan, expectedPlan) {
+		expectedPlan := Plan{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2", {X: 2, Y: 0}: "3", {X: 3, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
+		}
+
+		if !plan.IsEqualTo(expectedPlan) {
 			t.Error("Incorrect result for ConvertToPlan")
-			fmt.Println("got:")
-			PrintPlan(plan)
-			fmt.Println("want:")
-			PrintPlan(expectedPlan)
+			fmt.Println("got: ")
+			plan.Print()
+			fmt.Println("got: ")
+			expectedPlan.Print()
 		}
 	})
 }
 
-func TestCopyPlan(t *testing.T) {
-	t.Run("should convert to plan", func(t *testing.T) {
-		planA := map[int]map[int]string{
-			0: {0: "L", 1: ".", 2: "L", 3: "L", 4: "L", 5: "L", 6: "L", 7: ".", 8: ".", 9: "L"},
-			1: {0: "L", 1: ".", 2: ".", 3: ".", 4: ".", 5: "L", 6: ".", 7: ".", 8: ".", 9: "."},
-			2: {0: "L", 1: ".", 2: "L", 3: ".", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
-			3: {0: "L", 1: ".", 2: ".", 3: "L", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "."},
-			4: {0: "L", 1: "L", 2: "L", 3: ".", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
-			5: {0: "L", 1: ".", 2: "L", 3: "L", 4: "L", 5: "L", 6: ".", 7: "L", 8: "L", 9: "L"},
-			6: {0: ".", 1: "L", 2: "L", 3: "L", 4: "L", 5: "L", 6: "L", 7: "L", 8: "L", 9: "L"},
-			7: {0: "L", 1: "L", 2: "L", 3: "L", 4: "L", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
-			8: {0: "L", 1: ".", 2: "L", 3: "L", 4: "L", 5: "L", 6: ".", 7: ".", 8: "L", 9: "L"},
-			9: {0: "L", 1: "L", 2: "L", 3: "L", 4: ".", 5: "L", 6: "L", 7: ".", 8: "L", 9: "L"},
+func TestGetNeighbors(t *testing.T) {
+	t.Run("should get all 8 neighbors if point is in middle", func(t *testing.T) {
+		plan := Plan{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2", {X: 2, Y: 0}: "3", {X: 3, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
 		}
 
-		planB := CopyPlan(planA)
+		point := Point{X: 2, Y: 1}
 
-		if !plansAreEqual(planA, planB) {
-			t.Errorf("Incorrect result for ConvertToPlan, got: %v, want: %v", false, true)
+		neighbors := point.GetNeighbors(plan)
+		expectedNeigbors := []Point{
+			{X: 1, Y: 0},
+			{X: 2, Y: 0},
+			{X: 3, Y: 0},
+			{X: 1, Y: 1},
+			{X: 3, Y: 1},
+			{X: 1, Y: 2},
+			{X: 2, Y: 2},
+			{X: 3, Y: 2},
+		}
+
+		if !reflect.DeepEqual(neighbors, expectedNeigbors) {
+			t.Errorf("Incorrect result for GetNeighbors, got: %d, want: %d", neighbors, expectedNeigbors)
+		}
+	})
+
+	t.Run("should get immediate neighbors if point is on edge", func(t *testing.T) {
+		plan := Plan{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2", {X: 2, Y: 0}: "3", {X: 3, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
+		}
+
+		point := Point{X: 3, Y: 0}
+
+		neighbors := point.GetNeighbors(plan)
+		expectedNeigbors := []Point{
+			{X: 2, Y: 0},
+			{X: 2, Y: 1},
+			{X: 3, Y: 1},
+		}
+
+		if !reflect.DeepEqual(neighbors, expectedNeigbors) {
+			t.Errorf("Incorrect result for GetNeighbors, got: %d, want: %d", neighbors, expectedNeigbors)
 		}
 	})
 }
 
-func plansAreEqual(planA Plan, planB Plan) bool {
-	for x, rowA := range planA {
-		for y, valueA := range rowA {
-			valueB := planB[x][y]
-			if valueA != valueB {
-				return false
-			}
+func TestCountMatchingNeighbors(t *testing.T) {
+	t.Run("should return matching neighbor count", func(t *testing.T) {
+		plan := Plan{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2", {X: 2, Y: 0}: "3", {X: 3, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
 		}
-	}
+		point := Point{X: 1, Y: 1}
+		count := point.CountMatchingNeighbors("1", plan)
+		expectedCount := 3
+		if count != expectedCount {
+			t.Errorf("Incorrect result for CountMatchingNeighbors, got: %d, want: %d", count, expectedCount)
+		}
+	})
+}
 
-	return true
+func TestComputeManhattanDistance(t *testing.T) {
+	t.Run("should return manhattan distance of point", func(t *testing.T) {
+		point := Point{X: 17, Y: 8}
+		distance := point.ComputeManhattanDistance()
+		expectedDistance := 25
+		if distance != expectedDistance {
+			t.Errorf("Incorrect result for ComputeManhattanDistance, got: %d, want: %d", distance, expectedDistance)
+		}
+	})
+}
+
+func TestMove(t *testing.T) {
+	t.Run("should return next point after moving", func(t *testing.T) {
+		point := Point{X: 0, Y: 10}
+
+		point = point.Move(Point{X: 10, Y: -5})
+
+		expectedPoint := Point{X: 10, Y: 5}
+
+		if !point.IsEqualTo(expectedPoint) {
+			t.Errorf("Incorrect result for Move, got: %d, want: %d", point, expectedPoint)
+		}
+	})
+}
+
+func TestMoveWithLoopX(t *testing.T) {
+	t.Run("should return next point after looping", func(t *testing.T) {
+		plan := Plan{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2", {X: 2, Y: 0}: "3", {X: 3, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
+		}
+
+		point := Point{X: 2, Y: 1}
+		direction := Point{X: 2, Y: 1}
+
+		point = point.MoveWithLoopX(direction, plan)
+		expectedPoint := Point{X: 0, Y: 2}
+
+		if !point.IsEqualTo(expectedPoint) {
+			t.Errorf("Incorrect result for MoveWithLoopX, got: %d, want: %d", point, expectedPoint)
+		}
+	})
+}
+
+func TestIsPointEqualTo(t *testing.T) {
+	t.Run("should return true for equal points", func(t *testing.T) {
+		pointA := Point{X: 12, Y: -5}
+		pointB := Point{X: 12, Y: -5}
+		if !pointA.IsEqualTo(pointB) {
+			t.Errorf("Incorrect result for IsEqualTo, got: %v, want: %v", true, false)
+		}
+	})
+
+	t.Run("should return false for equal points", func(t *testing.T) {
+		pointA := Point{X: 12, Y: -5}
+		pointB := Point{X: 11, Y: -5}
+		if pointA.IsEqualTo(pointB) {
+			t.Errorf("Incorrect result for IsEqualTo, got: %v, want: %v", false, true)
+		}
+	})
+}
+
+func TestRotate(t *testing.T) {
+	t.Run("should return next point after 90 degrees rotation", func(t *testing.T) {
+		initialPoint := Point{X: 10, Y: -4}
+		point := initialPoint.Rotate(90)
+		expectedPoint := Point{X: 4, Y: 10}
+		if !point.IsEqualTo(expectedPoint) {
+			t.Errorf("Incorrect result for Rotate (90 rotation on %d), got: %d, want: %d", initialPoint, point, expectedPoint)
+		}
+
+		initialPoint = point
+		point = initialPoint.Rotate(90)
+		expectedPoint = Point{X: -10, Y: 4}
+		if !point.IsEqualTo(expectedPoint) {
+			t.Errorf("Incorrect result for Rotate (90 rotation on %d), got: %d, want: %d", initialPoint, point, expectedPoint)
+		}
+
+		initialPoint = point
+		point = initialPoint.Rotate(90)
+		expectedPoint = Point{X: -4, Y: -10}
+		if !point.IsEqualTo(expectedPoint) {
+			t.Errorf("Incorrect result for Rotate (90 rotation on %d), got: %d, want: %d", initialPoint, point, expectedPoint)
+		}
+
+		initialPoint = point
+		point = initialPoint.Rotate(90)
+		expectedPoint = Point{X: 10, Y: -4}
+		if !point.IsEqualTo(expectedPoint) {
+			t.Errorf("Incorrect result for Rotate (90 rotation on %d), got: %d, want: %d", initialPoint, point, expectedPoint)
+		}
+	})
+
+	t.Run("should return next point after 180 degrees based rotation", func(t *testing.T) {
+		initialPoint := Point{X: 10, Y: -4}
+		point := initialPoint.Rotate(180)
+		expectedPoint := Point{X: -10, Y: 4}
+		if !point.IsEqualTo(expectedPoint) {
+			t.Errorf("Incorrect result for Rotate (180 rotation on %d), got: %d, want: %d", initialPoint, point, expectedPoint)
+		}
+
+		initialPoint = Point{X: 10, Y: -4}
+		point = initialPoint.Rotate(-180)
+		expectedPoint = Point{X: -10, Y: 4}
+		if !point.IsEqualTo(expectedPoint) {
+			t.Errorf("Incorrect result for Rotate (180 rotation on %d), got: %d, want: %d", initialPoint, point, expectedPoint)
+		}
+	})
+
+	t.Run("should return next point after -270 degrees based rotation", func(t *testing.T) {
+		initialPoint := Point{X: 10, Y: -4}
+		point := initialPoint.Rotate(-270)
+		expectedPoint := Point{X: 4, Y: 10} // Same as 90deg rotation
+		if !point.IsEqualTo(expectedPoint) {
+			t.Errorf("Incorrect result for Rotate (-270 rotation on %d), got: %d, want: %d", initialPoint, point, expectedPoint)
+		}
+	})
+}
+
+func TestCountMatchesInDirection(t *testing.T) {
+	t.Run("should return match count in all directions", func(t *testing.T) {
+		planValue := `#.##.L#.##
+#L###LL.L#
+L.#.#..#..
+#L##.##.L#
+#.##.LL.LL
+#.###L#.##
+..#.#.....
+#L######L#
+#.LL###L.L
+#.#L###.##`
+		plan := ConvertToPlan(planValue)
+		point := Point{X: 2, Y: 3}
+		count := point.CountMatchesInDirections(`\#`, `\.`, plan)
+		expectedCount := 7
+
+		if count != expectedCount {
+			t.Errorf("Incorrect result for CountMatchesInDirections, got: %d, want: %d", count, expectedCount)
+		}
+	})
+}
+
+func TestIsMatchInDirection(t *testing.T) {
+	t.Run("should return true if match is in direction", func(t *testing.T) {
+		planValue := `#.##.L#.##
+#L###LL.L#
+L.#.#..#..
+#L##.##.L#
+#.##.LL.LL
+#.###L#.##
+..#.#.....
+#L######L#
+#.LL###L.L
+#.#L###.##`
+		plan := ConvertToPlan(planValue)
+		point := Point{X: 2, Y: 2}
+		direction := Point{X: 1, Y: 1}
+
+		expression := regexp.MustCompile(`\#`)
+		ignoreExpression := regexp.MustCompile(`\.`)
+		if !point.isMatchInDirection(direction, expression, ignoreExpression, plan) {
+			t.Errorf("Incorrect result for isMatchInDirection, got: %v, want: %v", false, true)
+		}
+	})
+
+	t.Run("should return false if match is not in direction", func(t *testing.T) {
+		planValue := `#.##.L#.##
+#L###LL.L#
+L.#.#..#..
+#L##.##.L#
+#.##.LL.LL
+#.###L#.##
+..#.#.....
+#L######L#
+#.LL###L.L
+#.#L###.##`
+		plan := ConvertToPlan(planValue)
+		point := Point{X: 6, Y: 1}
+		direction := Point{X: -1, Y: 1}
+
+		expression := regexp.MustCompile(`L`)
+		ignoreExpression := regexp.MustCompile(`\.`)
+		if point.isMatchInDirection(direction, expression, ignoreExpression, plan) {
+			t.Errorf("Incorrect result for isMatchInDirection, got: %v, want: %v", true, false)
+		}
+	})
 }
