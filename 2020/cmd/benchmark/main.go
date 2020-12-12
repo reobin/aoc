@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"time"
 
@@ -11,19 +11,19 @@ import (
 func main() {
 	day, err := cli.GetDayArg(os.Args)
 	if err != nil {
-		log.Print(err)
+		fmt.Println(err)
 		os.Exit(1)
 	}
 
 	input, err := cli.GetDayInput(day, "")
 	if err != nil {
-		log.Print(err)
+		fmt.Println(err)
 		os.Exit(1)
 	}
 
 	runner := cli.DayRunnerMap[day]
 	if runner == nil {
-		log.Print("The specified day might not have been implemented yet")
+		fmt.Println("The specified day might not have been implemented yet")
 		os.Exit(1)
 	}
 
@@ -39,7 +39,7 @@ func main() {
 		totalTime += elapsedTime
 	}
 
-	log.Printf("Running day %d 1000 times", day)
-	log.Printf("Average elapsed time (1000 runs): %s", totalTime/1000)
-	log.Print(":wq")
+	fmt.Printf("Running day %d 1000 times", day)
+	fmt.Printf("Average elapsed time (1000 runs): %s", totalTime/1000)
+	fmt.Println(":wq")
 }

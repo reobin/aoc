@@ -21,3 +21,9 @@ func FindAll(value string, expression string) [][]string {
 
 	return matches
 }
+
+// Match returns true if a match was found
+func Match(value string, expression string) bool {
+	compiled := regexp.MustCompile(expression)
+	return compiled.MatchString(value)
+}

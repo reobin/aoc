@@ -2,7 +2,7 @@ package day
 
 import (
 	"errors"
-	"log"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -25,7 +25,7 @@ func RunDay02(input string) (string, string) {
 	for _, passwordEntry := range passwordEntries {
 		password, policy, err := interpretPaswordEntry(passwordEntry)
 		if err != nil {
-			log.Printf("Error interprating password entry: %s", err)
+			fmt.Printf("Error interprating password entry: %s", err)
 			continue
 		}
 
