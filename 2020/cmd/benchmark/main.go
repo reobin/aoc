@@ -39,7 +39,6 @@ func main() {
 		totalTime += elapsedTime
 	}
 
-	fmt.Printf("Running day %d 1000 times", day)
-	fmt.Printf("Average elapsed time (1000 runs): %s", totalTime/1000)
-	fmt.Println(":wq")
+	fmt.Printf("Running day %d 1000 times\n\n", day)
+	fmt.Printf("Average elapsed time (1000 runs): %s\n", totalTime/1000)
 }

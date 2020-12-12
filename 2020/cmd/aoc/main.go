@@ -26,9 +26,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Running day %d\n", day)
+	fmt.Printf("Running day %d\n\n", day)
 	part1Answer, part2Answer := runner.(func(input string) (string, string))(input)
 	fmt.Printf("Part 1 answer is: %s\n", part1Answer)
 	fmt.Printf("Part 2 answer is: %s\n", part2Answer)
-	fmt.Println(":wq")
 }
