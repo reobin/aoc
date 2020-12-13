@@ -17,7 +17,7 @@ func RunDay13(input string) (string, string) {
 	}
 
 	firstDeparture, busID := getFirstDeparture(firstTimestamp, busIDs)
-	earliestTimestamp := getEarliestSequenceTimestamp(busIDs)
+	earliestTimestamp := getEarliestSequenceTimestamp(busIDs, 0, 0, 1, []int{})
 
 	return strconv.Itoa((firstDeparture - firstTimestamp) * busID), strconv.Itoa(earliestTimestamp)
 }
@@ -32,28 +32,24 @@ func getFirstDeparture(timestamp int, busIDs []int) (int, int) {
 	}
 }
 
-func getEarliestSequenceTimestamp(busIDs []int) int {
-	incrementTimestampBy := 1
+func getEarliestSequenceTimestamp(busIDs []int, index int, timestamp int, incrementTimestampBy int, confirmedBusIDs []int) int {
+	id := busIDs[index]
 
-	for timestamp := 0; ; timestamp += incrementTimestampBy {
-		var confirmedBusIDs []int
-		for index, id := range busIDs {
-			if id == 0 {
-				continue
-			}
-
-			if (timestamp+index)%id != 0 {
-				break
-			}
-
-			if index == len(busIDs)-1 {
-				return timestamp
-			}
-
-			incrementTimestampBy = id * number.ComputeProduct(confirmedBusIDs)
-			confirmedBusIDs = append(confirmedBusIDs, id)
-		}
+	if id == 0 {
+		return getEarliestSequenceTimestamp(busIDs, index+1, timestamp+incrementTimestampBy, incrementTimestampBy, confirmedBusIDs)
 	}
+
+	if (timestamp+index)%id == 0 {
+		if index == len(busIDs)-1 {
+			return timestamp
+		}
+
+		confirmedBusIDs = append(confirmedBusIDs, id)
+		newIncrement := number.ComputeProduct(confirmedBusIDs)
+		return getEarliestSequenceTimestamp(busIDs, index+1, timestamp+newIncrement, newIncrement, confirmedBusIDs)
+	}
+
+	return getEarliestSequenceTimestamp(busIDs, index, timestamp+incrementTimestampBy, incrementTimestampBy, confirmedBusIDs)
 }
 
 func readSchedule(input string) (int, []int, error) {
