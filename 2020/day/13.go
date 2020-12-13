@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/reobin/aoc/2020/pkg/number"
 	"github.com/reobin/aoc/2020/pkg/regex"
 	"github.com/reobin/aoc/2020/pkg/str"
 )
@@ -33,26 +32,28 @@ func getFirstDeparture(timestamp int, busIDs []int) (int, int) {
 }
 
 func getEarliestSequenceTimestamp(busIDs []int) int {
-	incrementTimestampBy := 1
+	incrementTimestampBy := busIDs[0]
 
-	for timestamp := 0; ; timestamp += incrementTimestampBy {
-		var confirmedBusIDs []int
-		for index, id := range busIDs {
-			if id == 0 {
-				continue
-			}
+	currentConstraintIndex := 1
 
-			if (timestamp+index)%id != 0 {
-				break
-			}
+	for timestamp := busIDs[0]; ; timestamp += incrementTimestampBy {
+		currentConstraint := busIDs[currentConstraintIndex]
 
-			if index == len(busIDs)-1 {
-				return timestamp
-			}
-
-			incrementTimestampBy = id * number.ComputeProduct(confirmedBusIDs)
-			confirmedBusIDs = append(confirmedBusIDs, id)
+		if currentConstraint == 0 {
+			currentConstraintIndex++
+			continue
 		}
+
+		if (timestamp+currentConstraintIndex)%currentConstraint != 0 {
+			continue
+		}
+
+		if currentConstraintIndex == len(busIDs)-1 {
+			return timestamp
+		}
+
+		incrementTimestampBy *= currentConstraint
+		currentConstraintIndex++
 	}
 }
 
