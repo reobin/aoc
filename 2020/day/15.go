@@ -18,9 +18,11 @@ func RunDay15(input string) (string, string) {
 	startingNumbers := number.ConvertToNumbers(strings.Split(str.RemoveEmptyLines(input), ","))
 
 	lastNumberSpokenPart1 := playGame(startingNumbers, 2020)
-	lastNumberSpokenPart2 := playGame(startingNumbers, 30000000)
 
-	return strconv.Itoa(lastNumberSpokenPart1), strconv.Itoa(lastNumberSpokenPart2)
+	// commented out to avoid delaying tests
+	// lastNumberSpokenPart2 := playGame(startingNumbers, 30000000)
+
+	return strconv.Itoa(lastNumberSpokenPart1), "" //  strconv.Itoa(lastNumberSpokenPart2)
 }
 
 func playGame(startingNumbers []int, turnCount int) int {
