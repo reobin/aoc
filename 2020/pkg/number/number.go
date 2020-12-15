@@ -1,6 +1,7 @@
 package number
 
 import (
+	"fmt"
 	"math"
 	"strconv"
 )
@@ -91,4 +92,15 @@ func MinMax(numbers []int) (int, int) {
 		}
 	}
 	return minimum, maximum
+}
+
+// GetBinary converts an int to a binary string
+// Adds leading zeros if necessary
+func GetBinary(value int, length int) string {
+	binaryValue := strconv.FormatInt(int64(value), 2)
+	leadingZeroCountToAdd := length - len(binaryValue)
+	for i := 0; i < leadingZeroCountToAdd; i++ {
+		binaryValue = fmt.Sprintf("0%s", binaryValue)
+	}
+	return binaryValue
 }
