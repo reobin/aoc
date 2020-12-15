@@ -8,6 +8,11 @@ import (
 	"github.com/reobin/aoc/2020/pkg/str"
 )
 
+type gameState struct {
+	spokenNumbers    map[int][]int
+	lastNumberSpoken int
+}
+
 // RunDay15 runs aoc day 15 challenge
 func RunDay15(input string) (string, string) {
 	startingNumbers := number.ConvertToNumbers(strings.Split(str.RemoveEmptyLines(input), ","))
@@ -19,28 +24,36 @@ func RunDay15(input string) (string, string) {
 }
 
 func playGame(startingNumbers []int, turnCount int) int {
-	spokenNumbers := make(map[int][]int)
-	lastNumberSpoken := 0
+	state := gameState{spokenNumbers: make(map[int][]int)}
 
 	for index, startingNumber := range startingNumbers {
-		spokenNumbers[startingNumber] = []int{index + 1}
-		lastNumberSpoken = startingNumber
+		state.spokenNumbers[startingNumber] = []int{index + 1}
+		state.lastNumberSpoken = startingNumber
 	}
 
 	for turn := len(startingNumbers) + 1; turn <= turnCount; turn++ {
-		timesSpokenCount := len(spokenNumbers[lastNumberSpoken])
-		if timesSpokenCount == 1 {
-			lastNumberSpoken = 0
-		}
-
-		if timesSpokenCount > 1 {
-			lastTurn := spokenNumbers[lastNumberSpoken][timesSpokenCount-1]
-			previousToLastTurn := spokenNumbers[lastNumberSpoken][timesSpokenCount-2]
-			lastNumberSpoken = lastTurn - previousToLastTurn
-		}
-
-		spokenNumbers[lastNumberSpoken] = append(spokenNumbers[lastNumberSpoken], turn)
+		nextNumber := state.speakNextNumber()
+		state.spokenNumbers[nextNumber] = append(state.spokenNumbers[nextNumber], turn)
+		state.lastNumberSpoken = nextNumber
 	}
 
-	return lastNumberSpoken
+	return state.lastNumberSpoken
+}
+
+func (state gameState) speakNextNumber() int {
+	var nextNumber int
+
+	timesSpokenCount := len(state.spokenNumbers[state.lastNumberSpoken])
+
+	if timesSpokenCount == 1 {
+		nextNumber = 0
+	}
+
+	if timesSpokenCount > 1 {
+		lastTurn := state.spokenNumbers[state.lastNumberSpoken][timesSpokenCount-1]
+		previousToLastTurn := state.spokenNumbers[state.lastNumberSpoken][timesSpokenCount-2]
+		nextNumber = lastTurn - previousToLastTurn
+	}
+
+	return nextNumber
 }
