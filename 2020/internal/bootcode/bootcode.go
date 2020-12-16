@@ -32,7 +32,7 @@ func Run(instructions []Instruction) (int, error) {
 
 		operations[nextInstructionIndex] = append(operations[nextInstructionIndex], index)
 
-		indexIncrease, accumulatorIncrease := runInstruction(nextInstruction)
+		indexIncrease, accumulatorIncrease := nextInstruction.run()
 
 		nextInstructionIndex += indexIncrease
 		accumulator += accumulatorIncrease
@@ -48,7 +48,7 @@ func Run(instructions []Instruction) (int, error) {
 	return accumulator, nil
 }
 
-func runInstruction(instruction Instruction) (int, int) {
+func (instruction Instruction) run() (int, int) {
 	switch instruction.Operation {
 	case "nop":
 		// do nothing

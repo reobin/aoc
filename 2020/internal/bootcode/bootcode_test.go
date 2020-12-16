@@ -58,53 +58,53 @@ func TestRun(t *testing.T) {
 func TestRunInstruction(t *testing.T) {
 	t.Run("nop: should return index increase", func(t *testing.T) {
 		instruction := Instruction{Operation: "nop", Argument: 0}
-		indexIncrease, accumulatorIncrease := runInstruction(instruction)
+		indexIncrease, accumulatorIncrease := instruction.run()
 
 		if indexIncrease != 1 {
-			t.Errorf("Incorrect result for runInstruction, got indexIncrease: %d, want: %d", indexIncrease, 1)
+			t.Errorf("Incorrect result for run, got indexIncrease: %d, want: %d", indexIncrease, 1)
 		}
 
 		if accumulatorIncrease != 0 {
-			t.Errorf("Incorrect result for runInstruction, got accumulatorIncrease: %d, want: %d", accumulatorIncrease, 0)
+			t.Errorf("Incorrect result for run, got accumulatorIncrease: %d, want: %d", accumulatorIncrease, 0)
 		}
 	})
 
 	t.Run("acc: should return index and accumulator increase", func(t *testing.T) {
 		instruction := Instruction{Operation: "acc", Argument: 5}
-		indexIncrease, accumulatorIncrease := runInstruction(instruction)
+		indexIncrease, accumulatorIncrease := instruction.run()
 
 		if indexIncrease != 1 {
-			t.Errorf("Incorrect result for runInstruction, got indexIncrease: %d, want: %d", indexIncrease, 1)
+			t.Errorf("Incorrect result for run, got indexIncrease: %d, want: %d", indexIncrease, 1)
 		}
 
 		if accumulatorIncrease != 5 {
-			t.Errorf("Incorrect result for runInstruction, got accumulatorIncrease: %d, want: %d", accumulatorIncrease, 5)
+			t.Errorf("Incorrect result for run, got accumulatorIncrease: %d, want: %d", accumulatorIncrease, 5)
 		}
 	})
 
 	t.Run("jmp: should return index increase", func(t *testing.T) {
 		instruction := Instruction{Operation: "jmp", Argument: 5}
-		indexIncrease, accumulatorIncrease := runInstruction(instruction)
+		indexIncrease, accumulatorIncrease := instruction.run()
 
 		if indexIncrease != 5 {
-			t.Errorf("Incorrect result for runInstruction, got indexIncrease: %d, want: %d", indexIncrease, 5)
+			t.Errorf("Incorrect result for run, got indexIncrease: %d, want: %d", indexIncrease, 5)
 		}
 
 		if accumulatorIncrease != 0 {
-			t.Errorf("Incorrect result for runInstruction, got accumulatorIncrease: %d, want: %d", accumulatorIncrease, 0)
+			t.Errorf("Incorrect result for run, got accumulatorIncrease: %d, want: %d", accumulatorIncrease, 0)
 		}
 	})
 
 	t.Run("other: should return nothing", func(t *testing.T) {
 		instruction := Instruction{Operation: "lol", Argument: 5}
-		indexIncrease, accumulatorIncrease := runInstruction(instruction)
+		indexIncrease, accumulatorIncrease := instruction.run()
 
 		if indexIncrease != 0 {
-			t.Errorf("Incorrect result for runInstruction, got indexIncrease: %d, want: %d", indexIncrease, 0)
+			t.Errorf("Incorrect result for run, got indexIncrease: %d, want: %d", indexIncrease, 0)
 		}
 
 		if accumulatorIncrease != 0 {
-			t.Errorf("Incorrect result for runInstruction, got accumulatorIncrease: %d, want: %d", accumulatorIncrease, 0)
+			t.Errorf("Incorrect result for run, got accumulatorIncrease: %d, want: %d", accumulatorIncrease, 0)
 		}
 	})
 }
