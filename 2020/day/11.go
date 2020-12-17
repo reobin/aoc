@@ -37,7 +37,7 @@ func applyRulesPart1(seatMap point.Grid) point.Grid {
 	result := make(point.Grid)
 
 	for point, seat := range seatMap {
-		count := point.CountMatchingNeighbors(`\#`, seatMap)
+		count := point.CountMatchingNeighbors(`\#`, seatMap, 2)
 
 		if seat == "L" && count == 0 {
 			result[point] = "#"

@@ -54,8 +54,7 @@ func TestConvertToString(t *testing.T) {
 			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
 			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
 		}
-		expectedStringValue := `w: 0
-z: 0
+		expectedStringValue := `z: 0
 1234
 1234
 1234`
@@ -203,7 +202,7 @@ func TestGetNeighbors(t *testing.T) {
 
 		point := Point{X: 2, Y: 1}
 
-		count := point.CountMatchingNeighbors(`.`, grid)
+		count := point.CountMatchingNeighbors(`.`, grid, 2)
 		expectedCount := 8
 
 		if count != expectedCount {
@@ -220,7 +219,7 @@ func TestGetNeighbors(t *testing.T) {
 
 		point := Point{X: 3, Y: 0}
 
-		count := point.CountMatchingNeighbors(`.`, grid)
+		count := point.CountMatchingNeighbors(`.`, grid, 2)
 		expectedCount := 3
 
 		if count != expectedCount {

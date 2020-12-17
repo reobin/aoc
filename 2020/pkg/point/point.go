@@ -10,91 +10,31 @@ import (
 	"github.com/reobin/aoc/2020/pkg/regex"
 )
 
-// Grid represents a 2 dimensional map
+// Grid represents a 4 dimensional map
 type Grid map[Point]string
 
-// Point represents a point in a 2d map
+// Point represents a point in a 4d map
 type Point struct {
 	X int
 	Y int
 	Z int
-	W int
 }
 
-// Size represents the 2d size of a plan
+// Size represents the 3d size of a grid
 type Size struct {
 	Width  int
 	Height int
 	Depth  int
 }
 
-type Ranges struct {
-	X number.Range
-	Y number.Range
-	Z number.Range
-	W number.Range
-}
-
-func (grid Grid) GetRanges() Ranges {
-	var x []int
-	var y []int
-	var z []int
-	var w []int
-	for point := range grid {
-		x = append(x, point.X)
-		y = append(y, point.Y)
-		z = append(z, point.Z)
-		w = append(w, point.W)
-	}
-	minX, maxX := number.MinMax(x)
-	minY, maxY := number.MinMax(y)
-	minZ, maxZ := number.MinMax(z)
-	minW, maxW := number.MinMax(w)
-	return Ranges{
-		X: number.Range{Minimum: minX, Maximum: maxX},
-		Y: number.Range{Minimum: minY, Maximum: maxY},
-		Z: number.Range{Minimum: minZ, Maximum: maxZ},
-		W: number.Range{Minimum: minW, Maximum: maxW},
-	}
-}
-
+// GetSize returns the 3d size of a grid
 func (grid Grid) GetSize() Size {
-	ranges := grid.GetRanges()
+	ranges := grid.getRanges()
 	return Size{
 		Width:  ranges.X.Maximum - ranges.X.Minimum + 1,
 		Height: ranges.Y.Maximum - ranges.Y.Minimum + 1,
 		Depth:  ranges.Z.Maximum - ranges.Z.Minimum + 1,
 	}
-}
-
-// ConvertToString takes in a grid and turns it into a visual string
-func (grid Grid) ConvertToString() string {
-	result := ""
-
-	ranges := grid.GetRanges()
-
-	for w := ranges.W.Minimum; w <= ranges.W.Maximum; w++ {
-		if w != ranges.W.Minimum {
-			result += "\n"
-		}
-		result += fmt.Sprintf("w: %d", w)
-		for z := ranges.Z.Minimum; z <= ranges.Z.Maximum; z++ {
-			result += fmt.Sprintf("\nz: %d\n", z)
-			for y := ranges.Y.Minimum; y <= ranges.Y.Maximum; y++ {
-				for x := ranges.X.Minimum; x <= ranges.X.Maximum; x++ {
-					result += grid[Point{X: x, Y: y, Z: z, W: w}]
-				}
-				if y < ranges.Y.Maximum {
-					result += "\n"
-				}
-			}
-			if w < ranges.W.Maximum {
-				result += "\n"
-			}
-		}
-	}
-
-	return result
 }
 
 // Copy returns a deep copy of the grid
@@ -130,57 +70,45 @@ func ConvertToGrid(value string) Grid {
 	lines := strings.Split(value, "\n")
 	for y, line := range lines {
 		for x, character := range line {
-			grid[Point{X: x, Y: y, Z: 0, W: 0}] = string(character)
+			grid[Point{X: x, Y: y, Z: 0}] = string(character)
 		}
 	}
 	return grid
 }
 
 // GetNeighbors returns all points around a point
-func (point Point) GetNeighbors() []Point {
+func (point Point) GetNeighbors(dimensionCount int) []Point {
 	var neighbors []Point
 	for x := -1; x <= 1; x++ {
 		for y := -1; y <= 1; y++ {
+			if dimensionCount == 2 {
+				neighbors = addNeighbor(neighbors, point, Point{X: point.X + x, Y: point.Y + y, Z: point.Z})
+				continue
+			}
 			for z := -1; z <= 1; z++ {
-				for w := -1; w <= 1; w++ {
-					neighbor := Point{X: point.X + x, Y: point.Y + y, Z: point.Z + z, W: point.W + w}
-					if point.IsEqualTo(neighbor) {
-						continue
-					}
-					neighbors = append(neighbors, neighbor)
-				}
+				neighbors = addNeighbor(neighbors, point, Point{X: point.X + x, Y: point.Y + y, Z: point.Z + z})
 			}
 		}
 	}
 	return neighbors
 }
 
+func addNeighbor(neighbors []Point, point Point, neighbor Point) []Point {
+	if point.IsEqualTo(neighbor) {
+		return neighbors
+	}
+	return append(neighbors, neighbor)
+}
+
 // CountMatchingNeighbors counts the immediate neighbors that match a regex
-func (point Point) CountMatchingNeighbors(expression string, grid Grid) int {
+func (point Point) CountMatchingNeighbors(expression string, grid Grid, dimensionCount int) int {
 	count := 0
-	for _, point := range point.GetNeighbors() {
+	for _, point := range point.GetNeighbors(dimensionCount) {
 		if regex.Match(grid[point], expression) {
 			count++
 		}
 	}
 	return count
-}
-
-func (grid Grid) AddNeighbors(value string, dimensionCount int) Grid {
-	result := make(Grid)
-	for point, cube := range grid {
-		result[point] = cube
-		for _, neighbor := range point.GetNeighbors() {
-			if dimensionCount < 4 && point.W != neighbor.W {
-				continue
-			}
-
-			if grid[neighbor] == "" {
-				result[neighbor] = value
-			}
-		}
-	}
-	return result
 }
 
 // CountMatches counts the occurences of an element in any of the points
@@ -201,14 +129,14 @@ func (point Point) ComputeManhattanDistance() int {
 
 // Move returns the next point after going in a direction once
 func (point Point) Move(direction Point) Point {
-	return Point{X: point.X + direction.X, Y: point.Y + direction.Y, Z: point.Z + direction.Z, W: point.W + direction.W}
+	return Point{X: point.X + direction.X, Y: point.Y + direction.Y, Z: point.Z + direction.Z}
 }
 
 // MoveWithLoopX returns the next point after going in a direction once
-// It loops back to 0 if the end of the plan has been reached
+// It loops back to 0 if the end of the grid has been reached
 func (point Point) MoveWithLoopX(direction Point, grid Grid) Point {
 	size := grid.GetSize()
-	
+
 	nextX := point.X + direction.X
 	if nextX > size.Width-1 {
 		nextX = nextX - size.Width
@@ -224,7 +152,7 @@ func (point Point) MoveWithLoopX(direction Point, grid Grid) Point {
 
 // IsEqualTo returns true if the points are deeply equal
 func (point Point) IsEqualTo(pointB Point) bool {
-	return point.X == pointB.X && point.Y == pointB.Y && point.Z == pointB.Z && point.W == pointB.W
+	return point.X == pointB.X && point.Y == pointB.Y && point.Z == pointB.Z
 }
 
 // Rotate returns a point after it has been rotated around the {0, 0} axis
@@ -244,6 +172,30 @@ func (point Point) Rotate(degrees int) Point {
 	}
 
 	return point
+}
+
+// ConvertToString takes in a grid and turns it into a visual string
+func (grid Grid) ConvertToString() string {
+	result := ""
+
+	ranges := grid.getRanges()
+
+	for z := ranges.Z.Minimum; z <= ranges.Z.Maximum; z++ {
+		if z > ranges.Z.Minimum {
+			result += "\n"
+		}
+		result += fmt.Sprintf("z: %d\n", z)
+		for y := ranges.Y.Minimum; y <= ranges.Y.Maximum; y++ {
+			for x := ranges.X.Minimum; x <= ranges.X.Maximum; x++ {
+				result += grid[Point{X: x, Y: y, Z: z}]
+			}
+			if y < ranges.Y.Maximum {
+				result += "\n"
+			}
+		}
+	}
+
+	return result
 }
 
 // All 2d directions around a point
@@ -286,5 +238,30 @@ func (point Point) isMatchInDirection(direction Point, expression *regexp.Regexp
 		if !ignoreExpression.MatchString(element) {
 			return false
 		}
+	}
+}
+
+type ranges struct {
+	X number.Range
+	Y number.Range
+	Z number.Range
+}
+
+func (grid Grid) getRanges() ranges {
+	var x []int
+	var y []int
+	var z []int
+	for point := range grid {
+		x = append(x, point.X)
+		y = append(y, point.Y)
+		z = append(z, point.Z)
+	}
+	minX, maxX := number.MinMax(x)
+	minY, maxY := number.MinMax(y)
+	minZ, maxZ := number.MinMax(z)
+	return ranges{
+		X: number.Range{Minimum: minX, Maximum: maxX},
+		Y: number.Range{Minimum: minY, Maximum: maxY},
+		Z: number.Range{Minimum: minZ, Maximum: maxZ},
 	}
 }
