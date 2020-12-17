@@ -267,4 +267,20 @@ func TestMinMax(t *testing.T) {
 			t.Errorf("Incorrect result for MinMax (max), got %d, want: %d", min, n3)
 		}
 	})
+
+	t.Run("should return min and max with negative numbers", func(t *testing.T) {
+		n1 := -2
+		n2 := -3
+		n3 := 4
+
+		min, max := MinMax([]int{n1, n2, n3})
+
+		if min != n2 {
+			t.Errorf("Incorrect result for MinMax (min), got %d, want: %d", min, n2)
+		}
+
+		if max != n3 {
+			t.Errorf("Incorrect result for MinMax (max), got %d, want: %d", min, n3)
+		}
+	})
 }

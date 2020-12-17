@@ -81,16 +81,29 @@ func ConvertToMap(numbers []int) map[int]bool {
 
 // MinMax returns both minimum and maximum value from a list of numbers
 func MinMax(numbers []int) (int, int) {
-	minimum := -1
-	maximum := -1
+	var minimum int
+	var maximum int
+
+	firstRound := true
+
 	for _, n := range numbers {
-		if minimum == -1 || n < minimum {
+		if firstRound {
 			minimum = n
+			maximum = n
+			firstRound = false
+			continue
 		}
-		if maximum == -1 || n > maximum {
+
+		if n < minimum {
+			minimum = n
+			continue
+		}
+
+		if n > maximum {
 			maximum = n
 		}
 	}
+
 	return minimum, maximum
 }
 

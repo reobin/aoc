@@ -3,15 +3,15 @@ package day
 import (
 	"strconv"
 
-	"github.com/reobin/aoc/2020/pkg/plan"
+	"github.com/reobin/aoc/2020/pkg/point"
 	"github.com/reobin/aoc/2020/pkg/str"
 )
 
-type ruleApplier func(seatMap plan.Plan) plan.Plan
+type ruleApplier func(seatMap point.Grid) point.Grid
 
 // RunDay11 runs aoc day 11 challenge
 func RunDay11(input string) (string, string) {
-	seatMap := plan.ConvertToPlan(str.RemoveEmptyLines(input))
+	seatMap := point.ConvertToGrid(str.RemoveEmptyLines(input))
 
 	occupiedSeatCountPart1 := getStabilizeOccupiedSeats(seatMap, applyRulesPart1)
 	occupiedSeatCountPart2 := getStabilizeOccupiedSeats(seatMap, applyRulesPart2)
@@ -19,10 +19,10 @@ func RunDay11(input string) (string, string) {
 	return strconv.Itoa(occupiedSeatCountPart1), strconv.Itoa(occupiedSeatCountPart2)
 }
 
-func getStabilizeOccupiedSeats(seatMap plan.Plan, applyRules ruleApplier) int {
+func getStabilizeOccupiedSeats(seatMap point.Grid, applyRules ruleApplier) int {
 	previousOccupiedSeatCount := -1
 	for {
-		occupiedSeatCount := seatMap.CountMatches(`(\#)`)
+		occupiedSeatCount := seatMap.CountMatches(`\#`)
 		if occupiedSeatCount == previousOccupiedSeatCount {
 			break
 		}
@@ -33,8 +33,8 @@ func getStabilizeOccupiedSeats(seatMap plan.Plan, applyRules ruleApplier) int {
 	return previousOccupiedSeatCount
 }
 
-func applyRulesPart1(seatMap plan.Plan) plan.Plan {
-	result := make(plan.Plan)
+func applyRulesPart1(seatMap point.Grid) point.Grid {
+	result := make(point.Grid)
 
 	for point, seat := range seatMap {
 		count := point.CountMatchingNeighbors(`\#`, seatMap)
@@ -55,8 +55,8 @@ func applyRulesPart1(seatMap plan.Plan) plan.Plan {
 	return result
 }
 
-func applyRulesPart2(seatMap plan.Plan) plan.Plan {
-	result := make(plan.Plan)
+func applyRulesPart2(seatMap point.Grid) point.Grid {
+	result := make(point.Grid)
 
 	for point, seat := range seatMap {
 		count := point.CountMatchesInDirections(`\#`, `\.`, seatMap)
