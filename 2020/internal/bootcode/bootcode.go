@@ -19,18 +19,17 @@ type Instruction struct {
 // the program terminates
 func Run(instructions []Instruction) (int, error) {
 	accumulator := 0
-	operations := make(map[int][]int)
+	history := make(map[int]bool)
 
 	nextInstructionIndex := 0
-	index := 0
 
 	for {
 		nextInstruction := instructions[nextInstructionIndex]
-		if len(operations[nextInstructionIndex]) > 0 {
+		if history[nextInstructionIndex] {
 			return accumulator, errors.New("Infinite loop detected")
 		}
 
-		operations[nextInstructionIndex] = append(operations[nextInstructionIndex], index)
+		history[nextInstructionIndex] = true
 
 		indexIncrease, accumulatorIncrease := nextInstruction.run()
 
@@ -41,8 +40,6 @@ func Run(instructions []Instruction) (int, error) {
 			// Program terminated
 			break
 		}
-
-		index++
 	}
 
 	return accumulator, nil
