@@ -17,7 +17,7 @@ func TestRunDay17(t *testing.T) {
 		}
 
 		// if answerPart2 != "848" {
-		// 	t.Errorf("Incorrect result for RunDay17 (part 1), got: %s, want: %s", answerPart1, "848")
+		// 	t.Errorf("Incorrect result for RunDay17 (part 2), got: %s, want: %s", answerPart1, "848")
 		// }
 	})
 }
