@@ -21,9 +21,7 @@ func RunDay20(input string) (string, string) {
 
 	grid, tiles = completeTileGrid(grid, tiles)
 
-	printTiles(grid, tiles)
-
-	fmt.Println(cornerIDs[0])
+	// printTiles(grid, tiles)
 
 	return "", ""
 }
@@ -102,8 +100,6 @@ func initializeTileGrid(cornerIDs []string, tiles tileMap) (point.Grid, tileMap)
 
 	topLeftCornerID := cornerIDs[0]
 	grid[point.Point{X: 0, Y: 0}] = topLeftCornerID
-
-	tiles[topLeftCornerID].Print()
 
 	excludeIDs := []string{topLeftCornerID}
 

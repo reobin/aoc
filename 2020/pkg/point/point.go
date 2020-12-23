@@ -314,6 +314,7 @@ func (grid Grid) getRanges() ranges {
 	}
 }
 
+// GetAllOrientations returns a list of all possible orientiations of a grid
 func (grid Grid) GetAllOrientations() []Grid {
 	var grids []Grid
 	for degrees := 0; degrees <= 270; degrees += 90 {
@@ -326,10 +327,12 @@ func (grid Grid) GetAllOrientations() []Grid {
 	return grids
 }
 
+// GetSides returns a list of all sides
 func (grid Grid) GetSides() []string {
 	return []string{grid.GetTop(), grid.GetRight(), grid.GetBottom(), grid.GetLeft()}
 }
 
+// GetBottom returns bottom side as a string
 func (grid Grid) GetBottom() string {
 	size := grid.GetSize()
 	var downSide string
@@ -339,6 +342,7 @@ func (grid Grid) GetBottom() string {
 	return downSide
 }
 
+// GetTop returns top side as a string
 func (grid Grid) GetTop() string {
 	size := grid.GetSize()
 	var upSide string
@@ -348,6 +352,7 @@ func (grid Grid) GetTop() string {
 	return upSide
 }
 
+// GetRight returns right side as a string
 func (grid Grid) GetRight() string {
 	size := grid.GetSize()
 	var rightSide string
@@ -357,6 +362,7 @@ func (grid Grid) GetRight() string {
 	return rightSide
 }
 
+// GetLeft returns left side as a string
 func (grid Grid) GetLeft() string {
 	size := grid.GetSize()
 	var leftSide string
