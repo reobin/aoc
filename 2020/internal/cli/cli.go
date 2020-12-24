@@ -36,6 +36,7 @@ var DayRunnerMap = map[int]interface{}{
 	19: day.RunDay19,
 	21: day.RunDay21,
 	22: day.RunDay22,
+	23: day.RunDay23,
 }
 
 // GetDayArg gets day number from os arguments
