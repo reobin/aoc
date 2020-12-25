@@ -5,34 +5,34 @@ import "testing"
 func TestCountCharacters(t *testing.T) {
 	t.Run("should return count if character is found", func(t *testing.T) {
 		value := "abcdefabab"
-		exepectedCount := 3
+		expectedCount := 3
 
 		count := CountCharacters(value)
 
-		if count["a"] != exepectedCount {
-			t.Errorf("Incorrect result for CountCharacters, got: %d, want: %d", count["a"], exepectedCount)
+		if count["a"] != expectedCount {
+			t.Errorf("Incorrect result for CountCharacters, got: %d, want: %d", count["a"], expectedCount)
 		}
 	})
 
 	t.Run("should return 0 if character is not found", func(t *testing.T) {
 		value := "abcdefabab"
-		exepectedCount := 0
+		expectedCount := 0
 
 		count := CountCharacters(value)
 
-		if count["z"] != exepectedCount {
-			t.Errorf("Incorrect result for CountCharacters, got: %d, want: %d", count["z"], exepectedCount)
+		if count["z"] != expectedCount {
+			t.Errorf("Incorrect result for CountCharacters, got: %d, want: %d", count["z"], expectedCount)
 		}
 	})
 
 	t.Run("should return 0 if string is empty", func(t *testing.T) {
 		value := ""
-		exepectedCount := 0
+		expectedCount := 0
 
 		count := CountCharacters(value)
 
-		if count["z"] != exepectedCount {
-			t.Errorf("Incorrect result for CountCharacters, got: %d, want: %d", count["z"], exepectedCount)
+		if count["z"] != expectedCount {
+			t.Errorf("Incorrect result for CountCharacters, got: %d, want: %d", count["z"], expectedCount)
 		}
 	})
 }
@@ -82,6 +82,19 @@ test`
 
 		if trimmed != "test" {
 			t.Errorf("Incorrect result for RemoveEmptyLines, got: %s, want: %s", trimmed, "test")
+		}
+	})
+}
+
+func TestCountMatches(t *testing.T) {
+	t.Run("should return count if match is found", func(t *testing.T) {
+		values := []string{"abc", "ab", "abc"}
+		expectedCount := 2
+
+		count := CountMatches(values, `abc`)
+
+		if expectedCount != count {
+			t.Errorf("Incorrect result for CountMatches, got: %d, want: %d", count, expectedCount)
 		}
 	})
 }

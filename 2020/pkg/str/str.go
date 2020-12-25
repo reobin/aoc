@@ -1,6 +1,7 @@
 package str
 
 import (
+	"regexp"
 	"strings"
 )
 
@@ -34,4 +35,16 @@ func Contains(values []string, value string) bool {
 		}
 	}
 	return false
+}
+
+// CountMatches counts the occurences of each character in a string
+func CountMatches(values []string, expression string) int {
+	compiled := regexp.MustCompile(expression)
+	count := 0
+	for _, value := range values {
+		if compiled.MatchString(value) {
+			count++
+		}
+	}
+	return count
 }
