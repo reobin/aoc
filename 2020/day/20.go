@@ -1,7 +1,6 @@
 package day
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -19,11 +18,7 @@ func RunDay20(input string) (string, string) {
 	grid, tiles := initializeTileGrid(cornerIDs, tiles)
 	grid, tiles = completeTileGrid(grid, tiles)
 	monsterCount, finalGrid := countMonsters(grid, tiles)
-	finalGrid.Print()
 	totalSquareCount := finalGrid.CountMatches(`\#`)
-
-	fmt.Println(monsterCount)
-
 	return strconv.Itoa(totalSquareCount - monsterCount*15), ""
 }
 
