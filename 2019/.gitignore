@@ -20,5 +20,8 @@ erl_crash.dump
 *.ez
 
 # Ignore package tarball (built via "mix hex.build").
-orbit-*.tar
+aoc-*.tar
 
+
+# Temporary files for e.g. tests
+/tmp
