@@ -2,7 +2,6 @@ package day
 
 import (
 	"errors"
-	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -65,7 +64,6 @@ func findAllergenAssociations(allergens allergenMap) map[string]string {
 }
 
 func removeAllergenAndIngredient(allergenToRemove string, ingredientToRemove string, allergens allergenMap) allergenMap {
-	fmt.Println("removing", allergenToRemove, "and", ingredientToRemove)
 	result := make(allergenMap)
 	for allergen, ingredients := range allergens {
 		if allergen == allergenToRemove {

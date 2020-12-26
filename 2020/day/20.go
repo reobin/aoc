@@ -2,6 +2,7 @@ package day
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/reobin/aoc/2020/pkg/point"
@@ -14,16 +15,16 @@ type tileMap map[string]point.Grid
 // RunDay20 runs aoc day 20 challenge
 func RunDay20(input string) (string, string) {
 	tiles := getTiles(input)
-
 	cornerIDs := findCornerIDs(tiles)
-
 	grid, tiles := initializeTileGrid(cornerIDs, tiles)
-
 	grid, tiles = completeTileGrid(grid, tiles)
+	monsterCount, finalGrid := countMonsters(grid, tiles)
+	finalGrid.Print()
+	totalSquareCount := finalGrid.CountMatches(`\#`)
 
-	// printTiles(grid, tiles)
+	fmt.Println(monsterCount)
 
-	return "", ""
+	return strconv.Itoa(totalSquareCount - monsterCount*15), ""
 }
 
 func completeTileGrid(grid point.Grid, tiles tileMap) (point.Grid, tileMap) {
@@ -66,7 +67,7 @@ func completeTileGrid(grid point.Grid, tiles tileMap) (point.Grid, tileMap) {
 	return grid, tiles
 }
 
-func printTiles(grid point.Grid, tiles tileMap) {
+func countMonsters(grid point.Grid, tiles tileMap) (int, point.Grid) {
 	var result string
 	for y := 0; y < 12; y++ {
 		for innerY := 1; innerY < 9; innerY++ {
@@ -82,9 +83,13 @@ func printTiles(grid point.Grid, tiles tileMap) {
 
 	grid = point.ConvertToGrid(result)
 	for _, orientation := range grid.GetAllOrientations() {
-		orientation.Print()
-		fmt.Println()
+		matches := regex.FindAll(orientation.ConvertToString(), `\#....\#\#....\#\#....\#\#\#`)
+		if len(matches) > 0 {
+			return len(matches), orientation
+		}
 	}
+
+	return 0, point.Grid{}
 }
 
 func getLine(grid point.Grid, y int) string {

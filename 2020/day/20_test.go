@@ -114,6 +114,10 @@ Tile 3079:
 ..#.......
 ..#.###...`
 
-		RunDay20(input)
+		answer, _ := RunDay20(input)
+		
+		if answer != "273" {
+			t.Errorf("Incorrect result for RunDay20, got: %s, want: %s", answer, "273")
+		}
 	})
 }
