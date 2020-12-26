@@ -34,6 +34,7 @@ var DayRunnerMap = map[int]interface{}{
 	17: day.RunDay17,
 	18: day.RunDay18,
 	19: day.RunDay19,
+	20: day.RunDay20,
 	21: day.RunDay21,
 	22: day.RunDay22,
 	23: day.RunDay23,

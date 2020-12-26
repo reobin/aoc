@@ -37,6 +37,28 @@ func Contains(values []string, value string) bool {
 	return false
 }
 
+// Reverse reverses a string
+func Reverse(s string) string {
+	var result string
+	for _, v := range s {
+		result = string(v) + result
+	}
+	return result
+}
+
+// CountCommon counts the common values in 2 lists of strings
+func CountCommon(listA []string, listB []string) int {
+	var count int
+	for _, itemA := range listA {
+		for _, itemB := range listB {
+			if itemA == itemB {
+				count++
+			}
+    }
+  }
+  return count
+}
+
 // CountMatches counts the occurences of each character in a string
 func CountMatches(values []string, expression string) int {
 	compiled := regexp.MustCompile(expression)

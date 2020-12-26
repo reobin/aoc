@@ -47,6 +47,149 @@ func TestGetSize(t *testing.T) {
 	})
 }
 
+func TestFlipX(t *testing.T) {
+	t.Run("should return flipped grid", func(t *testing.T) {
+		grid := Grid{
+			{X: 0, Y: 0}: "0", {X: 1, Y: 0}: "0", {X: 2, Y: 0}: "0", {X: 3, Y: 0}: "0",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
+		}
+		expectedGrid := Grid{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2", {X: 2, Y: 0}: "3", {X: 3, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "0", {X: 1, Y: 2}: "0", {X: 2, Y: 2}: "0", {X: 3, Y: 2}: "0",
+		}
+		result := grid.FlipX()
+		if !result.IsEqualTo(expectedGrid) {
+			t.Errorf("Incorrect result for FlipX, got: %v, want: %v", false, true)
+		}
+	})
+
+	t.Run("should return flipped 2x2 grid", func(t *testing.T) {
+		grid := Grid{
+			{X: 0, Y: 0}: "0", {X: 1, Y: 0}: "0",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2",
+		}
+		expectedGrid := Grid{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2",
+			{X: 0, Y: 1}: "0", {X: 1, Y: 1}: "0",
+		}
+		result := grid.FlipX()
+		if !result.IsEqualTo(expectedGrid) {
+			t.Errorf("Incorrect result for FlipX, got: %v, want: %v", false, true)
+		}
+	})
+}
+
+func TestFlipY(t *testing.T) {
+	t.Run("should return flipped grid", func(t *testing.T) {
+		grid := Grid{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2", {X: 2, Y: 0}: "3", {X: 3, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
+		}
+		expectedGrid := Grid{
+			{X: 0, Y: 0}: "4", {X: 1, Y: 0}: "3", {X: 2, Y: 0}: "2", {X: 3, Y: 0}: "1",
+			{X: 0, Y: 1}: "4", {X: 1, Y: 1}: "3", {X: 2, Y: 1}: "2", {X: 3, Y: 1}: "1",
+			{X: 0, Y: 2}: "4", {X: 1, Y: 2}: "3", {X: 2, Y: 2}: "2", {X: 3, Y: 2}: "1",
+		}
+		result := grid.FlipY()
+		if !result.IsEqualTo(expectedGrid) {
+			t.Errorf("Incorrect result for FlipY, got: %v, want: %v", false, true)
+		}
+	})
+
+	t.Run("should return flipped 2x2 grid", func(t *testing.T) {
+		grid := Grid{
+			{X: 0, Y: 0}: "0", {X: 1, Y: 0}: "0",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2",
+		}
+		expectedGrid := Grid{
+			{X: 0, Y: 0}: "0", {X: 1, Y: 0}: "0",
+			{X: 0, Y: 1}: "2", {X: 1, Y: 1}: "1",
+		}
+		result := grid.FlipY()
+		if !result.IsEqualTo(expectedGrid) {
+			t.Errorf("Incorrect result for FlipY, got: %v, want: %v", false, true)
+		}
+	})
+}
+
+func TestRotateGrid(t *testing.T) {
+	t.Run("should return rotated grid", func(t *testing.T) {
+		grid := Grid{
+			{X: 0, Y: 0}: "0", {X: 1, Y: 0}: "0", {X: 2, Y: 0}: "0",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3",
+		}
+		expectedGrid := Grid{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "1", {X: 2, Y: 0}: "0",
+			{X: 0, Y: 1}: "2", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "0",
+			{X: 0, Y: 2}: "3", {X: 1, Y: 2}: "3", {X: 2, Y: 2}: "0",
+		}
+		result := grid.Rotate(90)
+		if !result.IsEqualTo(expectedGrid) {
+			t.Errorf("Incorrect result for Rotate, got: %v, want: %v", false, true)
+			fmt.Println("from:")
+			grid.Print()
+			fmt.Println("got:")
+			result.Print()
+			fmt.Println("want:")
+			expectedGrid.Print()
+		}
+	})
+
+	t.Run("should return bigger rotated grid", func(t *testing.T) {
+		grid := Grid{
+			{X: 0, Y: 0}: "L", {X: 1, Y: 0}: "L", {X: 2, Y: 0}: "L", {X: 3, Y: 0}: "L",
+			{X: 0, Y: 1}: ".", {X: 1, Y: 1}: ".", {X: 2, Y: 1}: ".", {X: 3, Y: 1}: ".",
+			{X: 0, Y: 2}: "L", {X: 1, Y: 2}: "L", {X: 2, Y: 2}: ".", {X: 3, Y: 2}: "L",
+			{X: 0, Y: 3}: "L", {X: 1, Y: 3}: "L", {X: 2, Y: 3}: ".", {X: 3, Y: 3}: "L",
+		}
+		expectedGrid := Grid{
+			{X: 0, Y: 0}: "L", {X: 1, Y: 0}: "L", {X: 2, Y: 0}: ".", {X: 3, Y: 0}: "L",
+			{X: 0, Y: 1}: "L", {X: 1, Y: 1}: "L", {X: 2, Y: 1}: ".", {X: 3, Y: 1}: "L",
+			{X: 0, Y: 2}: ".", {X: 1, Y: 2}: ".", {X: 2, Y: 2}: ".", {X: 3, Y: 2}: "L",
+			{X: 0, Y: 3}: "L", {X: 1, Y: 3}: "L", {X: 2, Y: 3}: ".", {X: 3, Y: 3}: "L",
+		}
+		result := grid.Rotate(90)
+		if !result.IsEqualTo(expectedGrid) {
+			t.Errorf("Incorrect result for Rotate, got: %v, want: %v", false, true)
+			fmt.Println("from:")
+			grid.Print()
+			fmt.Println("got: ")
+			result.Print()
+			fmt.Println("want: ")
+			expectedGrid.Print()
+		}
+	})
+
+	t.Run("should return bigger rotated grid 180", func(t *testing.T) {
+		grid := Grid{
+			{X: 0, Y: 0}: "L", {X: 1, Y: 0}: "L", {X: 2, Y: 0}: "L", {X: 3, Y: 0}: "L",
+			{X: 0, Y: 1}: ".", {X: 1, Y: 1}: ".", {X: 2, Y: 1}: ".", {X: 3, Y: 1}: ".",
+			{X: 0, Y: 2}: "L", {X: 1, Y: 2}: "L", {X: 2, Y: 2}: ".", {X: 3, Y: 2}: "L",
+			{X: 0, Y: 3}: "L", {X: 1, Y: 3}: "L", {X: 2, Y: 3}: ".", {X: 3, Y: 3}: "L",
+		}
+		expectedGrid := Grid{
+			{X: 0, Y: 0}: "L", {X: 1, Y: 0}: ".", {X: 2, Y: 0}: "L", {X: 3, Y: 0}: "L",
+			{X: 0, Y: 1}: "L", {X: 1, Y: 1}: ".", {X: 2, Y: 1}: "L", {X: 3, Y: 1}: "L",
+			{X: 0, Y: 2}: ".", {X: 1, Y: 2}: ".", {X: 2, Y: 2}: ".", {X: 3, Y: 2}: ".",
+			{X: 0, Y: 3}: "L", {X: 1, Y: 3}: "L", {X: 2, Y: 3}: "L", {X: 3, Y: 3}: "L",
+		}
+		result := grid.Rotate(180)
+		if !result.IsEqualTo(expectedGrid) {
+			t.Errorf("Incorrect result for Rotate (180), got: %v, want: %v", false, true)
+			fmt.Println("from:")
+			grid.Print()
+			fmt.Println("got: ")
+			result.Print()
+			fmt.Println("want: ")
+			expectedGrid.Print()
+		}
+	})
+}
+
 func TestConvertToString(t *testing.T) {
 	t.Run("should convert a valid grid to a string value", func(t *testing.T) {
 		grid := Grid{
@@ -54,8 +197,7 @@ func TestConvertToString(t *testing.T) {
 			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
 			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
 		}
-		expectedStringValue := `z: 0
-1234
+		expectedStringValue := `1234
 1234
 1234`
 		stringValue := grid.ConvertToString()
@@ -273,6 +415,173 @@ func TestMoveWithLoopX(t *testing.T) {
 	})
 }
 
+func TestGetLeft(t *testing.T) {
+	t.Run("should return left of grid", func(t *testing.T) {
+		grid := Grid{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2", {X: 2, Y: 0}: "3", {X: 3, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
+		}
+
+		left := grid.GetLeft()
+		expectedLeft := "111"
+
+		if left != expectedLeft {
+			t.Errorf("Incorrect result for GetLeft, got: %s, want: %s", left, expectedLeft)
+		}
+	})
+}
+
+func TestGetRight(t *testing.T) {
+	t.Run("should return right of grid", func(t *testing.T) {
+		grid := Grid{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2", {X: 2, Y: 0}: "3", {X: 3, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
+		}
+
+		right := grid.GetRight()
+		expectedRight := "444"
+
+		if right != expectedRight {
+			t.Errorf("Incorrect result for GetRight, got: %s, want: %s", right, expectedRight)
+		}
+	})
+}
+
+func TestGetBottom(t *testing.T) {
+	t.Run("should return bottom of grid", func(t *testing.T) {
+		grid := Grid{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2", {X: 2, Y: 0}: "3", {X: 3, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
+		}
+
+		bottom := grid.GetBottom()
+		expectedBottom := "1234"
+
+		if bottom != expectedBottom {
+			t.Errorf("Incorrect result for GetBottom, got: %s, want: %s", bottom, expectedBottom)
+		}
+	})
+}
+
+func TestGetTop(t *testing.T) {
+	t.Run("should return top of grid", func(t *testing.T) {
+		grid := Grid{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2", {X: 2, Y: 0}: "3", {X: 3, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2", {X: 2, Y: 1}: "3", {X: 3, Y: 1}: "4",
+			{X: 0, Y: 2}: "1", {X: 1, Y: 2}: "2", {X: 2, Y: 2}: "3", {X: 3, Y: 2}: "4",
+		}
+
+		top := grid.GetTop()
+		expectedTop := "1234"
+
+		if top != expectedTop {
+			t.Errorf("Incorrect result for GetTop, got: %s, want: %s", top, expectedTop)
+		}
+	})
+}
+
+func TestGetAllOrientations(t *testing.T) {
+	t.Run("should return all possible orientations", func(t *testing.T) {
+		grid := Grid{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2",
+			{X: 0, Y: 1}: "3", {X: 1, Y: 1}: "4",
+		}
+		rot90 := Grid{
+			{X: 0, Y: 0}: "3", {X: 1, Y: 0}: "1",
+			{X: 0, Y: 1}: "4", {X: 1, Y: 1}: "2",
+		}
+		rot180 := Grid{
+			{X: 0, Y: 0}: "4", {X: 1, Y: 0}: "3",
+			{X: 0, Y: 1}: "2", {X: 1, Y: 1}: "1",
+		}
+		rot270 := Grid{
+			{X: 0, Y: 0}: "2", {X: 1, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "3",
+		}
+		flippedX := Grid{
+			{X: 0, Y: 0}: "3", {X: 1, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2",
+		}
+		flippedXRot90 := Grid{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "3",
+			{X: 0, Y: 1}: "2", {X: 1, Y: 1}: "4",
+		}
+		flippedXRot180 := Grid{
+			{X: 0, Y: 0}: "2", {X: 1, Y: 0}: "1",
+			{X: 0, Y: 1}: "4", {X: 1, Y: 1}: "3",
+		}
+		flippedXRot270 := Grid{
+			{X: 0, Y: 0}: "4", {X: 1, Y: 0}: "2",
+			{X: 0, Y: 1}: "3", {X: 1, Y: 1}: "1",
+		}
+		flippedY := Grid{
+			{X: 0, Y: 0}: "2", {X: 1, Y: 0}: "1",
+			{X: 0, Y: 1}: "4", {X: 1, Y: 1}: "3",
+		}
+		flippedYRot90 := Grid{
+			{X: 0, Y: 0}: "4", {X: 1, Y: 0}: "2",
+			{X: 0, Y: 1}: "3", {X: 1, Y: 1}: "1",
+		}
+		flippedYRot180 := Grid{
+			{X: 0, Y: 0}: "3", {X: 1, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "2",
+		}
+		flippedYRot270 := Grid{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "3",
+			{X: 0, Y: 1}: "2", {X: 1, Y: 1}: "4",
+		}
+		flipped := Grid{
+			{X: 0, Y: 0}: "4", {X: 1, Y: 0}: "3",
+			{X: 0, Y: 1}: "2", {X: 1, Y: 1}: "1",
+		}
+		flippedRot90 := Grid{
+			{X: 0, Y: 0}: "2", {X: 1, Y: 0}: "4",
+			{X: 0, Y: 1}: "1", {X: 1, Y: 1}: "3",
+		}
+		flippedRot180 := Grid{
+			{X: 0, Y: 0}: "1", {X: 1, Y: 0}: "2",
+			{X: 0, Y: 1}: "3", {X: 1, Y: 1}: "4",
+		}
+		flippedRot270 := Grid{
+			{X: 0, Y: 0}: "3", {X: 1, Y: 0}: "1",
+			{X: 0, Y: 1}: "4", {X: 1, Y: 1}: "2",
+		}
+
+		grids := grid.GetAllOrientations()
+		expectedGrids := []Grid{grid, rot90, rot180, rot270, flippedX, flippedXRot90, flippedXRot180, flippedXRot270, flippedY, flippedYRot90, flippedYRot180, flippedYRot270, flipped, flippedRot90, flippedRot180, flippedRot270}
+
+		isEqual := true
+		for _, gridA := range grids {
+			found := false
+			for _, gridB := range expectedGrids {
+				if gridA.IsEqualTo(gridB) {
+					found = true
+				}
+			}
+			if !found {
+				isEqual = false
+				break
+			}
+		}
+		if !isEqual {
+			t.Errorf("Incorrect result for GetAllOrientations, got length: %d, want length: %d", len(grids), len(expectedGrids))
+			fmt.Println("got:")
+			for _, grid := range grids {
+				grid.Print()
+				fmt.Println()
+			}
+			fmt.Println("want:")
+			for _, grid := range expectedGrids {
+				grid.Print()
+				fmt.Println()
+			}
+		}
+	})
+}
+
 func TestIsPointEqualTo(t *testing.T) {
 	t.Run("should return true for equal points", func(t *testing.T) {
 		pointA := Point{X: 12, Y: -5}
@@ -334,7 +643,7 @@ func TestRotate(t *testing.T) {
 		point = initialPoint.Rotate(-180)
 		expectedPoint = Point{X: -10, Y: 4}
 		if !point.IsEqualTo(expectedPoint) {
-			t.Errorf("Incorrect result for Rotate (180 rotation on %d), got: %d, want: %d", initialPoint, point, expectedPoint)
+			t.Errorf("Incorrect result for Rotate (-180 rotation on %d), got: %d, want: %d", initialPoint, point, expectedPoint)
 		}
 	})
 
