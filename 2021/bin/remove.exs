@@ -1,0 +1,15 @@
+# Removes all files for a specific day challenge
+
+day = AoC.System.get_day()
+
+if is_nil(day) do
+  raise "Please provide a day: mix aoc.remove 12"
+  exit(1)
+end
+
+module_file_path = "lib/#{day}.ex"
+test_file_path = "test/#{day}_test.exs"
+input_file_path = "input/#{day}.txt"
+
+[module_file_path, test_file_path, input_file_path]
+|> Enum.each(&File.rm/1)
