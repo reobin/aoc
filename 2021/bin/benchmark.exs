@@ -1,5 +1,7 @@
 # Runs a specific day challenge in order to benchmark its efficacity
 
+import ExUnit.CaptureIO
+
 day = AoC.System.get_day()
 
 if is_nil(day) do
@@ -13,18 +15,22 @@ input = File.read!("input/#{day}.txt")
 
 execution_count = 1000
 
+IO.puts("Executing day #{day} (#{execution_count} times)")
+
 times =
   1..execution_count
   |> Enum.map(fn _index ->
     start_time = :os.system_time(:millisecond)
 
-    module.part_1(input)
-    module.part_2(input)
+    capture_io(fn -> module.part_1(input) end)
+    capture_io(fn -> module.part_2(input) end)
 
     end_time = :os.system_time(:millisecond)
 
     end_time - start_time
   end)
+
+IO.puts("Done")
 
 total_time = Enum.sum(times)
 
