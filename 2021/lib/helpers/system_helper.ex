@@ -1,4 +1,4 @@
-defmodule AoC.System do
+defmodule AoC.Helpers.SystemHelper do
   @moduledoc """
   Helper functions for system commands
   """
@@ -16,21 +16,6 @@ defmodule AoC.System do
     rescue
       _ ->
         nil
-    end
-  end
-
-  @doc """
-  Write content to file path
-  """
-  def write(path, content) do
-    case File.open(path, [:write]) do
-      {:ok, file} ->
-        IO.binwrite(file, content)
-        File.close(file)
-        {:ok}
-
-      _ ->
-        {:error}
     end
   end
 end

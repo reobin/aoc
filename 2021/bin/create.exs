@@ -1,6 +1,9 @@
 # Creates all necessary files for a specific day challenge
 
-day = AoC.System.get_day()
+alias AoC.Helpers.FileHelper
+alias AoC.Helpers.SystemHelper
+
+day = SystemHelper.get_day()
 
 if is_nil(day) do
   raise "Please provide a day: mix aoc.create 12"
@@ -33,7 +36,7 @@ defmodule AoC.Day#{day} do
 end
 """
 
-{:ok} = AoC.System.write(module_file_path, module_file_content)
+{:ok} = FileHelper.write(module_file_path, module_file_content)
 
 # Create test module file
 
@@ -42,22 +45,24 @@ defmodule AoC.Day#{day}Test do
   use ExUnit.Case
   doctest AoC.Day#{day}
 
+  alias AoC.Day#{day}
+
   describe "part 1" do
     test "part 1" do
       input = "test input"
-      assert AoC.Day#{day}.part_1(input) == "part 1"
+      assert Day#{day}.part_1(input) == "part 1"
     end
   end
 
   describe "part 2" do
     test "part 2" do
       input = "test input"
-      assert AoC.Day#{day}.part_2(input) == "part 2"
+      assert Day#{day}.part_2(input) == "part 2"
     end
   end
 end
 """
 
-{:ok} = AoC.System.write(test_file_path, test_file_content)
+{:ok} = FileHelper.write(test_file_path, test_file_content)
 
-{:ok} = AoC.System.write(input_file_path, "")
+{:ok} = FileHelper.write(input_file_path, "")
