@@ -2,13 +2,17 @@ defmodule AoC.Day01Test do
   use ExUnit.Case
   doctest AoC.Day01
 
-  test "part 1" do
-    input = "test input"
-    assert AoC.Day01.part_1(input) == "part 1"
+  describe "part 1" do
+    test "part 1" do
+      input = "test input"
+      assert AoC.Day01.part_1(input) == "part 1"
+    end
   end
 
-  test "part 2" do
-    input = "test input"
-    assert AoC.Day01.part_2(input) == "part 2"
+  describe "part 2" do
+    test "part 2" do
+      input = "test input"
+      assert AoC.Day01.part_2(input) == "part 2"
+    end
   end
 end
