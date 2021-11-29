@@ -7,6 +7,6 @@ if is_nil(day) do
   exit(1)
 end
 
-System.cmd("mix", ["test", "test/#{day}_test.exs"])
+System.cmd("mix", ["test", "test/day_#{day}_test.exs"])
 
 ExUnit.start()

@@ -9,12 +9,11 @@ end
 
 IO.puts("Creating files for day #{day}")
 
-module_file_path = "lib/#{day}.ex"
-script_file_path = "day/#{day}.exs"
-test_file_path = "test/#{day}_test.exs"
-input_file_path = "input/#{day}.txt"
+module_file_path = "lib/day_#{day}.ex"
+test_file_path = "test/day_#{day}_test.exs"
+input_file_path = "input/day_#{day}.txt"
 
-[module_file_path, script_file_path, test_file_path, input_file_path]
+[module_file_path, test_file_path, input_file_path]
 |> Enum.each(fn path ->
   if File.exists?(path), do: exit("#{path} exists")
 end)

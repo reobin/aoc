@@ -7,9 +7,9 @@ if is_nil(day) do
   exit(1)
 end
 
-module_file_path = "lib/#{day}.ex"
-test_file_path = "test/#{day}_test.exs"
-input_file_path = "input/#{day}.txt"
+module_file_path = "lib/day_#{day}.ex"
+test_file_path = "test/day_#{day}_test.exs"
+input_file_path = "input/day_#{day}.txt"
 
 [module_file_path, test_file_path, input_file_path]
 |> Enum.each(&File.rm/1)

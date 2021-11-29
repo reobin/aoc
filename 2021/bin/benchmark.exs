@@ -11,7 +11,7 @@ end
 
 module = String.to_existing_atom("Elixir.AoC.Day#{day}")
 
-input = File.read!("input/#{day}.txt")
+input = File.read!("input/day_#{day}.txt")
 
 execution_count = 1000
 
