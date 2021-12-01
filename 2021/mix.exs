@@ -21,7 +21,6 @@ defmodule AoC.MixProject do
       "aoc.create": "run bin/create.exs",
       "aoc.remove": "run bin/remove.exs",
       "aoc.start": "run bin/start.exs",
-      "aoc.test": "run bin/test.exs",
       "aoc.benchmark": "run bin/benchmark.exs"
     ]
   end

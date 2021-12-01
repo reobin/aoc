@@ -48,14 +48,14 @@ defmodule AoC.Day#{day}Test do
   alias AoC.Day#{day}
 
   describe "part 1" do
-    test "part 1" do
+    test "sample 1" do
       input = "test input"
       assert Day#{day}.part_1(input) == "part 1"
     end
   end
 
   describe "part 2" do
-    test "part 2" do
+    test "sample 1" do
       input = "test input"
       assert Day#{day}.part_2(input) == "part 2"
     end

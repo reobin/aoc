@@ -17,7 +17,7 @@ mix aoc.start 24 # Runs day 24
 
 ```shell
 mix test # Runs all tests
-mix aoc.test 1 # Runs day 01 tests
+mix test test/day_01_test.exs # Runs day 01 tests
 ```
 
 ### Benchmark a solution
