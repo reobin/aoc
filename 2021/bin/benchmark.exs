@@ -13,7 +13,7 @@ end
 
 module = String.to_existing_atom("Elixir.AoC.Day#{day}")
 
-input = File.read!("input/day_#{day}.txt")
+input = File.read!("input/day_#{day}.txt") |> String.trim()
 
 execution_count = 1000
 
