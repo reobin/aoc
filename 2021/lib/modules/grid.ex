@@ -1,0 +1,158 @@
+defmodule AoC.Modules.Grid do
+  @moduledoc """
+  Module for a 2D grid made of points
+  """
+
+  alias AoC.Modules.Grid
+
+  @doc """
+  Returns all points in a grid
+  """
+  def get_points(nil), do: []
+  def get_points(grid), do: grid |> Map.keys()
+
+  @doc """
+  Returns all values in a grid
+  """
+  def get_values(nil), do: []
+  def get_values(grid), do: grid |> Map.values()
+
+  @doc """
+  Returns the value at a point
+  """
+  def get(nil, _point), do: nil
+  def get(grid, point), do: Map.get(grid, point)
+
+  @doc """
+  Returns a size in width and height
+  """
+  def get_size(nil), do: {0, 0}
+
+  def get_size(grid) do
+    points = Grid.get_points(grid)
+
+    max_x_index = points |> Enum.map(&elem(&1, 0)) |> Enum.max(fn -> -1 end)
+    max_y_index = points |> Enum.map(&elem(&1, 1)) |> Enum.max(fn -> -1 end)
+
+    {max_x_index + 1, max_y_index + 1}
+  end
+
+  @doc """
+  Returns the point at which a value is found
+  """
+  def find(grid, value) do
+    grid
+    |> Grid.get_points()
+    |> Enum.find(fn point -> Grid.get(grid, point) == value end)
+  end
+
+  @doc """
+  Returns a list of rows with each column value
+  """
+  def get_rows(nil), do: []
+
+  def get_rows(grid) do
+    {width, height} = Grid.get_size(grid)
+
+    if width > 0 and height > 0 do
+      0..(height - 1)
+      |> Enum.map(fn y ->
+        0..(width - 1)
+        |> Enum.map(fn x ->
+          grid[{x, y}]
+        end)
+      end)
+    else
+      []
+    end
+  end
+
+  @doc """
+  Returns a list of columns with each row value
+  """
+  def get_columns(nil), do: []
+
+  def get_columns(grid) do
+    {width, height} = Grid.get_size(grid)
+
+    if width > 0 and height > 0 do
+      0..(width - 1)
+      |> Enum.map(fn x ->
+        0..(height - 1)
+        |> Enum.map(fn y ->
+          grid[{x, y}]
+        end)
+      end)
+    else
+      []
+    end
+  end
+
+  @doc """
+  Updates a point with a new value
+  """
+  def update_value(board, point, value), do: Map.put(board, point, value)
+
+  @doc """
+  Replaces a value with a new one if found, does nothing if not
+  """
+  def replace_value(board, value, new_value) do
+    point = Grid.find(board, value)
+
+    if is_nil(point) do
+      board
+    else
+      Grid.update_value(board, point, new_value)
+    end
+  end
+
+  @doc """
+  Prints the grid in a 2D string
+  """
+  def print(nil), do: "grid is null"
+
+  def print(grid), do: IO.puts("\n#{Grid.to_string(grid)}\n")
+
+  @doc """
+  Returns the string representation of a grid
+  """
+  def to_string(nil), do: ""
+
+  def to_string(grid, options \\ []) do
+    default_options = %{row_divider: "\n", column_divider: " ", pad: true}
+    options = Enum.into(options, default_options)
+
+    grid
+    |> Grid.get_rows()
+    |> Enum.map(fn row ->
+      if options.pad do
+        Enum.map(row, &String.pad_leading(&1, 2, " "))
+      else
+        row
+      end
+    end)
+    |> Enum.map(&Enum.join(&1, options.column_divider))
+    |> Enum.join(options.row_divider)
+  end
+
+  @doc """
+  From a 2D string value, build a grid
+  """
+  def from_string(""), do: nil
+  def from_string(nil), do: nil
+
+  def from_string(value, options \\ []) do
+    default_options = %{row_divider: "\n", column_divider: " "}
+    options = Enum.into(options, default_options)
+
+    value
+    |> String.split(options.row_divider, trim: true)
+    |> Enum.with_index()
+    |> Enum.reduce(%{}, fn {line, y}, grid ->
+      line
+      |> String.split(options.column_divider, trim: true)
+      |> Enum.with_index()
+      |> Enum.reduce(grid, fn {cell, x}, grid -> Grid.update_value(grid, {x, y}, cell) end)
+    end)
+  end
+end
