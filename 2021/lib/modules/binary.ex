@@ -15,7 +15,7 @@ defmodule AoC.Modules.Binary do
   @doc """
   Converts decimal value to binary
   """
-  def to_binary(binary), do: binary |> Integer.to_string(2)
+  def from_decimal(binary), do: binary |> Integer.to_string(2)
 
   @doc """
   Returns max decimal value for a desired binary value length
@@ -28,7 +28,7 @@ defmodule AoC.Modules.Binary do
   def invert(binary) do
     bit_count = String.length(binary)
     decimal = Binary.to_decimal(binary)
-    value = Binary.get_max_decimal_value(bit_count) - decimal
-    Binary.to_binary(value)
+    result = Binary.get_max_decimal_value(bit_count) - decimal
+    Binary.from_decimal(result)
   end
 end
