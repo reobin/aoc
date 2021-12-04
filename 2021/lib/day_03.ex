@@ -20,36 +20,36 @@ defmodule AoC.Day03 do
 
   def part_2(input) do
     numbers = input |> get_numbers()
-    get_rating(numbers, name: :o2) * get_rating(numbers, name: :co2)
+    get_rating(numbers, :o2) * get_rating(numbers, :co2)
   end
 
-  defp get_rating(numbers, options), do: get_rating(numbers, 0, options)
+  defp get_rating(numbers, type), do: get_rating(numbers, 0, type)
 
-  defp get_rating([number], _index, _options),
+  defp get_rating([number], _index, _type),
     do: number |> Enum.join("") |> Binary.to_decimal()
 
-  defp get_rating(numbers, index, options) do
+  defp get_rating(numbers, index, type) do
     frequencies =
       numbers
       |> invert_list_axis()
       |> Enum.at(index)
       |> Enum.frequencies()
 
-    {next_bit, _frequency} = frequencies |> sort_frequencies(options)
+    {next_bit, _frequency} = frequencies |> sort_frequencies(type)
 
     remaining_numbers =
       numbers |> Enum.filter(fn number -> Enum.at(number, index) == next_bit end)
 
-    get_rating(remaining_numbers, index + 1, options)
+    get_rating(remaining_numbers, index + 1, type)
   end
 
-  defp sort_frequencies(frequencies, name: :o2) do
+  defp sort_frequencies(frequencies, :o2) do
     frequencies
     |> Enum.sort_by(fn {value, _frequency} -> value end, &>/2)
     |> Enum.max_by(fn {_value, frequency} -> frequency end)
   end
 
-  defp sort_frequencies(frequencies, name: :co2) do
+  defp sort_frequencies(frequencies, :co2) do
     frequencies
     |> Enum.sort_by(fn {value, _frequency} -> value end)
     |> Enum.min_by(fn {_value, frequency} -> frequency end)
