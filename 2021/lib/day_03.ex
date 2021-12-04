@@ -11,11 +11,9 @@ defmodule AoC.Day03 do
       |> Enum.map(&elem(&1, 0))
       |> Enum.join("")
 
-    bit_count = String.length(gamma)
-    gamma = Binary.to_decimal(gamma)
-    epsilon = Binary.get_max_decimal_value(bit_count) - gamma
+    epsilon = gamma |> Binary.invert()
 
-    gamma * epsilon
+    Binary.to_decimal(gamma) * Binary.to_decimal(epsilon)
   end
 
   def part_2(input) do
