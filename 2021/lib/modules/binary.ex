@@ -1,4 +1,4 @@
-defmodule AoC.Helpers.BinaryHelper do
+defmodule AoC.Modules.Binary do
   @moduledoc """
   Helper functions for binary values
   """

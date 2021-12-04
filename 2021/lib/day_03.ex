@@ -1,5 +1,5 @@
 defmodule AoC.Day03 do
-  alias AoC.Helpers.BinaryHelper
+  alias AoC.Modules.Binary
 
   def part_1(input) do
     gamma =
@@ -12,8 +12,8 @@ defmodule AoC.Day03 do
       |> Enum.join("")
 
     bit_count = String.length(gamma)
-    gamma = BinaryHelper.to_decimal(gamma)
-    epsilon = BinaryHelper.get_max_decimal_value(bit_count) - gamma
+    gamma = Binary.to_decimal(gamma)
+    epsilon = Binary.get_max_decimal_value(bit_count) - gamma
 
     gamma * epsilon
   end
@@ -26,7 +26,7 @@ defmodule AoC.Day03 do
   defp get_rating(numbers, options), do: get_rating(numbers, 0, options)
 
   defp get_rating([number], _index, _options),
-    do: number |> Enum.join("") |> BinaryHelper.to_decimal()
+    do: number |> Enum.join("") |> Binary.to_decimal()
 
   defp get_rating(numbers, index, options) do
     frequencies =

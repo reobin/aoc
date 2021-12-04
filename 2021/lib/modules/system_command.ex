@@ -1,4 +1,4 @@
-defmodule AoC.Helpers.SystemHelper do
+defmodule AoC.Modules.SystemCommand do
   @moduledoc """
   Helper functions for system commands
   """

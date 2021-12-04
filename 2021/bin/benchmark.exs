@@ -2,9 +2,9 @@
 
 import ExUnit.CaptureIO
 
-alias AoC.Helpers.SystemHelper
+alias AoC.Modules.SystemCommand
 
-day = SystemHelper.get_day()
+day = SystemCommand.get_day()
 
 if is_nil(day) do
   raise "Please provide a day: mix aoc.benchmark 12"
