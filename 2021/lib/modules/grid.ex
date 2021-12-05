@@ -56,12 +56,7 @@ defmodule AoC.Modules.Grid do
 
     if width > 0 and height > 0 do
       0..(height - 1)
-      |> Enum.map(fn y ->
-        0..(width - 1)
-        |> Enum.map(fn x ->
-          grid[{x, y}]
-        end)
-      end)
+      |> Enum.map(fn y -> 0..(width - 1) |> Enum.map(fn x -> grid[{x, y}] end) end)
     else
       []
     end
@@ -77,21 +72,33 @@ defmodule AoC.Modules.Grid do
 
     if width > 0 and height > 0 do
       0..(width - 1)
-      |> Enum.map(fn x ->
-        0..(height - 1)
-        |> Enum.map(fn y ->
-          grid[{x, y}]
-        end)
-      end)
+      |> Enum.map(fn x -> 0..(height - 1) |> Enum.map(fn y -> grid[{x, y}] end) end)
     else
       []
     end
   end
 
   @doc """
+  Returns all points between 2 points
+  """
+  def get_line(point_1, point_2), do: get_line(point_1, point_2, [])
+  def get_line({x1, y1}, {x2, y2}, points) when x1 == x2 and y1 == y2, do: points ++ [{x2, y2}]
+
+  def get_line({x1, y1}, {x2, y2}, points) do
+    get_multiplier = fn a, b -> if a == b, do: 0, else: if(a > b, do: -1, else: 1) end
+
+    multiplier_x = get_multiplier.(x1, x2)
+    multiplier_y = get_multiplier.(y1, y2)
+
+    next = {x1 + 1 * multiplier_x, y1 + 1 * multiplier_y}
+
+    points ++ get_line(next, {x2, y2}, [{x1, y1}])
+  end
+
+  @doc """
   Updates a point with a new value
   """
-  def update_value(board, point, value), do: Map.put(board, point, value)
+  def set(board, point, value), do: Map.put(board, point, value)
 
   @doc """
   Replaces a value with a new one if found, does nothing if not
@@ -102,7 +109,7 @@ defmodule AoC.Modules.Grid do
     if is_nil(point) do
       board
     else
-      Grid.update_value(board, point, new_value)
+      Grid.set(board, point, new_value)
     end
   end
 
@@ -152,7 +159,7 @@ defmodule AoC.Modules.Grid do
       line
       |> String.split(options.column_divider, trim: true)
       |> Enum.with_index()
-      |> Enum.reduce(grid, fn {cell, x}, grid -> Grid.update_value(grid, {x, y}, cell) end)
+      |> Enum.reduce(grid, fn {cell, x}, grid -> Grid.set(grid, {x, y}, cell) end)
     end)
   end
 end
