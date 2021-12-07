@@ -12,7 +12,7 @@ defmodule AoC.Modules.SystemCommand do
       |> Enum.at(0)
       |> String.to_integer()
       |> Integer.to_string()
-      |> String.pad_leading(2, "0")
+      |> then(fn day -> {day, String.pad_leading(day, 2, "0")} end)
     rescue
       _ ->
         nil

@@ -18,10 +18,10 @@ defmodule AoC.MixProject do
 
   defp aliases do
     [
-      "aoc.create": "run bin/create.exs",
-      "aoc.remove": "run bin/remove.exs",
-      "aoc.start": "run bin/start.exs",
-      "aoc.benchmark": "run bin/benchmark.exs"
+      "aoc.create": "run bin/create",
+      "aoc.remove": "run bin/remove",
+      "aoc.start": "run bin/start",
+      "aoc.benchmark": "run bin/benchmark"
     ]
   end
 end
