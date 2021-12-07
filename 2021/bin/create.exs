@@ -25,13 +25,9 @@ end)
 module_file_content = """
 defmodule AoC.Day#{day} do
   def part_1(input) do
-    IO.inspect(input)
-    "part 1"
   end
 
   def part_2(input) do
-    IO.inspect(input)
-    "part 2"
   end
 end
 """
@@ -50,14 +46,14 @@ defmodule AoC.Day#{day}Test do
   describe "part 1" do
     test "sample 1" do
       input = "test input"
-      assert Day#{day}.part_1(input) == "part 1"
+      assert Day#{day}.part_1(input) == 0
     end
   end
 
   describe "part 2" do
     test "sample 1" do
       input = "test input"
-      assert Day#{day}.part_2(input) == "part 2"
+      assert Day#{day}.part_2(input) == 0
     end
   end
 end
