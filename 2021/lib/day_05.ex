@@ -1,4 +1,8 @@
 defmodule AoC.Day05 do
+  @moduledoc """
+  https://adventofcode.com/2021/day/5
+  """
+
   alias AoC.Modules.Grid
 
   def part_1(input) do

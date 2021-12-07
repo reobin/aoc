@@ -1,4 +1,8 @@
 defmodule AoC.Day01 do
+  @moduledoc """
+  https://adventofcode.com/2021/day/1
+  """
+
   def part_1(input) do
     input
     |> get_measurements()

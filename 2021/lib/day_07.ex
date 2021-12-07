@@ -1,4 +1,8 @@
 defmodule AoC.Day07 do
+  @moduledoc """
+  https://adventofcode.com/2021/day/7
+  """
+
   def part_1(input), do: input |> get_positions() |> get_optimal_alignment(:naive_algorithm)
   def part_2(input), do: input |> get_positions() |> get_optimal_alignment(:crab_algorithm)
 

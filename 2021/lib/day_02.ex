@@ -1,4 +1,8 @@
 defmodule AoC.Day02 do
+  @moduledoc """
+  https://adventofcode.com/2021/day/2
+  """
+
   def part_1(input) do
     {x, y} =
       input

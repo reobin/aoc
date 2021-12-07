@@ -1,4 +1,8 @@
 defmodule AoC.Day04 do
+  @moduledoc """
+  https://adventofcode.com/2021/day/4
+  """
+
   alias AoC.Modules.Grid
 
   @mark "X"
