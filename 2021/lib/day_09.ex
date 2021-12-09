@@ -4,6 +4,7 @@ defmodule AoC.Day09 do
   """
 
   alias AoC.Modules.Grid
+  alias AoC.Modules.Point
 
   @highest_level 9
 
@@ -31,7 +32,7 @@ defmodule AoC.Day09 do
 
   defp is_low_point?(point, grid) do
     point
-    |> Grid.get_adjacent_points()
+    |> Point.get_neighbors()
     |> Enum.all?(&(Grid.get(grid, point) < Grid.get(grid, &1, @highest_level)))
   end
 
@@ -46,7 +47,7 @@ defmodule AoC.Day09 do
         grid = Grid.set(grid, point, "b#{basin_index}")
 
         point
-        |> Grid.get_adjacent_points()
+        |> Point.get_neighbors()
         |> Enum.filter(&is_integer(Grid.get(grid, &1)))
         |> Enum.reduce(grid, fn adjacent_point, grid ->
           fill_basin({adjacent_point, basin_index}, grid)

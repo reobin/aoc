@@ -315,22 +315,4 @@ defmodule AoC.Modules.GridTest do
       assert Grid.replace_value(grid, "14", "10") == expected_grid
     end
   end
-
-  describe "&get_line/2" do
-    test "should return all points for vertical line" do
-      assert Grid.get_line({1, 3}, {1, 1}) == [{1, 3}, {1, 2}, {1, 1}]
-      assert Grid.get_line({1, 1}, {1, 3}) == [{1, 1}, {1, 2}, {1, 3}]
-    end
-
-    test "should return all points for horizontal line" do
-      assert Grid.get_line({1, 1}, {3, 1}) == [{1, 1}, {2, 1}, {3, 1}]
-      assert Grid.get_line({3, 1}, {1, 1}) == [{3, 1}, {2, 1}, {1, 1}]
-    end
-
-    test "should return all points for diagonal line" do
-      assert Grid.get_line({1, 1}, {3, 3}) == [{1, 1}, {2, 2}, {3, 3}]
-      assert Grid.get_line({9, 7}, {7, 9}) == [{9, 7}, {8, 8}, {7, 9}]
-      assert Grid.get_line({3, 0}, {0, 3}) == [{3, 0}, {2, 1}, {1, 2}, {0, 3}]
-    end
-  end
 end
