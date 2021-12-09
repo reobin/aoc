@@ -22,6 +22,8 @@ defmodule AoC.Modules.Grid do
   """
   def get(nil, _point), do: nil
   def get(grid, point), do: Map.get(grid, point)
+  def get(nil, _point, _default), do: nil
+  def get(grid, point, default), do: Map.get(grid, point, default)
 
   @doc """
   Returns a size in width and height
@@ -96,6 +98,11 @@ defmodule AoC.Modules.Grid do
   end
 
   @doc """
+  Returns all points adjacent to a point
+  """
+  def get_adjacent_points({x, y}), do: [{x, y - 1}, {x + 1, y}, {x, y + 1}, {x - 1, y}]
+
+  @doc """
   Updates a point with a new value
   """
   def set(board, point, value), do: Map.put(board, point, value)
@@ -116,9 +123,9 @@ defmodule AoC.Modules.Grid do
   @doc """
   Prints the grid in a 2D string
   """
-  def print(nil), do: "grid is null"
-
-  def print(grid), do: IO.puts("\n#{Grid.to_string(grid)}\n")
+  def print(grid, options \\ [])
+  def print(nil, _options), do: "grid is null"
+  def print(grid, options), do: IO.puts("\n#{Grid.to_string(grid, options)}\n")
 
   @doc """
   Returns the string representation of a grid
@@ -126,19 +133,40 @@ defmodule AoC.Modules.Grid do
   def to_string(nil), do: ""
 
   def to_string(grid, options \\ []) do
-    default_options = %{row_divider: "\n", column_divider: " ", pad: true}
+    default_options = %{
+      row_divider: "\n",
+      column_divider: " ",
+      pad: true,
+      replace_nil_with: nil,
+      is_integer?: false
+    }
+
     options = Enum.into(options, default_options)
 
     grid
     |> Grid.get_rows()
     |> Enum.map(fn row ->
       if options.pad do
-        Enum.map(row, &String.pad_leading(&1, 2, " "))
+        row
+        |> Enum.map(fn value ->
+          value =
+            if options.is_integer? and is_integer(value) do
+              Integer.to_string(value)
+            else
+              value
+            end
+
+          String.pad_leading(value, 2, " ")
+        end)
       else
         row
       end
     end)
-    |> Enum.map(&Enum.join(&1, options.column_divider))
+    |> Enum.map(fn row ->
+      row
+      |> Enum.map(fn value -> if is_nil(value), do: options.replace_nil_with, else: value end)
+      |> Enum.join(options.column_divider)
+    end)
     |> Enum.join(options.row_divider)
   end
 
@@ -149,7 +177,7 @@ defmodule AoC.Modules.Grid do
   def from_string(nil), do: nil
 
   def from_string(value, options \\ []) do
-    default_options = %{row_divider: "\n", column_divider: " "}
+    default_options = %{row_divider: "\n", column_divider: " ", is_integer?: false}
     options = Enum.into(options, default_options)
 
     value
@@ -159,7 +187,10 @@ defmodule AoC.Modules.Grid do
       line
       |> String.split(options.column_divider, trim: true)
       |> Enum.with_index()
-      |> Enum.reduce(grid, fn {cell, x}, grid -> Grid.set(grid, {x, y}, cell) end)
+      |> Enum.reduce(grid, fn {cell, x}, grid ->
+        cell = if options.is_integer?, do: String.to_integer(cell), else: cell
+        Grid.set(grid, {x, y}, cell)
+      end)
     end)
   end
 end
