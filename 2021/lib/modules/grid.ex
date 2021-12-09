@@ -130,15 +130,15 @@ defmodule AoC.Modules.Grid do
   @doc """
   Returns the string representation of a grid
   """
-  def to_string(nil), do: ""
+  def to_string(grid, options \\ [])
+  def to_string(nil, _options), do: ""
 
-  def to_string(grid, options \\ []) do
+  def to_string(grid, options) do
     default_options = %{
       row_divider: "\n",
       column_divider: " ",
-      pad: true,
-      replace_nil_with: nil,
-      is_integer?: false
+      cell_width: 2,
+      replace_nil_with: nil
     }
 
     options = Enum.into(options, default_options)
@@ -146,25 +146,12 @@ defmodule AoC.Modules.Grid do
     grid
     |> Grid.get_rows()
     |> Enum.map(fn row ->
-      if options.pad do
-        row
-        |> Enum.map(fn value ->
-          value =
-            if options.is_integer? and is_integer(value) do
-              Integer.to_string(value)
-            else
-              value
-            end
-
-          String.pad_leading(value, 2, " ")
-        end)
-      else
-        row
-      end
-    end)
-    |> Enum.map(fn row ->
       row
-      |> Enum.map(fn value -> if is_nil(value), do: options.replace_nil_with, else: value end)
+      |> Enum.map(fn value ->
+        value = if is_nil(value), do: options.replace_nil_with, else: value
+        value = if is_integer(value), do: Integer.to_string(value), else: value
+        String.pad_leading(value, options.cell_width, " ")
+      end)
       |> Enum.join(options.column_divider)
     end)
     |> Enum.join(options.row_divider)

@@ -78,7 +78,7 @@ defmodule AoC.Modules.GridTest do
 
       expected_string = "12:13:14|5:5:6"
 
-      assert Grid.to_string(grid, row_divider: "|", column_divider: ":", pad: false) ==
+      assert Grid.to_string(grid, row_divider: "|", column_divider: ":", cell_width: 1) ==
                expected_string
     end
   end
