@@ -5,7 +5,16 @@ defmodule AoC.Modules.Intcode do
 
   @add 1
   @multiply 2
+  @input 3
+  @output 4
+  @jump_if_true 5
+  @jump_if_false 6
+  @less_than 7
+  @equals 8
   @halt 99
+
+  @position_mode 0
+  @immediate_mode 1
 
   @doc """
   Reads input and return a list of integers
@@ -21,37 +30,187 @@ defmodule AoC.Modules.Intcode do
   @doc """
   Runs a intcode program
   """
-  def run(program) do
+  def run(program, input \\ nil) do
+    state = %{
+      program: program,
+      instruction_pointer: 0,
+      input: input
+    }
+
     program
     |> Map.values()
-    |> Enum.reduce_while({program, 0}, fn _value, {program, instruction_pointer} = state ->
-      execute(state, Map.get(program, instruction_pointer))
+    |> Enum.reduce_while(state, fn _value, state ->
+      {opcode, parameter_modes} = get_instruction(state)
+      execute(opcode, Map.put(state, :parameter_modes, parameter_modes))
     end)
-    |> elem(0)
+    |> Map.get(:output)
   end
 
-  defp execute(state, nil), do: {:halt, state}
-  defp execute(state, @halt), do: {:halt, state}
+  defp get_instruction(%{program: program, instruction_pointer: instruction_pointer}) do
+    [parameter_modes, opcode] =
+      program
+      |> Map.get(instruction_pointer)
+      |> Integer.to_string()
+      |> String.pad_leading(5, "0")
+      |> String.split("", trim: true)
+      |> Enum.chunk_every(3)
+      |> Enum.map(&Enum.join(&1, ""))
 
-  defp execute({program, address}, @add) do
-    input_a = program |> Map.get(address + 1) |> then(&Map.get(program, &1))
-    input_b = program |> Map.get(address + 2) |> then(&Map.get(program, &1))
+    parameter_modes =
+      parameter_modes
+      |> String.split("", trim: true)
+      |> Enum.map(&String.to_integer/1)
+      |> Enum.reverse()
 
-    output = program |> Map.get(address + 3)
-
-    program = Map.put(program, output, input_a + input_b)
-
-    {:cont, {program, address + 4}}
+    {String.to_integer(opcode), parameter_modes}
   end
 
-  defp execute({program, address}, @multiply) do
-    input_a = program |> Map.get(address + 1) |> then(&Map.get(program, &1))
-    input_b = program |> Map.get(address + 2) |> then(&Map.get(program, &1))
+  defp execute(nil, state), do: {:halt, Map.put(state, :output, state.program)}
+  defp execute(@halt, state), do: {:halt, Map.put(state, :output, state.program)}
 
-    output = program |> Map.get(address + 3)
+  defp execute(@add, state) do
+    %{
+      program: program,
+      parameter_modes: parameter_modes,
+      instruction_pointer: instruction_pointer
+    } = state
 
-    program = Map.put(program, output, input_a * input_b)
+    parameter_a = get_parameter(program, instruction_pointer + 1, Enum.at(parameter_modes, 0))
+    parameter_b = get_parameter(program, instruction_pointer + 2, Enum.at(parameter_modes, 1))
 
-    {:cont, {program, address + 4}}
+    parameter_c = Map.get(program, instruction_pointer + 3)
+
+    program = Map.put(program, parameter_c, parameter_a + parameter_b)
+
+    state = Map.merge(state, %{program: program, instruction_pointer: instruction_pointer + 4})
+
+    {:cont, state}
   end
+
+  defp execute(@multiply, state) do
+    %{
+      program: program,
+      instruction_pointer: instruction_pointer,
+      parameter_modes: parameter_modes
+    } = state
+
+    parameter_a = get_parameter(program, instruction_pointer + 1, Enum.at(parameter_modes, 0))
+    parameter_b = get_parameter(program, instruction_pointer + 2, Enum.at(parameter_modes, 1))
+
+    parameter_c = Map.get(program, instruction_pointer + 3)
+
+    program = Map.put(program, parameter_c, parameter_a * parameter_b)
+
+    state = Map.merge(state, %{program: program, instruction_pointer: instruction_pointer + 4})
+
+    {:cont, state}
+  end
+
+  defp execute(@input, state) do
+    %{program: program, instruction_pointer: instruction_pointer, input: input} = state
+
+    store = Map.get(program, instruction_pointer + 1)
+    program = Map.put(program, store, input)
+
+    state = Map.merge(state, %{program: program, instruction_pointer: instruction_pointer + 2})
+
+    {:cont, state}
+  end
+
+  defp execute(@output, state) do
+    %{
+      program: program,
+      instruction_pointer: instruction_pointer,
+      parameter_modes: parameter_modes
+    } = state
+
+    output = program |> get_parameter(instruction_pointer + 1, Enum.at(parameter_modes, 0))
+
+    if output == 0 do
+      {:cont, Map.put(state, :instruction_pointer, instruction_pointer + 2)}
+    else
+      {:halt, Map.put(state, :output, output)}
+    end
+  end
+
+  defp execute(@jump_if_true, state) do
+    %{
+      program: program,
+      instruction_pointer: instruction_pointer,
+      parameter_modes: parameter_modes
+    } = state
+
+    parameter_a = get_parameter(program, instruction_pointer + 1, Enum.at(parameter_modes, 0))
+    parameter_b = get_parameter(program, instruction_pointer + 2, Enum.at(parameter_modes, 1))
+
+    next_instruction_pointer = if parameter_a != 0, do: parameter_b, else: instruction_pointer + 3
+
+    {:cont, Map.put(state, :instruction_pointer, next_instruction_pointer)}
+  end
+
+  defp execute(@jump_if_false, state) do
+    %{
+      program: program,
+      instruction_pointer: instruction_pointer,
+      parameter_modes: parameter_modes
+    } = state
+
+    parameter_a = get_parameter(program, instruction_pointer + 1, Enum.at(parameter_modes, 0))
+    parameter_b = get_parameter(program, instruction_pointer + 2, Enum.at(parameter_modes, 1))
+
+    next_instruction_pointer = if parameter_a == 0, do: parameter_b, else: instruction_pointer + 3
+
+    {:cont, Map.put(state, :instruction_pointer, next_instruction_pointer)}
+  end
+
+  defp execute(@less_than, state) do
+    %{
+      program: program,
+      instruction_pointer: instruction_pointer,
+      parameter_modes: parameter_modes
+    } = state
+
+    parameter_a = get_parameter(program, instruction_pointer + 1, Enum.at(parameter_modes, 0))
+    parameter_b = get_parameter(program, instruction_pointer + 2, Enum.at(parameter_modes, 1))
+
+    parameter_c = Map.get(program, instruction_pointer + 3)
+
+    value = if parameter_a < parameter_b, do: 1, else: 0
+
+    state =
+      Map.merge(state, %{
+        program: Map.put(program, parameter_c, value),
+        instruction_pointer: instruction_pointer + 4
+      })
+
+    {:cont, state}
+  end
+
+  defp execute(@equals, state) do
+    %{
+      program: program,
+      instruction_pointer: instruction_pointer,
+      parameter_modes: parameter_modes
+    } = state
+
+    parameter_a = get_parameter(program, instruction_pointer + 1, Enum.at(parameter_modes, 0))
+    parameter_b = get_parameter(program, instruction_pointer + 2, Enum.at(parameter_modes, 1))
+
+    parameter_c = Map.get(program, instruction_pointer + 3)
+
+    value = if parameter_a == parameter_b, do: 1, else: 0
+
+    state =
+      Map.merge(state, %{
+        program: Map.put(program, parameter_c, value),
+        instruction_pointer: instruction_pointer + 4
+      })
+
+    {:cont, state}
+  end
+
+  defp get_parameter(program, address, @position_mode),
+    do: program |> Map.get(address) |> then(&Map.get(program, &1))
+
+  defp get_parameter(program, address, @immediate_mode), do: Map.get(program, address)
 end
