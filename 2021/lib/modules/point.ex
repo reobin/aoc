@@ -3,8 +3,6 @@ defmodule AoC.Modules.Point do
   Module for a 2D point
   """
 
-  alias AoC.Modules.Point
-
   @doc """
   Returns all points between 2 points
   """
