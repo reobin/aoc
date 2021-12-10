@@ -4,29 +4,24 @@ defmodule AoC.MixProject do
   def project do
     [
       app: :aoc,
-      version: "0.1.0",
-      elixir: "~> 1.11",
+      version: "1.0.0",
+      elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
-      deps: deps(),
+      deps: [],
       aliases: aliases()
     ]
   end
 
   def application do
-    [
-      extra_applications: [:logger]
-    ]
-  end
-
-  defp deps do
-    []
+    [extra_applications: [:logger]]
   end
 
   defp aliases do
     [
-      create: "run bin/create.exs",
-      delete: "run bin/delete.exs",
-      start: "run bin/start.exs"
+      "aoc.create": "run bin/create",
+      "aoc.remove": "run bin/remove",
+      "aoc.start": "run bin/start",
+      "aoc.benchmark": "run bin/benchmark"
     ]
   end
 end

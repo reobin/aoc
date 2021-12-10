@@ -1,12 +1,11 @@
-defmodule AoC.System do
-  def get_day do
-    System.argv()
-    |> Enum.at(0)
-    |> String.to_integer()
-    |> Integer.to_string()
-    |> String.pad_leading(2, "0")
-  end
+defmodule AoC.Modules.FileSystem do
+  @moduledoc """
+  Helper functions for file I/O
+  """
 
+  @doc """
+  Write content to file path
+  """
   def write(path, content) do
     case File.open(path, [:write]) do
       {:ok, file} ->

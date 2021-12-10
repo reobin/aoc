@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+source .env 2>/dev/null
+
+if [[ ! $ADVENT_OF_CODE_SESSION_TOKEN ]]; then
+  echo "Please create a .env file and export the ADVENT_OF_CODE_SESSION_TOKEN variable:"
+  echo "export ADVENT_OF_CODE_SESSION_TOKEN=<session token>"
+  exit 1
+fi;
+
+curl "https://adventofcode.com/2019/day/$1/input" \
+  -H "Cookie: session=$ADVENT_OF_CODE_SESSION_TOKEN" \
+  > "input/day_$2.txt"

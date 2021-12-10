@@ -4,23 +4,26 @@
 
 ### Requirements
 
-- [elixir](https://elixir-lang.org/install.html#windows)
+- [elixir](https://elixir-lang.org/install.html)
 
-### Run the solution for a specific day
+### Run the solution
 
 ```shell
-mix start 1 # Runs day 01
-mix start 24 # Runs day 24
+mix aoc.start 1 # Runs day 01
+mix aoc.start 24 # Runs day 24
 ```
 
 ### Run tests
 
 ```shell
 mix test # Runs all tests
+mix test test/day_01_test.exs # Runs day 01 tests
 ```
 
+### Benchmark a solution
+
 ```shell
-mix test test/01_test.exs # Runs day 01 tests
+mix aoc.benchmark 1 # Benchmarks day 01 solution
 ```
 
 ### Run code formatter
