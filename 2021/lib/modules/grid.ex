@@ -92,22 +92,9 @@ defmodule AoC.Modules.Grid do
   def set(grid, point, value), do: Map.put(grid, point, value)
 
   @doc """
-  Replaces a value with a new one if found, does nothing if not
-  """
-  def replace(grid, value, new_value) do
-    point = Grid.find(grid, value)
-
-    if is_nil(point) do
-      grid
-    else
-      Grid.set(grid, point, new_value)
-    end
-  end
-
-  @doc """
   Replaces all values with a new one if found, does nothing if not
   """
-  def replace(grid, value, new_value, :all) do
+  def replace(grid, value, new_value) do
     grid
     |> Grid.get_points()
     |> Enum.reduce(grid, fn point, grid ->

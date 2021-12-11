@@ -334,7 +334,7 @@ defmodule AoC.Modules.GridTest do
         {2, 1} => "6"
       }
 
-      assert Grid.replace(grid, "14", "10", :all) == expected_grid
+      assert Grid.replace(grid, "14", "10") == expected_grid
     end
   end
 end
