@@ -15,7 +15,7 @@ defmodule AoC.Day04 do
       |> Enum.reduce_while(
         {boards, nil, nil},
         fn number, {boards, _winning_board, _last_drawn_number} ->
-          boards = Enum.map(boards, &Grid.replace_value(&1, number, @mark))
+          boards = Enum.map(boards, &Grid.replace(&1, number, @mark))
 
           winning_board = Enum.find(boards, &wins?/1)
 
@@ -35,7 +35,7 @@ defmodule AoC.Day04 do
       |> Enum.reduce_while(
         {boards, nil},
         fn number, {boards, _last_drawn_number} ->
-          boards = Enum.map(boards, &Grid.replace_value(&1, number, @mark))
+          boards = Enum.map(boards, &Grid.replace(&1, number, @mark))
 
           remaining_boards = Enum.filter(boards, &continues?/1)
 

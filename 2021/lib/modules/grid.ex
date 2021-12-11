@@ -26,6 +26,12 @@ defmodule AoC.Modules.Grid do
   def get(grid, point, default), do: Map.get(grid, point, default)
 
   @doc """
+  Counts occurences of a value
+  """
+  def count(grid), do: grid |> Grid.get_values() |> Enum.count()
+  def count(grid, value), do: grid |> Grid.get_values() |> Enum.count(&(&1 == value))
+
+  @doc """
   Returns a size in width and height
   """
   def get_size(nil), do: {0, 0}
@@ -83,19 +89,30 @@ defmodule AoC.Modules.Grid do
   @doc """
   Updates a point with a new value
   """
-  def set(board, point, value), do: Map.put(board, point, value)
+  def set(grid, point, value), do: Map.put(grid, point, value)
 
   @doc """
   Replaces a value with a new one if found, does nothing if not
   """
-  def replace_value(board, value, new_value) do
-    point = Grid.find(board, value)
+  def replace(grid, value, new_value) do
+    point = Grid.find(grid, value)
 
     if is_nil(point) do
-      board
+      grid
     else
-      Grid.set(board, point, new_value)
+      Grid.set(grid, point, new_value)
     end
+  end
+
+  @doc """
+  Replaces all values with a new one if found, does nothing if not
+  """
+  def replace(grid, value, new_value, :all) do
+    grid
+    |> Grid.get_points()
+    |> Enum.reduce(grid, fn point, grid ->
+      if Grid.get(grid, point) == value, do: Grid.set(grid, point, new_value), else: grid
+    end)
   end
 
   @doc """

@@ -19,7 +19,7 @@ defmodule AoC.Day10 do
     |> get_lines()
     |> Enum.map(&process/1)
     |> Enum.filter(&(elem(&1, 0) == :incomplete))
-    |> Enum.map(&compute_total_score(elem(&1, 1)))
+    |> Enum.map(&get_total_score(elem(&1, 1)))
     |> Enum.sort()
     |> then(fn scores -> Enum.at(scores, div(length(scores), 2)) end)
   end

@@ -279,7 +279,7 @@ defmodule AoC.Modules.GridTest do
     end
   end
 
-  describe "&replace_value/3" do
+  describe "&replace/3" do
     test "should return the same grid if the value is not found" do
       grid = %{
         {0, 0} => "12",
@@ -290,7 +290,7 @@ defmodule AoC.Modules.GridTest do
         {2, 1} => "6"
       }
 
-      assert Grid.replace_value(grid, "100", "10") == grid
+      assert Grid.replace(grid, "100", "10") == grid
     end
 
     test "should update the value at if the value is found" do
@@ -312,7 +312,29 @@ defmodule AoC.Modules.GridTest do
         {2, 1} => "6"
       }
 
-      assert Grid.replace_value(grid, "14", "10") == expected_grid
+      assert Grid.replace(grid, "14", "10") == expected_grid
+    end
+
+    test "should allow replacement of all matching values" do
+      grid = %{
+        {0, 0} => "12",
+        {1, 0} => "13",
+        {2, 0} => "14",
+        {0, 1} => "14",
+        {1, 1} => "5",
+        {2, 1} => "6"
+      }
+
+      expected_grid = %{
+        {0, 0} => "12",
+        {1, 0} => "13",
+        {2, 0} => "10",
+        {0, 1} => "10",
+        {1, 1} => "5",
+        {2, 1} => "6"
+      }
+
+      assert Grid.replace(grid, "14", "10", :all) == expected_grid
     end
   end
 end
