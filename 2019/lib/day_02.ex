@@ -5,10 +5,10 @@ defmodule AoC.Day02 do
 
   alias AoC.Modules.Intcode
 
-  def part_1(input), do: input |> Intcode.get_program() |> get_output(noun: 12, verb: 2)
+  def part_1(input), do: input |> Intcode.initialize() |> get_output(noun: 12, verb: 2)
 
   def part_2(input) do
-    {noun, verb} = input |> Intcode.get_program() |> find_noun_and_verb(19_690_720)
+    {noun, verb} = input |> Intcode.initialize() |> find_noun_and_verb(19_690_720)
     100 * noun + verb
   end
 
@@ -22,6 +22,7 @@ defmodule AoC.Day02 do
     |> Map.put(1, noun)
     |> Map.put(2, verb)
     |> Intcode.run()
+    |> Map.get(:program)
     |> Map.get(0)
   end
 end

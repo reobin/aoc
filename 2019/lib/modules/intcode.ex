@@ -17,33 +17,34 @@ defmodule AoC.Modules.Intcode do
   @immediate_mode 1
 
   @doc """
-  Reads input and return a list of integers
+  Initializes the state of a intcode program
   """
-  def get_program(input) do
-    input
-    |> String.split(",", trim: true)
-    |> Enum.map(&String.to_integer/1)
-    |> Enum.with_index()
-    |> Enum.reduce(%{}, fn {value, address}, program -> Map.put(program, address, value) end)
+  def initialize(instructions) do
+    program =
+      instructions
+      |> String.split(",", trim: true)
+      |> Enum.map(&String.to_integer/1)
+      |> Enum.with_index()
+      |> Enum.reduce(%{}, fn {value, address}, program -> Map.put(program, address, value) end)
+
+    %{
+      program: program,
+      instruction_pointer: 0
+    }
   end
 
   @doc """
   Runs a intcode program
   """
-  def run(program, input \\ nil) do
-    state = %{
-      program: program,
-      instruction_pointer: 0,
-      input: input
-    }
+  def run(state, input \\ []) do
+    state = Map.put(state, :input, input)
 
-    program
+    state.program
     |> Map.values()
     |> Enum.reduce_while(state, fn _value, state ->
       {opcode, parameter_modes} = get_instruction(state)
       execute(opcode, Map.put(state, :parameter_modes, parameter_modes))
     end)
-    |> Map.get(:output)
   end
 
   defp get_instruction(%{program: program, instruction_pointer: instruction_pointer}) do
@@ -65,8 +66,8 @@ defmodule AoC.Modules.Intcode do
     {String.to_integer(opcode), parameter_modes}
   end
 
-  defp execute(nil, state), do: {:halt, Map.put(state, :output, state.program)}
-  defp execute(@halt, state), do: {:halt, Map.put(state, :output, state.program)}
+  defp execute(nil, state), do: {:halt, Map.put(state, :output, :halt)}
+  defp execute(@halt, state), do: {:halt, Map.put(state, :output, :halt)}
 
   defp execute(@add, state) do
     %{
@@ -109,10 +110,17 @@ defmodule AoC.Modules.Intcode do
   defp execute(@input, state) do
     %{program: program, instruction_pointer: instruction_pointer, input: input} = state
 
-    store = Map.get(program, instruction_pointer + 1)
-    program = Map.put(program, store, input)
+    current_input = Enum.at(input, 0)
 
-    state = Map.merge(state, %{program: program, instruction_pointer: instruction_pointer + 2})
+    store = Map.get(program, instruction_pointer + 1)
+    program = Map.put(program, store, current_input)
+
+    state =
+      Map.merge(state, %{
+        program: program,
+        instruction_pointer: instruction_pointer + 2,
+        input: Enum.slice(input, 1..(Enum.count(input) - 1))
+      })
 
     {:cont, state}
   end
@@ -126,8 +134,10 @@ defmodule AoC.Modules.Intcode do
 
     output = program |> get_parameter(instruction_pointer + 1, Enum.at(parameter_modes, 0))
 
+    state = Map.put(state, :instruction_pointer, instruction_pointer + 2)
+
     if output == 0 do
-      {:cont, Map.put(state, :instruction_pointer, instruction_pointer + 2)}
+      {:cont, state}
     else
       {:halt, Map.put(state, :output, output)}
     end

@@ -4,11 +4,11 @@ defmodule AoC.Modules.IntcodeTest do
 
   alias AoC.Modules.Intcode
 
-  describe "&get_program/1" do
-    test "should return list of instuctions" do
+  describe "&initialize/1" do
+    test "should the initial state for the input" do
       input = "1,9,10,3,2,3,11,0,99,30,40,50"
 
-      program = Intcode.get_program(input)
+      program = Intcode.initialize(input) |> Map.get(:program)
 
       expected_program = %{
         0 => 1,
@@ -31,15 +31,7 @@ defmodule AoC.Modules.IntcodeTest do
 
   describe "&run/1" do
     test "should run add instruction" do
-      program = %{
-        0 => 1,
-        1 => 1,
-        2 => 1,
-        3 => 0,
-        4 => 99
-      }
-
-      program = program |> Intcode.run()
+      program = "1,1,1,0,99" |> Intcode.initialize() |> Intcode.run() |> Map.get(:program)
 
       expected_program = %{
         0 => 2,
@@ -53,15 +45,7 @@ defmodule AoC.Modules.IntcodeTest do
     end
 
     test "should run multiply instruction" do
-      program = %{
-        0 => 2,
-        1 => 3,
-        2 => 0,
-        3 => 3,
-        4 => 99
-      }
-
-      program = program |> Intcode.run()
+      program = "2,3,0,3,99" |> Intcode.initialize() |> Intcode.run() |> Map.get(:program)
 
       expected_program = %{
         0 => 2,
@@ -75,18 +59,7 @@ defmodule AoC.Modules.IntcodeTest do
     end
 
     test "should halt the program at halt instruction" do
-      program = %{
-        0 => 99,
-        1 => 1,
-        2 => 6,
-        3 => 7,
-        4 => 5,
-        5 => 0,
-        6 => 30,
-        7 => 40
-      }
-
-      program = program |> Intcode.run()
+      program = "99,1,6,7,5,0,30,40" |> Intcode.initialize() |> Intcode.run() |> Map.get(:program)
 
       expected_program = %{
         0 => 99,
@@ -103,15 +76,7 @@ defmodule AoC.Modules.IntcodeTest do
     end
 
     test "should allow immediate parameter mode" do
-      program = %{
-        0 => 101,
-        1 => 10,
-        2 => 1,
-        3 => 0,
-        4 => 99
-      }
-
-      program = program |> Intcode.run()
+      program = "101,10,1,0,99" |> Intcode.initialize() |> Intcode.run() |> Map.get(:program)
 
       expected_program = %{
         0 => 20,
@@ -125,147 +90,65 @@ defmodule AoC.Modules.IntcodeTest do
     end
 
     test "should run input instruction" do
-      program = %{
-        0 => 3,
-        1 => 3,
-        2 => 1102,
-        3 => 4,
-        4 => 3,
-        5 => 0,
-        6 => 4,
-        7 => 0
-      }
+      output =
+        "3,3,1102,4,3,0,4,0" |> Intcode.initialize() |> Intcode.run([1]) |> Map.get(:output)
 
-      assert Intcode.run(program, 1) == 3
+      assert output == 3
     end
 
     test "should run output instruction" do
-      program = %{
-        0 => 1102,
-        1 => 4,
-        2 => 3,
-        3 => 0,
-        4 => 4,
-        5 => 0
-      }
+      output = "1102,4,3,0,4,0" |> Intcode.initialize() |> Intcode.run() |> Map.get(:output)
 
-      assert Intcode.run(program) == 12
+      assert output == 12
     end
 
     test "should run jump_if_true instruction" do
-      program = %{
-        0 => 1105,
-        1 => 1,
-        2 => 5,
-        3 => 104,
-        4 => 100,
-        5 => 104,
-        6 => 200
-      }
+      output =
+        "1105,1,5,104,100,104,200" |> Intcode.initialize() |> Intcode.run() |> Map.get(:output)
 
-      assert Intcode.run(program) == 200
+      assert output == 200
 
-      program = %{
-        0 => 1105,
-        1 => 0,
-        2 => 3,
-        3 => 104,
-        4 => 100,
-        5 => 104,
-        6 => 200
-      }
+      output =
+        "1105,0,3,104,100,104,200" |> Intcode.initialize() |> Intcode.run() |> Map.get(:output)
 
-      assert Intcode.run(program) == 100
+      assert output == 100
     end
 
     test "should run jump_if_false instruction" do
-      program = %{
-        0 => 1106,
-        1 => 0,
-        2 => 5,
-        3 => 104,
-        4 => 100,
-        5 => 104,
-        6 => 200
-      }
+      output =
+        "1106,0,5,104,100,104,200" |> Intcode.initialize() |> Intcode.run() |> Map.get(:output)
 
-      assert Intcode.run(program) == 200
+      assert output == 200
 
-      program = %{
-        0 => 1106,
-        1 => 1,
-        2 => 3,
-        3 => 104,
-        4 => 100,
-        5 => 104,
-        6 => 200
-      }
+      output =
+        "1106,1,3,104,100,104,200" |> Intcode.initialize() |> Intcode.run() |> Map.get(:output)
 
-      assert Intcode.run(program) == 100
+      assert output == 100
     end
 
     test "should run less_than instruction" do
-      program = %{
-        0 => 1107,
-        1 => 1,
-        2 => 2,
-        3 => 5,
-        4 => 104,
-        5 => 999,
-      }
+      output = "1107,1,2,5,104,999" |> Intcode.initialize() |> Intcode.run() |> Map.get(:output)
 
-      assert Intcode.run(program) == 1
+      assert output == 1
 
-      program = %{
-        0 => 1107,
-        1 => 2,
-        2 => 1,
-        3 => 5,
-        4 => 4,
-        5 => 999,
-      }
+      output = "1107,2,1,5,4,999" |> Intcode.initialize() |> Intcode.run() |> Map.get(:output)
 
-      assert Intcode.run(program) == 1107
+      assert output == 1107
     end
 
     test "should run equals instruction" do
-      program = %{
-        0 => 1108,
-        1 => 2,
-        2 => 2,
-        3 => 5,
-        4 => 104,
-        5 => 999,
-      }
+      output = "1108,2,2,5,104,999" |> Intcode.initialize() |> Intcode.run() |> Map.get(:output)
 
-      assert Intcode.run(program) == 1
+      assert output == 1
 
-      program = %{
-        0 => 1108,
-        1 => 2,
-        2 => 1,
-        3 => 5,
-        4 => 4,
-        5 => 999,
-      }
+      output = "1108,2,1,5,4,999" |> Intcode.initialize() |> Intcode.run() |> Map.get(:output)
 
-      assert Intcode.run(program) == 1108
+      assert output == 1108
     end
 
     test "should run series of instructions" do
-      program = %{
-        0 => 1,
-        1 => 1,
-        2 => 1,
-        3 => 4,
-        4 => 99,
-        5 => 5,
-        6 => 6,
-        7 => 0,
-        8 => 99
-      }
-
-      program = program |> Intcode.run()
+      program =
+        "1,1,1,4,99,5,6,0,99" |> Intcode.initialize() |> Intcode.run() |> Map.get(:program)
 
       expected_program = %{
         0 => 30,
