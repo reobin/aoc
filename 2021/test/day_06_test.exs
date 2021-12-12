@@ -19,7 +19,7 @@ defmodule AoC.Day06Test do
   describe "part 2" do
     test "sample 1" do
       input = "3,4,3,1,2"
-      assert Day06.part_2(input) == 26984457539
+      assert Day06.part_2(input) == 26_984_457_539
     end
   end
 end

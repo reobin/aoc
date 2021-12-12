@@ -29,7 +29,7 @@ defmodule AoC.Day10Test do
 {<[[]]>}<{[{[{[]{()[[[]
 <{([{{}}[<[[[<>{}]]]>[]]"
 
-      assert Day10.part_2(input) == 288957
+      assert Day10.part_2(input) == 288_957
     end
   end
 end

@@ -16,5 +16,6 @@ defmodule AoC.Modules.String do
   @doc """
   Returns a map stating the frequency of each character in the string
   """
-  def get_character_frequencies(value), do: value |> String.split("", trim: true) |> Enum.frequencies()
+  def get_character_frequencies(value),
+    do: value |> String.split("", trim: true) |> Enum.frequencies()
 end
