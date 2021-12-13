@@ -1,7 +1,6 @@
 defmodule AoC.Modules.IntcodeTest do
   use ExUnit.Case
   doctest AoC.Modules.Intcode
-
   alias AoC.Modules.Intcode
 
   describe "&initialize/1" do
@@ -163,6 +162,46 @@ defmodule AoC.Modules.IntcodeTest do
       }
 
       assert program == expected_program
+    end
+
+    test "should allow big numbers" do
+      input = "104,1125899906842624,99"
+
+      assert input |> Intcode.initialize() |> Intcode.run() |> Map.get(:output) ==
+               1_125_899_906_842_624
+
+      input = "1102,34915192,34915192,7,4,7,99,0"
+
+      assert input
+             |> Intcode.initialize()
+             |> Intcode.run()
+             |> Map.get(:output)
+             |> Integer.to_string()
+             |> String.length() ==
+               16
+    end
+
+    test "should run relative_base_offset instruction" do
+      input = "109,-1,4,1,99"
+      assert input |> Intcode.initialize() |> Intcode.run() |> Map.get(:output) == -1
+
+      input = "109,-1,104,1,99"
+      assert input |> Intcode.initialize() |> Intcode.run() |> Map.get(:output) == 1
+    end
+
+    test "should allow relative parameter mode" do
+      input = "109,-1,204,1,99"
+      assert input |> Intcode.initialize() |> Intcode.run() |> Map.get(:output) == 109
+    end
+
+    test "should allow negative relative parameter mode" do
+      input = "109,1,9,2,204,-6,99"
+      assert input |> Intcode.initialize() |> Intcode.run() |> Map.get(:output) == 204
+    end
+
+    test "should allow negative relative parameter mode for relative base offset instruction" do
+      input = "109,1,209,-1,204,-106,99"
+      assert input |> Intcode.initialize() |> Intcode.run() |> Map.get(:output) == 204
     end
   end
 end

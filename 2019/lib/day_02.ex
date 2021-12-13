@@ -17,10 +17,9 @@ defmodule AoC.Day02 do
     |> Enum.find(fn {noun, verb} -> get_output(program, noun: noun, verb: verb) == target end)
   end
 
-  defp get_output(program, noun: noun, verb: verb) do
-    program
-    |> Map.put(1, noun)
-    |> Map.put(2, verb)
+  defp get_output(state, noun: noun, verb: verb) do
+    state
+    |> Map.put(:program, state |> Map.get(:program) |> Map.put(1, noun) |> Map.put(2, verb))
     |> Intcode.run()
     |> Map.get(:program)
     |> Map.get(0)

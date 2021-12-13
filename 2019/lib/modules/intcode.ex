@@ -11,10 +11,12 @@ defmodule AoC.Modules.Intcode do
   @jump_if_false 6
   @less_than 7
   @equals 8
+  @relative_base_offset 9
   @halt 99
 
   @position_mode 0
   @immediate_mode 1
+  @relative_mode 2
 
   @doc """
   Initializes the state of a intcode program
@@ -29,23 +31,24 @@ defmodule AoC.Modules.Intcode do
 
     %{
       program: program,
-      instruction_pointer: 0
+      instruction_pointer: 0,
+      relative_base: 0
     }
   end
 
   @doc """
   Runs a intcode program
   """
-  def run(state, input \\ []) do
-    state = Map.put(state, :input, input)
+  def run(state, input \\ []),
+    do: state |> Map.put(:input, input) |> then(&run_while({:cont, &1}))
 
-    state.program
-    |> Map.values()
-    |> Enum.reduce_while(state, fn _value, state ->
-      {opcode, parameter_modes} = get_instruction(state)
-      execute(opcode, Map.put(state, :parameter_modes, parameter_modes))
-    end)
+  defp run_while({:cont, state}) do
+    {opcode, parameter_modes} = get_instruction(state)
+    state = Map.put(state, :parameter_modes, parameter_modes)
+    opcode |> execute(state) |> run_while()
   end
+
+  defp run_while({:halt, state}), do: state
 
   defp get_instruction(%{program: program, instruction_pointer: instruction_pointer}) do
     [parameter_modes, opcode] =
@@ -66,8 +69,8 @@ defmodule AoC.Modules.Intcode do
     {String.to_integer(opcode), parameter_modes}
   end
 
-  defp execute(nil, state), do: {:halt, Map.put(state, :output, :halt)}
-  defp execute(@halt, state), do: {:halt, Map.put(state, :output, :halt)}
+  defp execute(nil, state), do: {:halt, Map.put(state, :output, :error)}
+  defp execute(@halt, state), do: {:halt, Map.put(state, :output, 0)}
 
   defp execute(@add, state) do
     %{
@@ -76,10 +79,11 @@ defmodule AoC.Modules.Intcode do
       instruction_pointer: instruction_pointer
     } = state
 
-    parameter_a = get_parameter(program, instruction_pointer + 1, Enum.at(parameter_modes, 0))
-    parameter_b = get_parameter(program, instruction_pointer + 2, Enum.at(parameter_modes, 1))
+    parameter_a = get_parameter(state, instruction_pointer + 1, Enum.at(parameter_modes, 0))
+    parameter_b = get_parameter(state, instruction_pointer + 2, Enum.at(parameter_modes, 1))
 
-    parameter_c = Map.get(program, instruction_pointer + 3)
+    parameter_c =
+      get_parameter(state, instruction_pointer + 3, Enum.at(parameter_modes, 2), :write)
 
     program = Map.put(program, parameter_c, parameter_a + parameter_b)
 
@@ -95,10 +99,11 @@ defmodule AoC.Modules.Intcode do
       parameter_modes: parameter_modes
     } = state
 
-    parameter_a = get_parameter(program, instruction_pointer + 1, Enum.at(parameter_modes, 0))
-    parameter_b = get_parameter(program, instruction_pointer + 2, Enum.at(parameter_modes, 1))
+    parameter_a = get_parameter(state, instruction_pointer + 1, Enum.at(parameter_modes, 0))
+    parameter_b = get_parameter(state, instruction_pointer + 2, Enum.at(parameter_modes, 1))
 
-    parameter_c = Map.get(program, instruction_pointer + 3)
+    parameter_c =
+      get_parameter(state, instruction_pointer + 3, Enum.at(parameter_modes, 2), :write)
 
     program = Map.put(program, parameter_c, parameter_a * parameter_b)
 
@@ -108,11 +113,17 @@ defmodule AoC.Modules.Intcode do
   end
 
   defp execute(@input, state) do
-    %{program: program, instruction_pointer: instruction_pointer, input: input} = state
+    %{
+      program: program,
+      instruction_pointer: instruction_pointer,
+      input: input,
+      parameter_modes: parameter_modes
+    } = state
 
     current_input = Enum.at(input, 0)
 
-    store = Map.get(program, instruction_pointer + 1)
+    store = get_parameter(state, instruction_pointer + 1, Enum.at(parameter_modes, 0), :write)
+
     program = Map.put(program, store, current_input)
 
     state =
@@ -126,32 +137,22 @@ defmodule AoC.Modules.Intcode do
   end
 
   defp execute(@output, state) do
-    %{
-      program: program,
-      instruction_pointer: instruction_pointer,
-      parameter_modes: parameter_modes
-    } = state
+    %{instruction_pointer: instruction_pointer, parameter_modes: parameter_modes} = state
 
-    output = program |> get_parameter(instruction_pointer + 1, Enum.at(parameter_modes, 0))
+    output = get_parameter(state, instruction_pointer + 1, Enum.at(parameter_modes, 0))
 
-    state = Map.put(state, :instruction_pointer, instruction_pointer + 2)
+    state = Map.merge(state, %{instruction_pointer: instruction_pointer + 2, output: output})
 
-    if output == 0 do
-      {:cont, state}
-    else
-      {:halt, Map.put(state, :output, output)}
-    end
+    action = if output == 0, do: :cont, else: :halt
+
+    {action, state}
   end
 
   defp execute(@jump_if_true, state) do
-    %{
-      program: program,
-      instruction_pointer: instruction_pointer,
-      parameter_modes: parameter_modes
-    } = state
+    %{instruction_pointer: instruction_pointer, parameter_modes: parameter_modes} = state
 
-    parameter_a = get_parameter(program, instruction_pointer + 1, Enum.at(parameter_modes, 0))
-    parameter_b = get_parameter(program, instruction_pointer + 2, Enum.at(parameter_modes, 1))
+    parameter_a = get_parameter(state, instruction_pointer + 1, Enum.at(parameter_modes, 0))
+    parameter_b = get_parameter(state, instruction_pointer + 2, Enum.at(parameter_modes, 1))
 
     next_instruction_pointer = if parameter_a != 0, do: parameter_b, else: instruction_pointer + 3
 
@@ -159,14 +160,10 @@ defmodule AoC.Modules.Intcode do
   end
 
   defp execute(@jump_if_false, state) do
-    %{
-      program: program,
-      instruction_pointer: instruction_pointer,
-      parameter_modes: parameter_modes
-    } = state
+    %{instruction_pointer: instruction_pointer, parameter_modes: parameter_modes} = state
 
-    parameter_a = get_parameter(program, instruction_pointer + 1, Enum.at(parameter_modes, 0))
-    parameter_b = get_parameter(program, instruction_pointer + 2, Enum.at(parameter_modes, 1))
+    parameter_a = get_parameter(state, instruction_pointer + 1, Enum.at(parameter_modes, 0))
+    parameter_b = get_parameter(state, instruction_pointer + 2, Enum.at(parameter_modes, 1))
 
     next_instruction_pointer = if parameter_a == 0, do: parameter_b, else: instruction_pointer + 3
 
@@ -180,10 +177,11 @@ defmodule AoC.Modules.Intcode do
       parameter_modes: parameter_modes
     } = state
 
-    parameter_a = get_parameter(program, instruction_pointer + 1, Enum.at(parameter_modes, 0))
-    parameter_b = get_parameter(program, instruction_pointer + 2, Enum.at(parameter_modes, 1))
+    parameter_a = get_parameter(state, instruction_pointer + 1, Enum.at(parameter_modes, 0))
+    parameter_b = get_parameter(state, instruction_pointer + 2, Enum.at(parameter_modes, 1))
 
-    parameter_c = Map.get(program, instruction_pointer + 3)
+    parameter_c =
+      get_parameter(state, instruction_pointer + 3, Enum.at(parameter_modes, 2), :write)
 
     value = if parameter_a < parameter_b, do: 1, else: 0
 
@@ -203,10 +201,11 @@ defmodule AoC.Modules.Intcode do
       parameter_modes: parameter_modes
     } = state
 
-    parameter_a = get_parameter(program, instruction_pointer + 1, Enum.at(parameter_modes, 0))
-    parameter_b = get_parameter(program, instruction_pointer + 2, Enum.at(parameter_modes, 1))
+    parameter_a = get_parameter(state, instruction_pointer + 1, Enum.at(parameter_modes, 0))
+    parameter_b = get_parameter(state, instruction_pointer + 2, Enum.at(parameter_modes, 1))
 
-    parameter_c = Map.get(program, instruction_pointer + 3)
+    parameter_c =
+      get_parameter(state, instruction_pointer + 3, Enum.at(parameter_modes, 2), :write)
 
     value = if parameter_a == parameter_b, do: 1, else: 0
 
@@ -219,8 +218,38 @@ defmodule AoC.Modules.Intcode do
     {:cont, state}
   end
 
-  defp get_parameter(program, address, @position_mode),
-    do: program |> Map.get(address) |> then(&Map.get(program, &1))
+  defp execute(@relative_base_offset, state) do
+    %{
+      instruction_pointer: instruction_pointer,
+      relative_base: relative_base,
+      parameter_modes: parameter_modes
+    } = state
 
-  defp get_parameter(program, address, @immediate_mode), do: Map.get(program, address)
+    offset = get_parameter(state, instruction_pointer + 1, Enum.at(parameter_modes, 0))
+
+    state =
+      Map.merge(state, %{
+        relative_base: relative_base + offset,
+        instruction_pointer: instruction_pointer + 2
+      })
+
+    {:cont, state}
+  end
+
+  defp get_parameter(state, address, @relative_mode, :write),
+    do: Map.get(state.program, address, 0) + state.relative_base
+
+  defp get_parameter(state, address, _mode, :write), do: Map.get(state.program, address, 0)
+
+  defp get_parameter(state, address, @position_mode) do
+    value = Map.get(state.program, address)
+    Map.get(state.program, value, 0)
+  end
+
+  defp get_parameter(state, address, @immediate_mode), do: Map.get(state.program, address, 0)
+
+  defp get_parameter(state, address, @relative_mode) do
+    value = Map.get(state.program, address)
+    Map.get(state.program, value + state.relative_base, 0)
+  end
 end

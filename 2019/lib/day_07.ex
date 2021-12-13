@@ -46,7 +46,7 @@ defmodule AoC.Day07 do
           amp_d = Intcode.run(amp_d, [amp_c.output])
           amp_e = Intcode.run(amp_e, [amp_d.output])
 
-          if amp_e.output == :halt do
+          if amp_e.output == 0 do
             {:halt, input}
           else
             {:cont, [amp_a, amp_b, amp_c, amp_d, amp_e]}
