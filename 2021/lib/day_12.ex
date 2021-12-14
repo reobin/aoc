@@ -16,7 +16,7 @@ defmodule AoC.Day12 do
 
     paths
     |> Map.get(from, [])
-    |> Enum.filter(&is_allowed?(&1, Map.put(path, &1, Map.get(path, &1, 0) + 1), options))
+    |> Enum.filter(&is_allowed?(&1, Map.update(path, &1, 1, fn c -> c + 1 end), options))
     |> Enum.map(&count_paths(paths, &1, path, options))
     |> Enum.sum()
   end
