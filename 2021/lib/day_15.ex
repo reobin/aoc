@@ -5,44 +5,41 @@ defmodule AoC.Day15 do
 
   alias AoC.Modules.Grid
 
-  def part_1(input), do: input |> Grid.from_string(is_integer?: true) |> lowest_risk_path()
+  def part_1(input), do: input |> Grid.from_string(is_integer?: true) |> lowest_cost_path()
 
   def part_2(input) do
     input
     |> Grid.from_string(is_integer?: true)
     |> Grid.expand(5, 5, &increment/2)
-    |> lowest_risk_path()
+    |> lowest_cost_path()
   end
 
-  defp lowest_risk_path(map) do
+  defp lowest_cost_path(map) do
     {width, height} = Grid.get_size(map)
     target = {width - 1, height - 1}
-    compute_risk(%{queue: [{0, 0}], map: map, costs: %{{0, 0} => 0}, target: target})
+    compute_cost(%{queue: [{0, {0, 0}}], map: map, found: %{{0, 0} => true}, target: target})
   end
 
-  defp compute_risk(%{queue: []} = state), do: Map.get(state.costs, state.target)
+  defp compute_cost(%{queue: [{cost, target} | _rest], target: target}), do: cost
 
-  defp compute_risk(state) do
-    [point | queue] = state.queue
+  defp compute_cost(state) do
+    [{cost, point} | queue] = state.queue
 
     state = Map.put(state, :queue, queue)
 
     point
     |> Grid.get_neighbors(state.map)
+    |> Enum.filter(&is_nil(state.found[&1]))
     |> Enum.reduce(state, fn neighbor, state ->
-      old_cost = Map.get(state.costs, neighbor, :infinity)
-      new_cost = Map.get(state.costs, point) + Map.get(state.map, neighbor)
+      new_cost = cost + Map.get(state.map, neighbor)
 
-      if new_cost < old_cost do
-        Map.merge(state, %{
-          queue: state.queue ++ [neighbor],
-          costs: Map.put(state.costs, neighbor, new_cost)
-        })
-      else
-        state
-      end
+      Map.merge(state, %{
+        queue: state.queue ++ [{new_cost, neighbor}],
+        found: Map.put(state.found, neighbor, true)
+      })
     end)
-    |> compute_risk()
+    |> then(&Map.put(&1, :queue, Enum.sort_by(&1.queue, fn {cost, _point} -> cost end)))
+    |> compute_cost()
   end
 
   defp increment(cell, {dx, dy}), do: get_risk_level(cell + dx + dy)
