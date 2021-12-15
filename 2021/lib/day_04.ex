@@ -83,7 +83,7 @@ defmodule AoC.Day04 do
 
     {
       numbers |> String.split(",", trim: true),
-      boards |> Enum.map(&Grid.from_string/1)
+      boards |> Enum.map(&Grid.from_string(&1, column_divider: " "))
     }
   end
 end

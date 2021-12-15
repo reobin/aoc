@@ -9,12 +9,12 @@ defmodule AoC.Day09 do
   @highest_level 9
 
   def part_1(input) do
-    grid = input |> Grid.from_string(column_divider: "", is_integer?: true)
+    grid = input |> Grid.from_string(is_integer?: true)
     grid |> get_low_points() |> Enum.map(&compute_risk_level(&1, grid)) |> Enum.sum()
   end
 
   def part_2(input) do
-    grid = input |> Grid.from_string(column_divider: "", is_integer?: true)
+    grid = input |> Grid.from_string(is_integer?: true)
 
     grid
     |> get_low_points()

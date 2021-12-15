@@ -23,7 +23,8 @@ defmodule AoC.Modules.Point do
   @doc """
   Returns all points adjacent to a point
   """
-  def get_neighbors({x, y}), do: [{x, y - 1}, {x + 1, y}, {x, y + 1}, {x - 1, y}]
+  def get_neighbors(point), do: get_neighbors(point, 4)
+  def get_neighbors({x, y}, 4), do: [{x, y - 1}, {x + 1, y}, {x, y + 1}, {x - 1, y}]
 
   def get_neighbors({x, y}, 8),
     do: [

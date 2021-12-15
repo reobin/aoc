@@ -15,7 +15,7 @@ defmodule AoC.Day13 do
 
     instructions
     |> Enum.reduce(paper, &fold/2)
-    |> Grid.to_string(column_divider: "", cell_width: 1, replace_nil_with: ".")
+    |> Grid.to_string(replace_nil_with: ".")
   end
 
   defp fold({coordinate, line}, paper) do

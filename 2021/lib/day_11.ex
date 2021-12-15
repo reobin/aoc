@@ -6,15 +6,8 @@ defmodule AoC.Day11 do
   alias AoC.Modules.Grid
   alias AoC.Modules.Point
 
-  def part_1(input) do
-    input
-    |> Grid.from_string(column_divider: "", is_integer?: true)
-    |> run_steps(100)
-    |> elem(1)
-  end
-
-  def part_2(input),
-    do: input |> Grid.from_string(column_divider: "", is_integer?: true) |> run_steps(1000)
+  def part_1(input), do: input |> Grid.from_string(is_integer?: true) |> run_steps(100) |> elem(1)
+  def part_2(input), do: input |> Grid.from_string(is_integer?: true) |> run_steps(1000)
 
   defp run_steps(grid, step_count), do: 1..step_count |> Enum.reduce_while({grid, 0}, &run_step/2)
 
