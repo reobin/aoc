@@ -18,4 +18,13 @@ defmodule AoC.Modules.String do
   """
   def get_character_frequencies(value),
     do: value |> String.split("", trim: true) |> Enum.frequencies()
+
+  @doc """
+  Replaces the value at a range
+  """
+  def replace_at(value, first..last, replacement) do
+    a = String.slice(value, 0..first)
+    b = String.slice(value, last..-1)
+    a <> replacement <> b
+  end
 end
