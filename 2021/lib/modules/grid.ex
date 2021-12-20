@@ -71,9 +71,17 @@ defmodule AoC.Modules.Grid do
   def get_rows(grid) do
     {width, height} = Grid.get_size(grid)
 
+    points = Grid.get_points(grid)
+
+    min_x_index = points |> Enum.map(&elem(&1, 0)) |> Enum.min(fn -> -1 end)
+    max_x_index = points |> Enum.map(&elem(&1, 0)) |> Enum.max(fn -> -1 end)
+
+    min_y_index = points |> Enum.map(&elem(&1, 1)) |> Enum.min(fn -> -1 end)
+    max_y_index = points |> Enum.map(&elem(&1, 1)) |> Enum.max(fn -> -1 end)
+
     if width > 0 and height > 0 do
-      0..(height - 1)
-      |> Enum.map(fn y -> 0..(width - 1) |> Enum.map(fn x -> grid[{x, y}] end) end)
+      min_y_index..max_y_index
+      |> Enum.map(fn y -> min_x_index..max_x_index |> Enum.map(fn x -> grid[{x, y}] end) end)
     else
       []
     end
@@ -115,8 +123,12 @@ defmodule AoC.Modules.Grid do
   Prints the grid in a 2D string
   """
   def print(grid, options \\ [])
-  def print(nil, _options), do: "grid is null"
-  def print(grid, options), do: IO.puts("\n#{Grid.to_string(grid, options)}\n")
+  def print(nil, _options), do: nil
+
+  def print(grid, options) do
+    IO.puts("\n#{Grid.to_string(grid, options)}\n")
+    grid
+  end
 
   @doc """
   Returns the string representation of a grid
@@ -169,6 +181,27 @@ defmodule AoC.Modules.Grid do
       cell = if options.is_integer?, do: String.to_integer(cell), else: cell
       Grid.set(grid, {x, y}, cell)
     end)
+  end
+
+  @doc """
+  Adds a layer of points around a grid
+  """
+  def add_layer(grid, value) do
+    points = Grid.get_points(grid)
+
+    min_x_index = points |> Enum.map(&elem(&1, 0)) |> Enum.min(fn -> -1 end)
+    max_x_index = points |> Enum.map(&elem(&1, 0)) |> Enum.max(fn -> -1 end)
+
+    min_y_index = points |> Enum.map(&elem(&1, 1)) |> Enum.min(fn -> -1 end)
+    max_y_index = points |> Enum.map(&elem(&1, 1)) |> Enum.max(fn -> -1 end)
+
+    top = (min_x_index - 1)..(max_x_index + 1) |> Enum.map(&{&1, min_y_index - 1})
+    right = min_y_index..max_y_index |> Enum.map(&{max_x_index + 1, &1})
+    bottom = (min_x_index - 1)..(max_x_index + 1) |> Enum.map(&{&1, max_y_index + 1})
+    left = min_y_index..max_y_index |> Enum.map(&{min_x_index - 1, &1})
+
+    (top ++ right ++ bottom ++ left)
+    |> Enum.reduce(grid, &Grid.set(&2, &1, value))
   end
 
   @doc """
