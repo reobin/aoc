@@ -50,7 +50,7 @@ BC -> B
 CC -> N
 CN -> C"
 
-      assert Day14.part_2(input) == 2188189693529
+      assert Day14.part_2(input) == 2_188_189_693_529
     end
   end
 end

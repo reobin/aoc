@@ -18,7 +18,7 @@ defmodule AoC.Day23 do
 
   def part_2(input) do
     input
-    |> unfold
+    |> unfold()
     |> Grid.from_string()
     |> Grid.print()
     |> solve()

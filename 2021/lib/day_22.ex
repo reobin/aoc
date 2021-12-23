@@ -47,6 +47,7 @@ defmodule AoC.Day22 do
     |> Enum.map(fn line ->
       [_ | coordinates] = Regex.run(~r/x=(.+)\.\.(.+),y=(.+)\.\.(.+),z=(.+)\.\.(.+)/, line)
       [x1, x2, y1, y2, z1, z2] = Enum.map(coordinates, &String.to_integer/1)
+
       %{
         value: if(String.contains?(line, "on"), do: 1, else: 0),
         range: {x1..x2, y1..y2, z1..z2}
