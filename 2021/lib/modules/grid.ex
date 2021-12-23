@@ -141,7 +141,7 @@ defmodule AoC.Modules.Grid do
       row_divider: "\n",
       column_divider: "",
       cell_width: 1,
-      replace_nil_with: nil
+      replace_nil_with: " "
     }
 
     options = Enum.into(options, default_options)
