@@ -98,7 +98,7 @@ defmodule AoC.Day23 do
     solve(grid, states, energy)
   end
 
-  defp possible_moves({x, 1} = point, grid) do
+  defp possible_moves({_, 1} = point, grid) do
     grid
     |> Grid.get(point)
     |> room_points()
@@ -166,7 +166,7 @@ defmodule AoC.Day23 do
 
   defp placed?(_point, _grid, "D"), do: false
 
-  defp complete?(grid \\ 2) do
+  defp complete?(grid) do
     "A" |> room_points() |> Enum.all?(&(Grid.get(grid, &1) == "A")) and
       "B" |> room_points() |> Enum.all?(&(Grid.get(grid, &1) == "B")) and
       "C" |> room_points() |> Enum.all?(&(Grid.get(grid, &1) == "C")) and

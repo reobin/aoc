@@ -1,8 +1,6 @@
 defmodule AoC.Day16 do
   @moduledoc """
   https://adventofcode.com/2021/day/16
-
-  TODO: Please do refactor this :)
   """
 
   alias AoC.Modules.Binary
