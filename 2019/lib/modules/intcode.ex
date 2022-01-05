@@ -22,18 +22,15 @@ defmodule AoC.Modules.Intcode do
   Initializes the state of a intcode program
   """
   def initialize(instructions) do
-    program =
-      instructions
-      |> String.split(",", trim: true)
-      |> Enum.map(&String.to_integer/1)
-      |> Enum.with_index()
-      |> Enum.reduce(%{}, fn {value, address}, program -> Map.put(program, address, value) end)
+    %{program: parse_instructions(instructions), instruction_pointer: 0, relative_base: 0}
+  end
 
-    %{
-      program: program,
-      instruction_pointer: 0,
-      relative_base: 0
-    }
+  defp parse_instructions(instructions) do
+    instructions
+    |> String.split(",", trim: true)
+    |> Enum.map(&String.to_integer/1)
+    |> Enum.with_index()
+    |> Enum.reduce(%{}, fn {value, address}, program -> Map.put(program, address, value) end)
   end
 
   @doc """
@@ -70,7 +67,7 @@ defmodule AoC.Modules.Intcode do
   end
 
   defp execute(nil, state), do: {:halt, Map.put(state, :output, :error)}
-  defp execute(@halt, state), do: {:halt, Map.put(state, :output, 0)}
+  defp execute(@halt, state), do: {:halt, Map.put(state, :output, :halt)}
 
   defp execute(@add, state) do
     %{
@@ -143,9 +140,7 @@ defmodule AoC.Modules.Intcode do
 
     state = Map.merge(state, %{instruction_pointer: instruction_pointer + 2, output: output})
 
-    action = if output == 0, do: :cont, else: :halt
-
-    {action, state}
+    {:halt, state}
   end
 
   defp execute(@jump_if_true, state) do

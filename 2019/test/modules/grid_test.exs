@@ -52,16 +52,16 @@ defmodule AoC.Modules.GridTest do
 
     test "should return string representation of a grid" do
       grid = %{
-        {0, 0} => "12",
-        {1, 0} => "13",
-        {2, 0} => "14",
+        {0, 0} => "1",
+        {1, 0} => "1",
+        {2, 0} => "1",
         {0, 1} => "5",
         {1, 1} => "5",
         {2, 1} => "6"
       }
 
-      expected_string = "12 13 14
- 5  5  6"
+      expected_string = "111
+556"
 
       assert Grid.to_string(grid) == expected_string
     end
