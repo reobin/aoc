@@ -62,9 +62,17 @@ defmodule AoC.Modules.Grid do
   def get_rows(grid) do
     {width, height} = Grid.get_size(grid)
 
+    points = Grid.get_points(grid)
+
+    min_x_index = points |> Enum.map(&elem(&1, 0)) |> Enum.min(fn -> -1 end)
+    max_x_index = points |> Enum.map(&elem(&1, 0)) |> Enum.max(fn -> -1 end)
+
+    min_y_index = points |> Enum.map(&elem(&1, 1)) |> Enum.min(fn -> -1 end)
+    max_y_index = points |> Enum.map(&elem(&1, 1)) |> Enum.max(fn -> -1 end)
+
     if width > 0 and height > 0 do
-      0..(height - 1)
-      |> Enum.map(fn y -> 0..(width - 1) |> Enum.map(fn x -> grid[{x, y}] end) end)
+      min_y_index..max_y_index
+      |> Enum.map(fn y -> min_x_index..max_x_index |> Enum.map(fn x -> grid[{x, y}] end) end)
     else
       []
     end
@@ -120,7 +128,7 @@ defmodule AoC.Modules.Grid do
       row_divider: "\n",
       column_divider: "",
       cell_width: 1,
-      replace_nil_with: ""
+      replace_nil_with: " "
     }
 
     options = Enum.into(options, default_options)
