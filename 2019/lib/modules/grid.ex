@@ -4,6 +4,7 @@ defmodule AoC.Modules.Grid do
   """
 
   alias AoC.Modules.Grid
+  alias AoC.Modules.Point
 
   @doc """
   Returns all points in a grid
@@ -35,14 +36,18 @@ defmodule AoC.Modules.Grid do
   Returns a size in width and height
   """
   def get_size(nil), do: {0, 0}
+  def get_size(grid) when grid == %{}, do: {0, 0}
 
   def get_size(grid) do
     points = Grid.get_points(grid)
 
+    min_x_index = points |> Enum.map(&elem(&1, 0)) |> Enum.min(fn -> -1 end)
     max_x_index = points |> Enum.map(&elem(&1, 0)) |> Enum.max(fn -> -1 end)
+
+    min_y_index = points |> Enum.map(&elem(&1, 1)) |> Enum.min(fn -> -1 end)
     max_y_index = points |> Enum.map(&elem(&1, 1)) |> Enum.max(fn -> -1 end)
 
-    {max_x_index + 1, max_y_index + 1}
+    {max_x_index - min_x_index + 1, max_y_index - min_y_index + 1}
   end
 
   @doc """
@@ -93,6 +98,14 @@ defmodule AoC.Modules.Grid do
       []
     end
   end
+
+  @doc """
+  Returns all neighbors of a point that exist on the grid
+  """
+  def get_neighbors(point, grid), do: get_neighbors(point, grid, 4)
+
+  def get_neighbors(point, grid, count),
+    do: point |> Point.get_neighbors(count) |> Enum.filter(&(not is_nil(Grid.get(grid, &1))))
 
   @doc """
   Updates a point with a new value

@@ -48,4 +48,22 @@ defmodule AoC.Modules.Point do
     |> elem(1)
     |> Enum.filter(&(&1 not in [{x1, y1}, {x2, y2}]))
   end
+
+  @doc """
+  Returns all points adjacent to a point
+  """
+  def get_neighbors(point), do: get_neighbors(point, 4)
+  def get_neighbors({x, y}, 4), do: [{x, y - 1}, {x + 1, y}, {x, y + 1}, {x - 1, y}]
+
+  def get_neighbors({x, y}, 8),
+    do: [
+      {x, y - 1},
+      {x + 1, y - 1},
+      {x + 1, y},
+      {x + 1, y + 1},
+      {x, y + 1},
+      {x - 1, y + 1},
+      {x - 1, y},
+      {x - 1, y - 1}
+    ]
 end
