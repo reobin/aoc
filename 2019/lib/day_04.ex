@@ -3,26 +3,18 @@ defmodule AoC.Day04 do
   https://adventofcode.com/2019/day/4
   """
 
-  def part_1(input),
-    do: input |> get_range() |> Enum.filter(&is_valid?/1) |> Enum.count()
-
-  def part_2(input),
-    do: input |> get_range() |> Enum.filter(&is_valid?(&1, :strict)) |> Enum.count()
+  def part_1(input), do: input |> get_range() |> Enum.count(&is_valid?(&1, :loose))
+  def part_2(input), do: input |> get_range() |> Enum.count(&is_valid?(&1, :strict))
 
   defp get_range(input) do
     input
     |> String.split("-")
     |> Enum.map(&String.to_integer/1)
     |> then(fn [min, max] -> min..max end)
-    |> Enum.to_list()
   end
 
-  defp is_valid?(password, option \\ nil)
-
-  defp is_valid?(password, option) do
-    digits = password |> Integer.digits()
-    increments?(digits) and has_double?(digits, option)
-  end
+  defp is_valid?(password, option),
+    do: password |> Integer.digits() |> then(&(increments?(&1) and has_double?(&1, option)))
 
   defp increments?([]), do: true
   defp increments?([d1 | [d2 | _]]) when d1 > d2, do: false
@@ -36,7 +28,7 @@ defmodule AoC.Day04 do
   defp has_double?([d, d | _digits], :strict), do: true
   defp has_double?([_d | digits], :strict), do: has_double?(digits, :strict)
 
-  defp has_double?([], nil), do: false
-  defp has_double?([d1 | [d2 | _]], nil) when d1 == d2, do: true
-  defp has_double?([_ | digits], nil), do: has_double?(digits, nil)
+  defp has_double?([], :loose), do: false
+  defp has_double?([d | [d | _]], :loose), do: true
+  defp has_double?([_ | digits], :loose), do: has_double?(digits, :loose)
 end
