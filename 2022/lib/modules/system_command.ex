@@ -1,10 +1,10 @@
 defmodule AoC.Modules.SystemCommand do
   @moduledoc """
-  Helper functions for system commands
+  Helper functions for system commands.
   """
 
   @doc """
-  Gets day from command line arguments
+  Gets day from command line arguments.
   """
   @spec get_day() :: {integer, String.t()} | nil
   def get_day do
