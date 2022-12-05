@@ -13,7 +13,7 @@ end
 
 module = String.to_existing_atom("Elixir.AoC.Day#{day}")
 
-input = File.read!("input/day_#{day}.txt") |> String.trim()
+input = File.read!("input/day_#{day}.txt") |> String.trim_trailing()
 
 IO.puts("# Part 1")
 input |> module.part_1() |> IO.puts()

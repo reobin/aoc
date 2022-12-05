@@ -1,4 +1,4 @@
-defmodule AoC.Modules.ListText do
+defmodule AoC.Modules.ListTest do
   use ExUnit.Case
   doctest AoC.Modules.List
 
