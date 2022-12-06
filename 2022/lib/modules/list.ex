@@ -15,4 +15,10 @@ defmodule AoC.Modules.List do
   """
   @spec split(list(), integer()) :: list()
   def split(list, parts), do: list |> Enum.chunk_every(trunc(Enum.count(list) / parts))
+
+  @doc """
+  Returns true if the list is only composed of unique elements.
+  """
+  @spec unique?(list()) :: boolean()
+  def unique?(list), do: list |> MapSet.new() |> MapSet.size() == Enum.count(list)
 end

@@ -28,4 +28,18 @@ defmodule AoC.Modules.ListTest do
              ]
     end
   end
+
+  describe "&unique?/1" do
+    test "should return true if the list is only composed of unique elements" do
+      assert List.unique?(["a", "b", "c"])
+    end
+
+    test "should return false if the list is not only composed of unique elements" do
+      refute List.unique?(["a", "b", "c", "a"])
+    end
+
+    test "should return true if the list is empty" do
+      assert List.unique?([])
+    end
+  end
 end
