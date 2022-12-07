@@ -1,0 +1,80 @@
+#! /usr/bin/env elixir
+
+# Creates all necessary files for a specific day challenge
+
+alias AoC.Modules.FileSystem
+alias AoC.Modules.SystemCommand
+
+{raw_day, day} = SystemCommand.get_day()
+
+if is_nil(day) do
+  raise "Please provide a day: mix aoc.create 12"
+  exit(1)
+end
+
+IO.puts("Creating files for day #{day}")
+
+module_file_path = "lib/day_#{day}.ex"
+test_file_path = "test/day_#{day}_test.exs"
+
+files = [module_file_path, test_file_path]
+
+files |> Enum.each(fn path -> if File.exists?(path), do: exit("#{path} exists") end)
+
+# Create module file
+module_file_content = """
+defmodule AoC.Day#{day} do
+  @moduledoc \"""
+  https://adventofcode.com/2015/day/#{raw_day}
+  \"""
+
+  def part_1(input) do
+    0
+  end
+
+  def part_2(_input) do
+    0
+  end
+end
+"""
+
+:ok = FileSystem.write(module_file_path, module_file_content)
+
+# Create test module file
+
+test_file_content = """
+defmodule AoC.Day#{day}Test do
+  use ExUnit.Case
+  doctest AoC.Day#{day}
+
+  alias AoC.Day#{day}
+
+  describe "part 1" do
+    test "sample 1" do
+      input = "test input"
+      assert Day#{day}.part_1(input) == 0
+    end
+  end
+
+  describe "part 2" do
+    test "sample 1" do
+      input = "test input"
+      assert Day#{day}.part_2(input) == 0
+    end
+  end
+end
+"""
+
+:ok = FileSystem.write(test_file_path, test_file_content)
+
+{response, return_code} =
+  File.cwd!() |> Path.join("bin/download_input") |> System.cmd([raw_day, day])
+
+if return_code != 0 do
+  Enum.each(files, &File.rm/1)
+
+  IO.puts("\nError downloading input:")
+  IO.puts(response)
+
+  System.halt(1)
+end
