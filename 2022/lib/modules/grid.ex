@@ -187,7 +187,7 @@ defmodule AoC.Modules.Grid do
   def from_string(nil), do: nil
 
   def from_string(value, options \\ []) do
-    default_options = %{row_divider: "\n", column_divider: " ", integer?: false}
+    default_options = %{row_divider: "\n", column_divider: "", integer?: false}
     options = Enum.into(options, default_options)
 
     value
@@ -201,6 +201,55 @@ defmodule AoC.Modules.Grid do
         cell = if options.integer?, do: String.to_integer(cell), else: cell
         Grid.set(grid, {x, y}, cell)
       end)
+    end)
+  end
+
+  @doc """
+  Adds a layer of points around a grid
+  """
+  @spec add_layer(grid(), any()) :: grid()
+  def add_layer(grid, value) do
+    points = Grid.points(grid)
+
+    min_x_index = points |> Enum.map(&elem(&1, 0)) |> Enum.min(fn -> -1 end)
+    max_x_index = points |> Enum.map(&elem(&1, 0)) |> Enum.max(fn -> -1 end)
+
+    min_y_index = points |> Enum.map(&elem(&1, 1)) |> Enum.min(fn -> -1 end)
+    max_y_index = points |> Enum.map(&elem(&1, 1)) |> Enum.max(fn -> -1 end)
+
+    top = (min_x_index - 1)..(max_x_index + 1) |> Enum.map(&{&1, min_y_index - 1})
+    right = min_y_index..max_y_index |> Enum.map(&{max_x_index + 1, &1})
+    bottom = (min_x_index - 1)..(max_x_index + 1) |> Enum.map(&{&1, max_y_index + 1})
+    left = min_y_index..max_y_index |> Enum.map(&{min_x_index - 1, &1})
+
+    (top ++ right ++ bottom ++ left)
+    |> Enum.reduce(grid, &Grid.set(&2, &1, value))
+  end
+
+  @doc """
+  Expands a grid by copying it in x and y
+  """
+  @spec expand(grid(), integer(), integer()) :: grid()
+  def expand(grid, x_multiplier, y_multiplier),
+    do: expand(grid, x_multiplier, y_multiplier, fn value, _distance -> value end)
+
+  @spec expand(grid(), integer(), integer(), (any() -> any())) :: grid()
+  def expand(grid, w_multiplier, h_multiplier, get_value) do
+    {width, height} = Grid.size(grid)
+
+    new_width = width * w_multiplier
+    new_height = height * h_multiplier
+
+    for(x <- 0..(new_width - 1), y <- 0..(new_height - 1), do: {x, y})
+    |> Enum.reduce(grid, fn {x, y} = point, grid ->
+      dx = floor(x / width)
+      dy = floor(y / height)
+
+      ox = if x > width - 1, do: x - width * dx, else: x
+      oy = if y > height - 1, do: y - height * dy, else: y
+
+      value = grid |> Grid.get({ox, oy}) |> get_value.({dx, dy})
+      Grid.set(grid, point, value)
     end)
   end
 end

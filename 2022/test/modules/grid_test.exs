@@ -14,13 +14,13 @@ defmodule AoC.Modules.GridTest do
     end
 
     test "should build a grid given a 2D string value" do
-      value = "12 13 14
- 5  5  6"
+      value = "111
+556"
 
       expected_grid = %{
-        {0, 0} => "12",
-        {1, 0} => "13",
-        {2, 0} => "14",
+        {0, 0} => "1",
+        {1, 0} => "1",
+        {2, 0} => "1",
         {0, 1} => "5",
         {1, 1} => "5",
         {2, 1} => "6"
@@ -335,6 +335,105 @@ defmodule AoC.Modules.GridTest do
       }
 
       assert Grid.replace(grid, "14", "10") == expected_grid
+    end
+  end
+
+  describe "&expand/2" do
+    test "should expand grid with the same values" do
+      input = "10
+01"
+
+      grid = Grid.from_string(input)
+
+      expanded_grid = Grid.expand(grid, 2, 2)
+
+      input = "1010
+0101
+1010
+0101"
+      expected_grid = Grid.from_string(input)
+
+      assert expanded_grid == expected_grid
+    end
+
+    test "should expand grid with the same values of a bigger grid" do
+      input = "101001101001
+011010011010
+101001101001
+011010011010"
+
+      grid = Grid.from_string(input)
+
+      expanded_grid = Grid.expand(grid, 3, 1)
+
+      input = "101001101001101001101001101001101001
+011010011010011010011010011010011010
+101001101001101001101001101001101001
+011010011010011010011010011010011010"
+
+      expected_grid = Grid.from_string(input)
+
+      assert expanded_grid == expected_grid
+    end
+
+    test "should expand grid with a value modifier" do
+      input = "10
+01"
+
+      grid = Grid.from_string(input, integer?: true)
+
+      expanded_grid = Grid.expand(grid, 2, 2, fn cell, {dx, dy} -> cell + dx + dy end)
+
+      input = "1021
+0112
+2132
+1223"
+      expected_grid = Grid.from_string(input, integer?: true)
+
+      assert expanded_grid == expected_grid
+    end
+
+    test "should expand grid with a value modifier with a bigger grid" do
+      input = "101001101001
+011010011010
+101001101001
+011010011010"
+
+      grid = Grid.from_string(input, integer?: true)
+
+      expanded_grid = Grid.expand(grid, 3, 1, fn cell, {dx, dy} -> cell + dx + dy end)
+
+      input = "101001101001212112212112323223323223
+011010011010122121122121233232233232
+101001101001212112212112323223323223
+011010011010122121122121233232233232"
+
+      expected_grid = Grid.from_string(input, integer?: true)
+
+      assert expanded_grid == expected_grid
+    end
+  end
+
+  describe "&add_layer/2" do
+    test "should add layer around grid" do
+      input = "1010
+0110
+1010
+0110"
+
+      layered_grid =
+        input |> Grid.from_string(integer?: true) |> Grid.add_layer(3) |> Grid.to_string()
+
+      input = "333333
+310103
+301103
+310103
+301103
+333333"
+
+      expected_grid = input |> Grid.from_string(integer?: true) |> Grid.to_string()
+
+      assert layered_grid == expected_grid
     end
   end
 end
