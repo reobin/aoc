@@ -54,6 +54,13 @@ defmodule AoC.Modules.Point do
   end
 
   @doc """
+  Returns the distance of two points.
+  """
+  @spec distance(point(), point()) :: integer()
+  def distance(point, point), do: 0
+  def distance({ax, ay}, {bx, by}), do: :math.sqrt(:math.pow(ax - bx, 2) + :math.pow(ay - by, 2))
+
+  @doc """
   Returns all points adjacent to a point.
   """
   @spec neighbors(point()) :: [point()]
@@ -73,4 +80,10 @@ defmodule AoC.Modules.Point do
       {x - 1, y},
       {x - 1, y - 1}
     ]
+
+  @doc """
+  Returns true if the two points share an axis.
+  """
+  @spec share_axis?(point(), point()) :: boolean()
+  def share_axis?({x1, y1}, {x2, y2}), do: x1 == x2 or y1 == y2
 end
