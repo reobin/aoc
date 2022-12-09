@@ -13,7 +13,7 @@ defmodule AoC.MixProject do
   end
 
   def application do
-    [extra_applications: [:logger]]
+    [extra_applications: [:logger, :crypto]]
   end
 
   defp aliases do
