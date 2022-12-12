@@ -5,44 +5,19 @@ defmodule AoC2021.Day15 do
 
   alias AoC.Grid
 
-  def part_1(input), do: input |> Grid.from_string(integer?: true) |> lowest_cost_path()
+  def part_1(input), do: input |> Grid.from_string(integer?: true) |> shortest_path()
 
-  def part_2(input) do
-    input
-    |> Grid.from_string(integer?: true)
-    |> Grid.expand(5, 5, &increment/2)
-    |> lowest_cost_path()
-  end
+  def part_2(input),
+    do: input |> Grid.from_string(integer?: true) |> Grid.expand(5, 5, &inc/2) |> shortest_path()
 
-  defp lowest_cost_path(map) do
+  defp shortest_path(map) do
     {width, height} = Grid.size(map)
     target = {width - 1, height - 1}
-    compute_cost(%{queue: [{0, {0, 0}}], map: map, found: %{{0, 0} => true}, target: target})
+
+    Grid.shortest_path(map, {0, 0}, target, cost: &Map.get(&1, &2))
   end
 
-  defp compute_cost(%{queue: [{cost, target} | _rest], target: target}), do: cost
-
-  defp compute_cost(state) do
-    [{cost, point} | queue] = state.queue
-
-    state = Map.put(state, :queue, queue)
-
-    point
-    |> Grid.neighbors(state.map)
-    |> Enum.filter(&is_nil(state.found[&1]))
-    |> Enum.reduce(state, fn neighbor, state ->
-      new_cost = cost + Map.get(state.map, neighbor)
-
-      Map.merge(state, %{
-        queue: state.queue ++ [{new_cost, neighbor}],
-        found: Map.put(state.found, neighbor, true)
-      })
-    end)
-    |> then(&Map.put(&1, :queue, Enum.sort_by(&1.queue, fn {cost, _point} -> cost end)))
-    |> compute_cost()
-  end
-
-  defp increment(cell, {dx, dy}), do: get_risk_level(cell + dx + dy)
+  defp inc(cell, {dx, dy}), do: get_risk_level(cell + dx + dy)
 
   defp get_risk_level(value) when value > 9, do: value - 9
   defp get_risk_level(value), do: value
