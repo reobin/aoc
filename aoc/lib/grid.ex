@@ -1,10 +1,10 @@
-defmodule AoC.Modules.Grid do
+defmodule AoC.Grid do
   @moduledoc """
   Module for a 2D grid made of points.
   """
 
-  alias AoC.Modules.Grid
-  alias AoC.Modules.Point
+  alias AoC.Grid
+  alias AoC.Point
 
   @type grid :: map()
   @type point :: {integer(), integer()}

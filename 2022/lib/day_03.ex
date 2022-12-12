@@ -1,9 +1,9 @@
-defmodule AoC.Day03 do
+defmodule AoC2022.Day03 do
   @moduledoc """
   https://adventofcode.com/2022/day/3
   """
 
-  alias AoC.Modules.List
+  alias AoC.List
 
   @score String.codepoints("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 

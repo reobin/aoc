@@ -1,8 +1,8 @@
-defmodule AoC.Modules.PointTest do
+defmodule AoC.PointTest do
   use ExUnit.Case
-  doctest AoC.Modules.Point
+  doctest AoC.Point
 
-  alias AoC.Modules.Point
+  alias AoC.Point
 
   describe "&Point.manhattan_distance/1" do
     test "should return the manhattan distance of a point" do

@@ -1,8 +1,8 @@
-defmodule AoC.Day07Test do
+defmodule AoC2022.Day07Test do
   use ExUnit.Case
-  doctest AoC.Day07
+  doctest AoC2022.Day07
 
-  alias AoC.Day07
+  alias AoC2022.Day07
 
   describe "part 1" do
     test "sample 1" do

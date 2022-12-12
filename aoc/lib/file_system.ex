@@ -1,4 +1,4 @@
-defmodule AoC.Modules.FileSystem do
+defmodule AoC.FileSystem do
   @moduledoc """
   Helper functions for file I/O.
   """

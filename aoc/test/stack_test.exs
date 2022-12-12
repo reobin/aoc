@@ -1,8 +1,8 @@
-defmodule AoC.Modules.StackTest do
+defmodule AoC.StackTest do
   use ExUnit.Case
-  doctest AoC.Modules.Stack
+  doctest AoC.Stack
 
-  alias AoC.Modules.Stack
+  alias AoC.Stack
 
   describe "&pop/1" do
     test "should return the new stack and top" do

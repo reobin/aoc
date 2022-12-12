@@ -1,4 +1,4 @@
-defmodule AoC.Modules.Stack do
+defmodule AoC.Stack do
   @moduledoc """
   Helper functions to work with stacks.
   """

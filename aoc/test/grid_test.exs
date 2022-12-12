@@ -1,8 +1,8 @@
-defmodule AoC.Modules.GridTest do
+defmodule AoC.GridTest do
   use ExUnit.Case
-  doctest AoC.Modules.Grid
+  doctest AoC.Grid
 
-  alias AoC.Modules.Grid
+  alias AoC.Grid
 
   describe "&from_string/1" do
     test "should return null when given null" do

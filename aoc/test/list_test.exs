@@ -1,8 +1,8 @@
-defmodule AoC.Modules.ListTest do
+defmodule AoC.ListTest do
   use ExUnit.Case
-  doctest AoC.Modules.List
+  doctest AoC.List
 
-  alias AoC.Modules.List
+  alias AoC.List
 
   describe "&intersection/1" do
     test "should find common elements between the lists" do

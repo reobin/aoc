@@ -1,10 +1,10 @@
-defmodule AoC.Day08 do
+defmodule AoC2022.Day08 do
   @moduledoc """
   https://adventofcode.com/2022/day/8
   """
 
-  alias AoC.Modules.Grid
-  alias AoC.Modules.Point
+  alias AoC.Grid
+  alias AoC.Point
 
   def part_1(input) do
     grid = Grid.from_string(input, column_divider: "", integer?: true)

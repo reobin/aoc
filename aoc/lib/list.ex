@@ -1,4 +1,4 @@
-defmodule AoC.Modules.List do
+defmodule AoC.List do
   @moduledoc """
   Helper functions for working with lists.
   """
@@ -6,7 +6,7 @@ defmodule AoC.Modules.List do
   @doc """
   Returns the list of common elements between given lists.
   """
-  @spec intersection(list()) :: list()
+  @spec intersection(list(list())) :: list()
   def intersection(list),
     do: list |> Enum.map(&MapSet.new/1) |> Enum.reduce(&MapSet.intersection/2) |> MapSet.to_list()
 

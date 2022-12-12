@@ -1,4 +1,4 @@
-defmodule AoC.Modules.Point do
+defmodule AoC.Point do
   @moduledoc """
   Module for 2D points.
   """

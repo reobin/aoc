@@ -1,9 +1,9 @@
-defmodule AoC.Day09 do
+defmodule AoC2022.Day09 do
   @moduledoc """
   https://adventofcode.com/2022/day/9
   """
 
-  alias AoC.Modules.Point
+  alias AoC.Point
 
   def part_1(input),
     do: input |> parse() |> move_rope({build_rope(2), [build_rope(2)]}) |> count_tail_moves()

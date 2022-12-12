@@ -1,9 +1,9 @@
-defmodule AoC.Day05 do
+defmodule AoC2022.Day05 do
   @moduledoc """
   https://adventofcode.com/2022/day/5
   """
 
-  alias AoC.Modules.Stack
+  alias AoC.Stack
 
   def part_1(input) do
     {stacks, instructions} = parse(input)

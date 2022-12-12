@@ -1,9 +1,9 @@
-defmodule AoC.Day06 do
+defmodule AoC2022.Day06 do
   @moduledoc """
   https://adventofcode.com/2022/day/6
   """
 
-  alias AoC.Modules.List
+  alias AoC.List
 
   def part_1(input), do: solve(input, 4)
   def part_2(input), do: solve(input, 14)
