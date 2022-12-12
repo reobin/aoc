@@ -42,4 +42,26 @@ defmodule AoC.Modules.ListTest do
       assert List.unique?([])
     end
   end
+
+  describe "&pairs/1" do
+    test "should return all possible unique pairs" do
+      assert List.pairs([1, 2, 3]) == [[1, 2], [1, 3], [2, 3]]
+      assert List.pairs(["abc", "def", "zyx"]) == [["abc", "def"], ["abc", "zyx"], ["def", "zyx"]]
+    end
+  end
+
+  describe "&permutations/1" do
+    test "should return all possible permutations" do
+      list = [1, 2, 3]
+
+      assert List.permutations(list) == [
+               [1, 2, 3],
+               [1, 3, 2],
+               [2, 1, 3],
+               [2, 3, 1],
+               [3, 1, 2],
+               [3, 2, 1]
+             ]
+    end
+  end
 end
