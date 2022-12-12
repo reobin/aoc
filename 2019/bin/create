@@ -29,6 +29,7 @@ defmodule AoC2019.Day#{day} do
   \"""
 
   def part_1(input) do
+    0
   end
 
   def part_2(_input) do
@@ -37,7 +38,7 @@ defmodule AoC2019.Day#{day} do
 end
 """
 
-{:ok} = FileSystem.write(module_file_path, module_file_content)
+:ok = FileSystem.write(module_file_path, module_file_content)
 
 # Create test module file
 
@@ -50,21 +51,19 @@ defmodule AoC2019.Day#{day}Test do
 
   describe "part 1" do
     test "sample 1" do
-      input = "test input"
-      assert Day#{day}.part_1(input) == 0
+      assert Day#{day}.part_1("") == 0
     end
   end
 
   describe "part 2" do
     test "sample 1" do
-      input = "test input"
-      assert Day#{day}.part_2(input) == 0
+      assert Day#{day}.part_2("") == 0
     end
   end
 end
 """
 
-{:ok} = FileSystem.write(test_file_path, test_file_content)
+:ok = FileSystem.write(test_file_path, test_file_content)
 
 {response, return_code} =
   File.cwd!() |> Path.join("bin/download_input") |> System.cmd([raw_day, day])

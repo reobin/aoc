@@ -39,7 +39,7 @@ defmodule AoC2019.Day14Test do
 7 DCFZ, 7 PSHF => 2 XJWVT
 165 ORE => 2 GPVTF
 3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT"
-      assert Day14.part_2(input) == 82892753
+      assert Day14.part_2(input) == 82_892_753
     end
 
     test "sample 2" do
@@ -55,7 +55,7 @@ defmodule AoC2019.Day14Test do
 1 NVRVD => 8 CXFTF
 1 VJHF, 6 MNCFX => 4 RFSQX
 176 ORE => 6 VJHF"
-      assert Day14.part_2(input) == 5586022
+      assert Day14.part_2(input) == 5_586_022
     end
 
     test "sample 3" do
@@ -76,7 +76,7 @@ defmodule AoC2019.Day14Test do
 121 ORE => 7 VRPVC
 7 XCVML => 6 RJRHP
 5 BHXH, 4 VRPVC => 5 LTCX"
-      assert Day14.part_2(input) == 460664
+      assert Day14.part_2(input) == 460_664
     end
   end
 end
