@@ -1,9 +1,9 @@
-defmodule AoC.Day06 do
+defmodule AoC2021.Day06 do
   @moduledoc """
   https://adventofcode.com/2021/day/6
   """
 
-  alias AoC.Modules.String
+  alias AoC.String
 
   def part_1(input, day_count \\ 80), do: input |> get_state() |> get_fish_count(day_count)
   def part_2(input, day_count \\ 256), do: input |> get_state() |> get_fish_count(day_count)

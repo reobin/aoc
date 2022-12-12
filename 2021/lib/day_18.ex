@@ -1,9 +1,9 @@
-defmodule AoC.Day18 do
+defmodule AoC2021.Day18 do
   @moduledoc """
   https://adventofcode.com/2021/day/18
   """
 
-  alias AoC.Modules.String, as: StringHelper
+  alias AoC.String, as: StringHelper
 
   def part_1(input) do
     [first | numbers] = get_numbers(input)
@@ -50,7 +50,7 @@ defmodule AoC.Day18 do
           [_, {index, length}] = left
           value = pair.lead |> String.slice(index..(index + length - 1)) |> String.to_integer()
           replacement = Integer.to_string(value + pair.a)
-          StringHelper.replace_at(pair.lead, (index - 1)..(index + length), replacement)
+          StringHelper.replace_at(pair.lead, index..(index + length - 1), replacement)
         end
 
       trail =
@@ -103,7 +103,7 @@ defmodule AoC.Day18 do
       [{index, length}] = match
       value = String.slice(number, index..(index + length - 1)) |> String.to_integer()
       replacement = "[#{floor(value / 2)},#{ceil(value / 2)}]"
-      StringHelper.replace_at(number, (index - 1)..(index + length), replacement)
+      StringHelper.replace_at(number, index..(index + length - 1), replacement)
     end
   end
 

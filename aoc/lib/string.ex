@@ -17,5 +17,14 @@ defmodule AoC.String do
   @doc """
   Counts a character in a string.
   """
-  def count(str, c), do: str |> character_frequencies() |> Map.get(c, 0)
+  def count(str, c), do: str |> character_frequencies() |> Map.get(to_string(c), 0)
+
+  @doc """
+  Replaces the value at a range
+  """
+  def replace_at(value, first..last, replacement) do
+    a = String.slice(value, 0..(first - 1))
+    b = String.slice(value, (last + 1)..-1)
+    a <> replacement <> b
+  end
 end

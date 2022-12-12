@@ -1,9 +1,9 @@
-defmodule AoC.Day12 do
+defmodule AoC2021.Day12 do
   @moduledoc """
   https://adventofcode.com/2021/day/12
   """
 
-  alias AoC.Modules.String, as: StringHelper
+  alias AoC.String, as: StringHelper
 
   def part_1(input), do: input |> get_path_options() |> count_paths(allowed_doubles: 0)
   def part_2(input), do: input |> get_path_options() |> count_paths(allowed_doubles: 1)
@@ -28,7 +28,7 @@ defmodule AoC.Day12 do
 
   defp is_double?(cave, path), do: not is_big?(cave) and path[cave] > 1
 
-  defp is_big?(cave), do: not StringHelper.is_lower_case?(cave)
+  defp is_big?(cave), do: not StringHelper.lower_case?(cave)
 
   defp get_path_options(input) do
     input

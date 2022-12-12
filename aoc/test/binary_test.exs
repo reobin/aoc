@@ -1,8 +1,8 @@
 defmodule AoC.Modules.BinaryTest do
   use ExUnit.Case
-  doctest AoC.Modules.Binary
+  doctest AoC.Binary
 
-  alias AoC.Modules.Binary
+  alias AoC.Binary
 
   describe "&to_decimal/1" do
     test "should return decimal representation of binary value" do

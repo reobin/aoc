@@ -1,9 +1,9 @@
-defmodule AoC.Day03 do
+defmodule AoC2021.Day03 do
   @moduledoc """
   https://adventofcode.com/2021/day/3
   """
 
-  alias AoC.Modules.Binary
+  alias AoC.Binary
 
   def part_1(input) do
     gamma =

@@ -1,20 +1,20 @@
-defmodule AoC.Day09 do
+defmodule AoC2021.Day09 do
   @moduledoc """
   https://adventofcode.com/2021/day/9
   """
 
-  alias AoC.Modules.Grid
-  alias AoC.Modules.Point
+  alias AoC.Grid
+  alias AoC.Point
 
   @highest_level 9
 
   def part_1(input) do
-    grid = input |> Grid.from_string(is_integer?: true)
+    grid = input |> Grid.from_string(integer?: true)
     grid |> get_low_points() |> Enum.map(&compute_risk_level(&1, grid)) |> Enum.sum()
   end
 
   def part_2(input) do
-    grid = input |> Grid.from_string(is_integer?: true)
+    grid = input |> Grid.from_string(integer?: true)
 
     grid
     |> get_low_points()
@@ -24,15 +24,11 @@ defmodule AoC.Day09 do
     |> compute_basins_score()
   end
 
-  defp get_low_points(grid) do
-    grid
-    |> Grid.get_points()
-    |> Enum.filter(&is_low_point?(&1, grid))
-  end
+  defp get_low_points(grid), do: grid |> Grid.points() |> Enum.filter(&is_low_point?(&1, grid))
 
   defp is_low_point?(point, grid) do
     point
-    |> Point.get_neighbors()
+    |> Point.neighbors()
     |> Enum.all?(&(Grid.get(grid, point) < Grid.get(grid, &1, @highest_level)))
   end
 
@@ -47,7 +43,7 @@ defmodule AoC.Day09 do
         grid = Grid.set(grid, point, "b#{basin_index}")
 
         point
-        |> Point.get_neighbors()
+        |> Point.neighbors()
         |> Enum.filter(&is_integer(Grid.get(grid, &1)))
         |> Enum.reduce(grid, fn adjacent_point, grid ->
           fill_basin({adjacent_point, basin_index}, grid)
@@ -57,7 +53,7 @@ defmodule AoC.Day09 do
 
   defp get_basin_sizes(grid) do
     grid
-    |> Grid.get_values()
+    |> Grid.values()
     |> Enum.filter(&(&1 != @highest_level))
     |> Enum.group_by(& &1)
     |> Map.values()

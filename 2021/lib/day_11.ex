@@ -1,18 +1,18 @@
-defmodule AoC.Day11 do
+defmodule AoC2021.Day11 do
   @moduledoc """
   https://adventofcode.com/2021/day/11
   """
 
-  alias AoC.Modules.Grid
-  alias AoC.Modules.Point
+  alias AoC.Grid
+  alias AoC.Point
 
-  def part_1(input), do: input |> Grid.from_string(is_integer?: true) |> run_steps(100) |> elem(1)
-  def part_2(input), do: input |> Grid.from_string(is_integer?: true) |> run_steps(1000)
+  def part_1(input), do: input |> Grid.from_string(integer?: true) |> run_steps(100) |> elem(1)
+  def part_2(input), do: input |> Grid.from_string(integer?: true) |> run_steps(1000)
 
   defp run_steps(grid, step_count), do: 1..step_count |> Enum.reduce_while({grid, 0}, &run_step/2)
 
   defp run_step(step, {grid, total_flash_count}) do
-    grid = grid |> Grid.get_points() |> Enum.reduce(grid, &increment(&1, &2, &2[&1]))
+    grid = grid |> Grid.points() |> Enum.reduce(grid, &increment(&1, &2, &2[&1]))
 
     flash_count = Grid.count(grid, :flash)
 
@@ -29,7 +29,7 @@ defmodule AoC.Day11 do
 
   defp increment(octopus, grid, 9) do
     octopus
-    |> Point.get_neighbors(8)
+    |> Point.neighbors(8)
     |> Enum.reduce(Grid.set(grid, octopus, :flash), &increment(&1, &2, &2[&1]))
   end
 

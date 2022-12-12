@@ -143,10 +143,14 @@ defmodule AoC.Grid do
   @doc """
   Prints the grid in a 2D string
   """
-  @spec print(grid()) :: String.t()
+  @spec print(grid()) :: grid()
   def print(grid, options \\ [])
-  def print(nil, _options), do: "grid is null"
-  def print(grid, options), do: IO.puts("\n#{Grid.to_string(grid, options)}\n")
+  def print(nil, _options), do: nil
+
+  def print(grid, options) do
+    IO.puts("\n#{Grid.to_string(grid, options)}\n")
+    grid
+  end
 
   @doc """
   Returns the string representation of a grid

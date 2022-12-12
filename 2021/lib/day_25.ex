@@ -1,9 +1,9 @@
-defmodule AoC.Day25 do
+defmodule AoC2021.Day25 do
   @moduledoc """
   https://adventofcode.com/2021/day/25
   """
 
-  alias AoC.Modules.Grid
+  alias AoC.Grid
 
   def part_1(input), do: input |> Grid.from_string() |> steps_to_stable()
 
@@ -17,7 +17,7 @@ defmodule AoC.Day25 do
 
   defp move_all(map, cucumber) do
     map
-    |> Grid.get_points()
+    |> Grid.points()
     |> Enum.filter(&(Grid.get(map, &1) == cucumber))
     |> Enum.reduce(map, &move(&2, &1, cucumber, map))
   end
@@ -28,8 +28,8 @@ defmodule AoC.Day25 do
     if Grid.get(ref, to) == ".", do: map |> Grid.set(from, ".") |> Grid.set(to, c), else: map
   end
 
-  defp to(m, {x, y}, ">"), do: to(map, {x + 1, y}, {0, y})
-  defp to(m, {x, y}, "v"), do: to(map, {x, y + 1}, {x, 0})
+  defp to(map, {x, y}, ">"), do: to(map, {x + 1, y}, {0, y})
+  defp to(map, {x, y}, "v"), do: to(map, {x, y + 1}, {x, 0})
   defp to(map, target, backup), do: if(is_nil(Grid.get(map, target)), do: backup, else: target)
 
   def part_2(_input), do: ""

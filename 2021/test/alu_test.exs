@@ -1,8 +1,8 @@
-defmodule AoC.Modules.ALUTest do
+defmodule AoC2021.ALUTest do
   use ExUnit.Case
-  doctest AoC.Modules.ALU
+  doctest AoC2021.ALU
 
-  alias AoC.Modules.ALU
+  alias AoC2021.ALU
 
   describe "&initialize/1" do
     test "should return the list of instructions and the initial state" do

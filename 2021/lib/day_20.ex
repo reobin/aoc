@@ -1,10 +1,10 @@
-defmodule AoC.Day20 do
+defmodule AoC2021.Day20 do
   @moduledoc """
   https://adventofcode.com/2021/day/20
   """
 
-  alias AoC.Modules.Grid
-  alias AoC.Modules.Binary
+  alias AoC.Grid
+  alias AoC.Binary
 
   def part_1(input), do: run(input, 2)
   def part_2(input), do: run(input, 50)
@@ -14,7 +14,7 @@ defmodule AoC.Day20 do
 
     1..iteration_count
     |> Enum.reduce(input_image, &run_algorithm(&2, algorithm, &1))
-    |> Grid.get_values()
+    |> Grid.values()
     |> Enum.count(&(&1 == "#"))
   end
 
@@ -24,7 +24,7 @@ defmodule AoC.Day20 do
 
     input_image
     |> Grid.add_layer(default_value)
-    |> Grid.get_points()
+    |> Grid.points()
     |> Enum.reduce(%{}, fn point, output ->
       index = get_square_value(input_image, point, default_value)
       Grid.set(output, point, String.at(algorithm, index))

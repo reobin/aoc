@@ -1,9 +1,9 @@
-defmodule AoC.Day13 do
+defmodule AoC2021.Day13 do
   @moduledoc """
   https://adventofcode.com/2021/day/13
   """
 
-  alias AoC.Modules.Grid
+  alias AoC.Grid
 
   def part_1(input) do
     {paper, [instruction | _instructions]} = interpret_sheet(input)
@@ -20,7 +20,7 @@ defmodule AoC.Day13 do
 
   defp fold({coordinate, line}, paper) do
     paper
-    |> Grid.get_points()
+    |> Grid.points()
     |> Enum.filter(&(elem(&1, if(coordinate == :x, do: 0, else: 1)) >= line))
     |> Enum.reduce(paper, fn {x, y}, paper ->
       row = if coordinate == :x, do: line, else: x

@@ -2,8 +2,8 @@
 
 # Creates all necessary files for a specific day challenge
 
-alias AoC.Modules.FileSystem
-alias AoC.Modules.SystemCommand
+alias AoC.FileSystem
+alias AoC.SystemCommand
 
 {raw_day, day} = SystemCommand.get_day()
 
@@ -23,7 +23,7 @@ files |> Enum.each(fn path -> if File.exists?(path), do: exit("#{path} exists") 
 
 # Create module file
 module_file_content = """
-defmodule AoC.Day#{day} do
+defmodule AoC2021.Day#{day} do
   @moduledoc \"""
   https://adventofcode.com/2021/day/#{raw_day}
   \"""
@@ -43,11 +43,11 @@ end
 # Create test module file
 
 test_file_content = """
-defmodule AoC.Day#{day}Test do
+defmodule AoC2021.Day#{day}Test do
   use ExUnit.Case
-  doctest AoC.Day#{day}
+  doctest AoC2021.Day#{day}
 
-  alias AoC.Day#{day}
+  alias AoC2021.Day#{day}
 
   describe "part 1" do
     test "sample 1" do

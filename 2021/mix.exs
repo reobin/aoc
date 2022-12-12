@@ -1,19 +1,23 @@
-defmodule AoC.MixProject do
+defmodule AoC2021.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :aoc,
+      app: :aoc_2021,
       version: "1.0.0",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
-      deps: [],
+      deps: deps(),
       aliases: aliases()
     ]
   end
 
   def application do
     [extra_applications: [:logger]]
+  end
+
+  defp deps do
+    [{:aoc, path: "../aoc"}]
   end
 
   defp aliases do

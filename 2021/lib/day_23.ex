@@ -1,10 +1,10 @@
-defmodule AoC.Day23 do
+defmodule AoC2021.Day23 do
   @moduledoc """
   https://adventofcode.com/2021/day/23
   """
 
-  alias AoC.Modules.Grid
-  alias AoC.Modules.Point
+  alias AoC.Grid
+  alias AoC.Point
 
   @amber 1
   @bronze 10
@@ -108,7 +108,7 @@ defmodule AoC.Day23 do
 
   defp possible_moves(point, grid) do
     grid
-    |> Grid.get_points()
+    |> Grid.points()
     |> Enum.filter(&(elem(&1, 1) == 1 and elem(&1, 0) not in [3, 5, 7, 9]))
     |> Enum.filter(&(&1 in accessible_points(point, grid)))
   end
@@ -122,7 +122,7 @@ defmodule AoC.Day23 do
   defp floating?(_point, _grid, _letter), do: false
 
   defp accessible_points(point, grid) do
-    neighbors = point |> Point.get_neighbors() |> Enum.filter(&(Grid.get(grid, &1, "#") == "."))
+    neighbors = point |> Point.neighbors() |> Enum.filter(&(Grid.get(grid, &1, "#") == "."))
     grid = Enum.reduce(neighbors, grid, &Grid.set(&2, &1, "#"))
     more = Enum.flat_map(neighbors, &accessible_points(&1, grid))
     neighbors ++ more
@@ -130,7 +130,7 @@ defmodule AoC.Day23 do
 
   defp unplaced(grid) do
     grid
-    |> Grid.get_points()
+    |> Grid.points()
     |> Enum.filter(&(Grid.get(grid, &1) in ["A", "B", "C", "D"]))
     |> Enum.filter(&(not placed?(&1, grid)))
   end

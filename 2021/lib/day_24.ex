@@ -1,4 +1,4 @@
-defmodule AoC.Day24 do
+defmodule AoC2021.Day24 do
   @moduledoc """
   https://adventofcode.com/2021/day/24
 
@@ -34,7 +34,7 @@ defmodule AoC.Day24 do
   build the model number, both smallest and biggest valid model number are found.
   """
 
-  alias AoC.Modules.ALU
+  alias AoC2021.ALU
 
   def part_1(input) do
     model_number = 99_919_765_949_498

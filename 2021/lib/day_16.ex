@@ -1,9 +1,9 @@
-defmodule AoC.Day16 do
+defmodule AoC2021.Day16 do
   @moduledoc """
   https://adventofcode.com/2021/day/16
   """
 
-  alias AoC.Modules.Binary
+  alias AoC.Binary
 
   @sum 0
   @product 1

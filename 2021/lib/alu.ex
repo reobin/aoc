@@ -1,4 +1,4 @@
-defmodule AoC.Modules.ALU do
+defmodule AoC2021.ALU do
   @moduledoc """
   ALU Program
   """

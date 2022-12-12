@@ -19,6 +19,10 @@ defmodule AoC.PointTest do
       assert Point.between({2, 2}, {2, 2}) == []
     end
 
+    test "should include source and destination if inclusive? option is activated" do
+      assert Point.between({2, 2}, {2, 2}, inclusive?: true) == [{2, 2}, {2, 2}]
+    end
+
     test "should return points for one unit distance points" do
       assert Point.between({2, 2}, {3, 2}) == []
       assert Point.between({2, 2}, {2, 3}) == []

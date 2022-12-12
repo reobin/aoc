@@ -2,7 +2,7 @@
 
 # Runs the code for a specific day challenge
 
-alias AoC.Modules.SystemCommand
+alias AoC.SystemCommand
 
 {_raw_day, day} = SystemCommand.get_day()
 
@@ -11,7 +11,7 @@ if is_nil(day) do
   exit(1)
 end
 
-module = String.to_existing_atom("Elixir.AoC.Day#{day}")
+module = String.to_existing_atom("Elixir.AoC2021.Day#{day}")
 
 input = File.read!("input/day_#{day}.txt") |> String.trim()
 

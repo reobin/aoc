@@ -1,9 +1,9 @@
-defmodule AoC.Day04 do
+defmodule AoC2021.Day04 do
   @moduledoc """
   https://adventofcode.com/2021/day/4
   """
 
-  alias AoC.Modules.Grid
+  alias AoC.Grid
 
   @mark "X"
 
@@ -57,7 +57,7 @@ defmodule AoC.Day04 do
 
   defp get_remaining_numbers(board) do
     board
-    |> Grid.get_values()
+    |> Grid.values()
     |> Enum.filter(fn value -> value != @mark end)
     |> Enum.map(&String.to_integer/1)
   end
@@ -68,13 +68,13 @@ defmodule AoC.Day04 do
 
   defp wins?(board, :rows) do
     board
-    |> Grid.get_rows()
+    |> Grid.rows()
     |> Enum.any?(fn row -> row |> Enum.all?(fn cell -> cell == @mark end) end)
   end
 
   defp wins?(board, :columns) do
     board
-    |> Grid.get_columns()
+    |> Grid.columns()
     |> Enum.any?(fn column -> column |> Enum.all?(fn cell -> cell == @mark end) end)
   end
 

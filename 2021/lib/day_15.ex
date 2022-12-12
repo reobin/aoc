@@ -1,21 +1,21 @@
-defmodule AoC.Day15 do
+defmodule AoC2021.Day15 do
   @moduledoc """
   https://adventofcode.com/2021/day/15
   """
 
-  alias AoC.Modules.Grid
+  alias AoC.Grid
 
-  def part_1(input), do: input |> Grid.from_string(is_integer?: true) |> lowest_cost_path()
+  def part_1(input), do: input |> Grid.from_string(integer?: true) |> lowest_cost_path()
 
   def part_2(input) do
     input
-    |> Grid.from_string(is_integer?: true)
+    |> Grid.from_string(integer?: true)
     |> Grid.expand(5, 5, &increment/2)
     |> lowest_cost_path()
   end
 
   defp lowest_cost_path(map) do
-    {width, height} = Grid.get_size(map)
+    {width, height} = Grid.size(map)
     target = {width - 1, height - 1}
     compute_cost(%{queue: [{0, {0, 0}}], map: map, found: %{{0, 0} => true}, target: target})
   end
@@ -28,7 +28,7 @@ defmodule AoC.Day15 do
     state = Map.put(state, :queue, queue)
 
     point
-    |> Grid.get_neighbors(state.map)
+    |> Grid.neighbors(state.map)
     |> Enum.filter(&is_nil(state.found[&1]))
     |> Enum.reduce(state, fn neighbor, state ->
       new_cost = cost + Map.get(state.map, neighbor)

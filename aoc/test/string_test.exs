@@ -39,4 +39,10 @@ defmodule AoC.StringTest do
       assert String.count("abcda", "a") == 2
     end
   end
+
+  describe "&replace_at/3" do
+    test "should replace the value at a range" do
+      assert String.replace_at("abcde", 1..3, "xyz") == "axyze"
+    end
+  end
 end

@@ -15,6 +15,7 @@ defmodule AoC.Point do
   Returns all points (integer) between two points (excluding the points).
   """
   @spec between(point(), point()) :: [point()]
+  def between(from, to, inclusive?: true), do: [from] ++ between(from, to) ++ [to]
   def between(point, point), do: []
 
   def between({x1, y1}, {x2, y2}) when abs(x1 - x2) == 1 or abs(y1 - y2) == 1, do: []
