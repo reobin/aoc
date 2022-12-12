@@ -1,10 +1,10 @@
-defmodule AoC.Day07 do
+defmodule AoC2019.Day07 do
   @moduledoc """
   https://adventofcode.com/2019/day/7
   """
 
-  alias AoC.Modules.Intcode
-  alias AoC.Modules.List
+  alias AoC2019.Modules.Intcode
+  alias AoC.List
 
   def part_1(input) do
     state = Intcode.initialize(input)

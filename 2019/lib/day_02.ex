@@ -1,9 +1,9 @@
-defmodule AoC.Day02 do
+defmodule AoC2019.Day02 do
   @moduledoc """
   https://adventofcode.com/2019/day/2
   """
 
-  alias AoC.Modules.Intcode
+  alias AoC2019.Modules.Intcode
 
   def part_1(input), do: input |> Intcode.initialize() |> get_output(noun: 12, verb: 2)
 

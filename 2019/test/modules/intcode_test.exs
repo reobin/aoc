@@ -1,7 +1,7 @@
-defmodule AoC.Modules.IntcodeTest do
+defmodule AoC2019.Modules.IntcodeTest do
   use ExUnit.Case
-  doctest AoC.Modules.Intcode
-  alias AoC.Modules.Intcode
+  doctest AoC2019.Modules.Intcode
+  alias AoC2019.Modules.Intcode
 
   describe "&initialize/1" do
     test "should the initial state for the input" do

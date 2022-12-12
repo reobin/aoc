@@ -1,13 +1,13 @@
-defmodule AoC.Day11 do
+defmodule AoC2019.Day11 do
   @moduledoc """
   https://adventofcode.com/2019/day/11
   """
 
-  alias AoC.Modules.Grid
-  alias AoC.Modules.Intcode
+  alias AoC.Grid
+  alias AoC2019.Modules.Intcode
 
   def part_1(input), do: input |> Intcode.initialize() |> run(:part_1) |> Enum.count()
-  def part_2(input), do: input |> Intcode.initialize() |> run(:part_2) |> Grid.print()
+  def part_2(input), do: input |> Intcode.initialize() |> run(:part_2) |> Grid.to_string()
 
   defp run(program, :part_1), do: run(program, {0, 0}, :up, %{}, 1)
   defp run(program, :part_2), do: run(program, {0, 0}, :up, %{{0, 0} => "#"}, 1)

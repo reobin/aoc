@@ -1,16 +1,16 @@
-defmodule AoC.Day10 do
+defmodule AoC2019.Day10 do
   @moduledoc """
   https://adventofcode.com/2019/day/10
   """
 
-  alias AoC.Modules.Grid
-  alias AoC.Modules.Point
+  alias AoC.Grid
+  alias AoC.Point
 
   def part_1(input) do
     map = input |> Grid.from_string(column_divider: "")
 
     map
-    |> Grid.get_points()
+    |> Grid.points()
     |> Enum.filter(&(Grid.get(map, &1, ".") == "#"))
     |> Enum.map(&count_detections(&1, map))
     |> Enum.max()
@@ -21,7 +21,7 @@ defmodule AoC.Day10 do
 
     {station_x, station_y} =
       map
-      |> Grid.get_points()
+      |> Grid.points()
       |> Enum.filter(&(Grid.get(map, &1, ".") == "#"))
       |> Enum.max_by(&count_detections(&1, map))
 
@@ -30,7 +30,7 @@ defmodule AoC.Day10 do
       |> Enum.reduce_while({map, [], 0}, fn _, {map, detected, count} ->
         new_detected =
           map
-          |> Grid.get_points()
+          |> Grid.points()
           |> Enum.filter(&is_detected?({station_x, station_y}, &1, map))
           |> sort_by_angle({station_x, station_y})
 
@@ -49,11 +49,11 @@ defmodule AoC.Day10 do
   end
 
   defp count_detections(point, map),
-    do: map |> Grid.get_points() |> Enum.count(&is_detected?(point, &1, map))
+    do: map |> Grid.points() |> Enum.count(&is_detected?(point, &1, map))
 
   defp is_detected?(station, target, map) do
     station != target and Grid.get(map, target, ".") != "." and
-      station |> Point.get_between(target) |> Enum.all?(&(Grid.get(map, &1, ".") == "."))
+      station |> Point.between(target) |> Enum.all?(&(Grid.get(map, &1, ".") == "."))
   end
 
   defp sort_by_angle(asteroids, {station_x, station_y}) do

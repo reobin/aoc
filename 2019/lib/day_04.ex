@@ -1,4 +1,4 @@
-defmodule AoC.Day04 do
+defmodule AoC2019.Day04 do
   @moduledoc """
   https://adventofcode.com/2019/day/4
   """

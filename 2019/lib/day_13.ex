@@ -1,10 +1,10 @@
-defmodule AoC.Day13 do
+defmodule AoC2019.Day13 do
   @moduledoc """
   https://adventofcode.com/2019/day/13
   """
 
-  alias AoC.Modules.Intcode
-  alias AoC.Modules.Grid
+  alias AoC2019.Modules.Intcode
+  alias AoC.Grid
 
   @wall "□"
   @block "■"
@@ -51,7 +51,7 @@ defmodule AoC.Day13 do
   defp print(_), do: @empty
 
   defp get_position(screen, item),
-    do: screen |> Grid.get_points() |> Enum.find(&(Grid.get(screen, &1) == item))
+    do: screen |> Grid.points() |> Enum.find(&(Grid.get(screen, &1) == item))
 
   defp get_input({bx, _by}, {bx, _py}), do: [0]
   defp get_input({bx, _by}, {px, _py}) when bx > px, do: [1]

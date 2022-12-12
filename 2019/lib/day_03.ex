@@ -1,9 +1,9 @@
-defmodule AoC.Day03 do
+defmodule AoC2019.Day03 do
   @moduledoc """
   https://adventofcode.com/2019/day/3
   """
 
-  alias AoC.Modules.Point
+  alias AoC.Point
 
   def part_1(input) do
     [wire_1, wire_2] = get_wires(input)
@@ -13,7 +13,7 @@ defmodule AoC.Day03 do
 
     points_in_wire_1
     |> MapSet.intersection(points_in_wire_2)
-    |> Enum.map(&Point.compute_manhattan_distance/1)
+    |> Enum.map(&Point.manhattan_distance/1)
     |> Enum.min()
   end
 

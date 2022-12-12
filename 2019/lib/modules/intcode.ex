@@ -1,4 +1,4 @@
-defmodule AoC.Modules.Intcode do
+defmodule AoC2019.Modules.Intcode do
   @moduledoc """
   Module for the Intcode computer
   """
