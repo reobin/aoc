@@ -436,4 +436,41 @@ defmodule AoC.GridTest do
       assert layered_grid == expected_grid
     end
   end
+
+  describe "Grid.shortest_path/3" do
+    test "should find the shortest path" do
+      input = "xxxx
+xxxx
+xxxx
+xxxx"
+
+      grid = Grid.from_string(input)
+
+      assert Grid.shortest_path(grid, {0, 0}, {2, 2}) == 4
+    end
+
+    test "should take into account the can_move? option" do
+      input = "sxxx
+sxxx
+sxsx
+sssx"
+
+      grid = Grid.from_string(input)
+
+      can_move? = fn map, _from, to -> Grid.get(map, to) == "s" end
+      assert Grid.shortest_path(grid, {0, 0}, {2, 2}, can_move?: can_move?) == 6
+    end
+
+    test "should take into account the cost option" do
+      input = "0003
+1444
+0415
+0016"
+
+      grid = Grid.from_string(input, integer?: true)
+
+      cost = fn map, point -> Grid.get(map, point) end
+      assert Grid.shortest_path(grid, {0, 0}, {2, 2}, cost: cost) == 3
+    end
+  end
 end

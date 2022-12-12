@@ -6,8 +6,8 @@ defmodule AoC.Grid do
   alias AoC.Grid
   alias AoC.Point
 
-  @type grid :: map()
   @type point :: {integer(), integer()}
+  @type grid :: %{point() => any()}
   @type size :: {integer(), integer()}
 
   @doc """
@@ -255,5 +255,50 @@ defmodule AoC.Grid do
       value = grid |> Grid.get({ox, oy}) |> get_value.({dx, dy})
       Grid.set(grid, point, value)
     end)
+  end
+
+  @type shortest_path_state() :: %{
+          map: grid(),
+          target: point(),
+          queue: [{integer(), point()}],
+          found: %{point() => boolean()}
+        }
+
+  @doc """
+  Finds the shortest path between two nodes in a graph.
+  """
+  @spec shortest_path(grid(), point(), point()) :: integer()
+  def shortest_path(map, from, to, options \\ []) do
+    default_options = %{
+      can_move?: fn _map, _from, _to -> true end,
+      cost: fn _map, _point -> 1 end
+    }
+
+    options = Enum.into(options, default_options)
+    compute_cost(%{map: map, target: to, queue: [{0, from}], found: %{from => true}}, options)
+  end
+
+  @spec compute_cost(shortest_path_state(), map()) :: integer()
+  defp compute_cost(%{queue: [{cost, target} | _rest], target: target}, _options), do: cost
+  defp compute_cost(%{queue: []}, _options), do: :infinity
+
+  defp compute_cost(state, options) do
+    [{cost, point} | queue] = state.queue
+    state = %{state | queue: queue}
+
+    point
+    |> Grid.neighbors(state.map)
+    |> Enum.filter(&is_nil(state.found[&1]))
+    |> Enum.filter(&options.can_move?.(state.map, point, &1))
+    |> Enum.reduce(state, fn neighbor, state ->
+      new_cost = cost + options.cost.(state.map, neighbor)
+
+      Map.merge(state, %{
+        queue: state.queue ++ [{new_cost, neighbor}],
+        found: Map.put(state.found, neighbor, true)
+      })
+    end)
+    |> then(&Map.put(&1, :queue, Enum.sort_by(&1.queue, fn {cost, _point} -> cost end)))
+    |> compute_cost(options)
   end
 end

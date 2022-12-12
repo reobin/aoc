@@ -2,7 +2,7 @@
 
 # Runs the code for a specific day challenge
 
-alias AoC.Modules.SystemCommand
+alias AoC.SystemCommand
 
 {_raw_day, day} = SystemCommand.get_day()
 

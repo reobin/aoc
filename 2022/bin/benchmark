@@ -4,7 +4,7 @@
 
 import ExUnit.CaptureIO
 
-alias AoC.Modules.SystemCommand
+alias AoC.SystemCommand
 
 {_raw_day, day} = SystemCommand.get_day()
 

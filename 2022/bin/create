@@ -2,8 +2,8 @@
 
 # Creates all necessary files for a specific day challenge
 
-alias AoC.Modules.FileSystem
-alias AoC.Modules.SystemCommand
+alias AoC.FileSystem
+alias AoC.SystemCommand
 
 {raw_day, day} = SystemCommand.get_day()
 
@@ -51,15 +51,13 @@ defmodule AoC2022.Day#{day}Test do
 
   describe "part 1" do
     test "sample 1" do
-      input = "test input"
-      assert Day#{day}.part_1(input) == 0
+      assert Day#{day}.part_1("") == 0
     end
   end
 
   describe "part 2" do
     test "sample 1" do
-      input = "test input"
-      assert Day#{day}.part_2(input) == 0
+      assert Day#{day}.part_2("") == 0
     end
   end
 end
