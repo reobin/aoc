@@ -275,6 +275,7 @@ defmodule AoC.Grid do
     }
 
     options = Enum.into(options, default_options)
+
     compute_cost(%{map: map, target: to, queue: [{0, from}], found: %{from => true}}, options)
   end
 
@@ -284,21 +285,23 @@ defmodule AoC.Grid do
 
   defp compute_cost(state, options) do
     [{cost, point} | queue] = state.queue
-    state = %{state | queue: queue}
 
     point
     |> Grid.neighbors(state.map)
-    |> Enum.filter(&is_nil(state.found[&1]))
-    |> Enum.filter(&options.can_move?.(state.map, point, &1))
-    |> Enum.reduce(state, fn neighbor, state ->
-      new_cost = cost + options.cost.(state.map, neighbor)
-
-      Map.merge(state, %{
-        queue: state.queue ++ [{new_cost, neighbor}],
-        found: Map.put(state.found, neighbor, true)
-      })
-    end)
-    |> then(&Map.put(&1, :queue, Enum.sort_by(&1.queue, fn {cost, _point} -> cost end)))
+    |> Enum.filter(&(is_nil(state.found[&1]) and options.can_move?.(state.map, point, &1)))
+    |> Enum.reduce(%{state | queue: queue}, &add_to_queue(&1, &2, cost, options))
+    |> sort_queue()
     |> compute_cost(options)
   end
+
+  defp add_to_queue(neighbor, state, base_cost, options) do
+    cost = base_cost + options.cost.(state.map, neighbor)
+
+    queue = state.queue ++ [{cost, neighbor}]
+    found = Map.put(state.found, neighbor, true)
+
+    %{state | queue: queue, found: found}
+  end
+
+  defp sort_queue(state), do: Map.put(state, :queue, Enum.sort_by(state.queue, &elem(&1, 0)))
 end
