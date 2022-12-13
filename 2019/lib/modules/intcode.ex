@@ -34,7 +34,21 @@ defmodule AoC2019.Modules.Intcode do
   end
 
   @doc """
-  Runs a intcode program
+  Runs a program until it halts. Returns all outputs.
+  """
+  @spec run_until_halt(map(), atom()) :: map()
+  def run_until_halt(program, input \\ [], output \\ []) do
+    program = run(program, input)
+
+    if program.output == :halt do
+      output
+    else
+      run_until_halt(program, program.input, output ++ [program.output])
+    end
+  end
+
+  @doc """
+  Runs a intcode program once.
   """
   def run(state, input \\ []),
     do: state |> Map.put(:input, input) |> then(&run_while({:cont, &1}))
@@ -117,7 +131,7 @@ defmodule AoC2019.Modules.Intcode do
       parameter_modes: parameter_modes
     } = state
 
-    current_input = Enum.at(input, 0)
+    [current_input | input] = input
 
     store = get_parameter(state, instruction_pointer + 1, Enum.at(parameter_modes, 0), :write)
 
@@ -127,7 +141,7 @@ defmodule AoC2019.Modules.Intcode do
       Map.merge(state, %{
         program: program,
         instruction_pointer: instruction_pointer + 2,
-        input: Enum.slice(input, 1..(Enum.count(input) - 1))
+        input: input
       })
 
     {:cont, state}
