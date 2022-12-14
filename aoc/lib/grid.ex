@@ -11,6 +11,12 @@ defmodule AoC.Grid do
   @type size :: {integer(), integer()}
 
   @doc """
+  Creates a blank grid.
+  """
+  @spec new() :: grid()
+  def new(), do: %{}
+
+  @doc """
   Returns all points in a grid
   """
   @spec points(grid()) :: [point()]
@@ -47,18 +53,31 @@ defmodule AoC.Grid do
   @spec size(grid()) :: size()
   def size(nil), do: {0, 0}
   def size(grid) when grid == %{}, do: {0, 0}
+  def size(grid), do: {max_x(grid) - min_x(grid) + 1, max_y(grid) - min_y(grid) + 1}
 
-  def size(grid) do
-    points = Grid.points(grid)
+  @doc """
+  Finds the minimum x coordinate of a grid
+  """
+  @spec min_x(grid()) :: integer()
+  def min_x(grid), do: grid |> Grid.points() |> Enum.map(&elem(&1, 0)) |> Enum.min(fn -> -1 end)
 
-    min_x_index = points |> Enum.map(&elem(&1, 0)) |> Enum.min(fn -> -1 end)
-    max_x_index = points |> Enum.map(&elem(&1, 0)) |> Enum.max(fn -> -1 end)
+  @doc """
+  Finds the minimum y coordinate of a grid
+  """
+  @spec min_y(grid()) :: integer()
+  def min_y(grid), do: grid |> Grid.points() |> Enum.map(&elem(&1, 1)) |> Enum.min(fn -> -1 end)
 
-    min_y_index = points |> Enum.map(&elem(&1, 1)) |> Enum.min(fn -> -1 end)
-    max_y_index = points |> Enum.map(&elem(&1, 1)) |> Enum.max(fn -> -1 end)
+  @doc """
+  Finds the maximum x coordinate of a grid
+  """
+  @spec max_x(grid()) :: integer()
+  def max_x(grid), do: grid |> Grid.points() |> Enum.map(&elem(&1, 0)) |> Enum.max(fn -> -1 end)
 
-    {max_x_index - min_x_index + 1, max_y_index - min_y_index + 1}
-  end
+  @doc """
+  Finds the maximum y coordinate of a grid
+  """
+  @spec max_y(grid()) :: integer()
+  def max_y(grid), do: grid |> Grid.points() |> Enum.map(&elem(&1, 1)) |> Enum.max(fn -> -1 end)
 
   @doc """
   Returns the point at which a value is found
