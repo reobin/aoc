@@ -9,7 +9,9 @@ defmodule AoC.Point do
   Returns the Manhattan distance of a point.
   """
   @spec manhattan_distance(point()) :: integer()
-  def manhattan_distance({x, y}), do: abs(x) + abs(y)
+  def manhattan_distance(point), do: manhattan_distance(point, {0, 0})
+  @spec manhattan_distance(point(), point()) :: integer()
+  def manhattan_distance({ax, ay}, {bx, by}), do: abs(ax - bx) + abs(ay - by)
 
   @doc """
   Returns all points (integer) between two points (excluding the points).
