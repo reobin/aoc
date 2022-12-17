@@ -17,7 +17,7 @@ defmodule AoC2022.MixProject do
   end
 
   defp deps do
-    [{:aoc, path: "../aoc"}]
+    [{:aoc, path: "../aoc"}, {:memoize, "~> 1.4"}]
   end
 
   defp aliases do
