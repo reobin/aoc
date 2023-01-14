@@ -4,6 +4,7 @@ defmodule AoC.Point do
   """
 
   @type point :: {integer(), integer()}
+  @type point_3d :: {integer(), integer(), integer()}
 
   @doc """
   Returns the Manhattan distance of a point.
@@ -67,7 +68,7 @@ defmodule AoC.Point do
   Returns all points adjacent to a point.
   """
   @spec neighbors(point()) :: [point()]
-  def neighbors(point), do: neighbors(point, 4)
+  def neighbors({x, y}), do: neighbors({x, y}, 4)
 
   @spec neighbors(point(), integer()) :: [point()]
   def neighbors({x, y}, 4), do: [{x, y - 1}, {x + 1, y}, {x, y + 1}, {x - 1, y}]
@@ -82,6 +83,20 @@ defmodule AoC.Point do
       {x - 1, y + 1},
       {x - 1, y},
       {x - 1, y - 1}
+    ]
+
+  @spec neighbors(point_3d()) :: [point_3d()]
+  def neighbors({x, y, z}), do: neighbors({x, y, z}, 6)
+
+  @spec neighbors(point_3d(), integer()) :: [point_3d()]
+  def neighbors({x, y, z}, 6),
+    do: [
+      {x + 1, y, z},
+      {x - 1, y, z},
+      {x, y + 1, z},
+      {x, y - 1, z},
+      {x, y, z + 1},
+      {x, y, z - 1}
     ]
 
   @doc """

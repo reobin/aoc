@@ -7,7 +7,9 @@ defmodule AoC.Grid do
   alias AoC.Point
 
   @type point :: {integer(), integer()}
+  @type point_3d :: {integer(), integer(), integer()}
   @type grid :: %{point() => any()}
+  @type grid_3d :: %{point_3d() => any()}
   @type size :: {integer(), integer()}
 
   @doc """
@@ -80,6 +82,18 @@ defmodule AoC.Grid do
   def max_y(grid), do: grid |> Grid.points() |> Enum.map(&elem(&1, 1)) |> Enum.max(fn -> -1 end)
 
   @doc """
+  Finds the minimum z coordinate of a 3D grid
+  """
+  @spec min_z(grid_3d()) :: integer()
+  def min_z(grid), do: grid |> Grid.points() |> Enum.map(&elem(&1, 2)) |> Enum.min(fn -> -1 end)
+
+  @doc """
+  Finds the maximum z coordinate of a 3D grid
+  """
+  @spec max_z(grid_3d()) :: integer()
+  def max_z(grid), do: grid |> Grid.points() |> Enum.map(&elem(&1, 2)) |> Enum.max(fn -> -1 end)
+
+  @doc """
   Returns the point at which a value is found
   """
   @spec find(grid(), any()) :: point() | nil
@@ -135,9 +149,12 @@ defmodule AoC.Grid do
   Returns all neighbors of a point that exist on the grid
   """
   @spec neighbors(point(), grid()) :: [point()]
-  def neighbors(point, grid), do: neighbors(point, grid, 4)
+  def neighbors({x, y}, grid), do: neighbors({x, y}, grid, 4)
 
-  @spec neighbors(point(), grid(), integer()) :: [point()]
+  @spec neighbors(point_3d(), grid_3d()) :: [point_3d()]
+  def neighbors({x, y, z}, grid), do: neighbors({x, y, z}, grid, 6)
+
+  @spec neighbors(point() | point_3d(), grid() | grid_3d(), integer()) :: [point()] | [point_3d()]
   def neighbors(point, grid, count),
     do: point |> Point.neighbors(count) |> Enum.filter(&(not is_nil(Grid.get(grid, &1))))
 
@@ -256,7 +273,7 @@ defmodule AoC.Grid do
   def expand(grid, x_multiplier, y_multiplier),
     do: expand(grid, x_multiplier, y_multiplier, fn value, _distance -> value end)
 
-  @spec expand(grid(), integer(), integer(), (any() -> any())) :: grid()
+  @spec expand(grid(), integer(), integer(), (any(), point() -> any())) :: grid()
   def expand(grid, w_multiplier, h_multiplier, get_value) do
     {width, height} = Grid.size(grid)
 
@@ -277,16 +294,16 @@ defmodule AoC.Grid do
   end
 
   @type shortest_path_state() :: %{
-          map: grid(),
-          target: point(),
-          queue: [{integer(), point()}],
-          found: %{point() => boolean()}
+          map: grid() | grid_3d(),
+          target: point() | point_3d(),
+          queue: [{integer(), point() | point_3d()}],
+          found: %{(point() | point_3d()) => boolean()}
         }
 
   @doc """
   Finds the shortest path between two nodes in a graph.
   """
-  @spec shortest_path(grid(), point(), point()) :: integer()
+  @spec shortest_path(grid() | grid_3d(), point() | point_3d(), point() | point_3d()) :: integer()
   def shortest_path(map, from, to, options \\ []) do
     default_options = %{
       can_move?: fn _map, _from, _to -> true end,
