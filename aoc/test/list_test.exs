@@ -64,4 +64,24 @@ defmodule AoC.ListTest do
              ]
     end
   end
+
+  describe "&List.wrap_index/2" do
+    test "should return the same index when in range" do
+      assert List.wrap_index(1, [1, 2, 3]) == 1
+      assert List.wrap_index(2, [1, 2, 3]) == 2
+    end
+
+    test "should return the computed index when negative" do
+      assert List.wrap_index(-1, [1, 2, 3]) == 2
+      assert List.wrap_index(-2, [1, 2, 3]) == 1
+      assert List.wrap_index(-3, [1, 2, 3]) == 0
+      assert List.wrap_index(-4, [1, 2, 3]) == 2
+    end
+
+    test "should return the computed index when out of range" do
+      assert List.wrap_index(3, [1, 2, 3]) == 0
+      assert List.wrap_index(4, [1, 2, 3]) == 1
+      assert List.wrap_index(5, [1, 2, 3]) == 2
+    end
+  end
 end

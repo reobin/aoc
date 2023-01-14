@@ -36,4 +36,12 @@ defmodule AoC.List do
   def permutations(enum) when not is_list(enum), do: enum |> Enum.to_list() |> permutations()
   def permutations([]), do: [[]]
   def permutations(l), do: for(e <- l, r <- permutations(l -- [e]), do: [e | r])
+
+  @doc """
+  Returns the computed index in a wrapping list.
+  """
+  @spec wrap_index(integer(), list()) :: integer()
+  def wrap_index(i, l) when i < 0, do: rem(length(l) - rem(abs(i), length(l)), length(l))
+  def wrap_index(i, l) when i >= length(l), do: rem(i, length(l))
+  def wrap_index(i, _l), do: i
 end
