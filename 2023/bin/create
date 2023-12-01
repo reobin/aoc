@@ -1,0 +1,38 @@
+#! /usr/bin/env bash
+
+# Creates all necessary files for a specific day challenge
+
+day=$1
+formatted_day=$(printf "%02d" $day)
+
+bin/download $day $formatted_day
+
+echo "/* https://adventofcode.com/2023/day/1 */
+
+function part1(input: string): number {
+  return null;
+}
+
+function part2(input: string): number {
+  return null;
+}
+
+export default { part1, part2 };" > src/days/day$formatted_day.ts
+
+echo "import DayModule from '../day01';
+
+describe('part 1', () => {
+  test('sample', () => {
+    const input = \`\`;
+
+    expect(DayModule.part1(input)).toBe(null);
+  });
+});
+
+describe('part 2', () => {
+  test('sample', () => {
+    const input = \`\`;
+
+    expect(DayModule.part1(input)).toBe(null);
+  });
+});" > src/days/__tests__/day$formatted_day.test.ts

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Removes all files for a specific day challenge
+
+
+day=$1
+formatted_day=$(printf "%02d" $day)
+
+rm src/days/day${formatted_day}.ts
+rm src/days/__tests__/day${formatted_day}.test.ts
+rm input/day${formatted_day}.txt
