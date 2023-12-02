@@ -33,6 +33,6 @@ describe('part 2', () => {
   test('sample', () => {
     const input = \`\`;
 
-    expect(DayModule.part1(input)).toBe(null);
+    expect(DayModule.part2(input)).toBe(null);
   });
 });" > src/days/__tests__/day$formatted_day.test.ts

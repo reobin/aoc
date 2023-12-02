@@ -1,5 +1,5 @@
 /**
- * Pad a number with leading characters
+ * Pad a number with leading characters.
  *
  * @example pad(1, 2) // '01'
  * @example pad(1, 2, ' ') // ' 1'
@@ -14,8 +14,22 @@ function pad(value: number, length: number, character: string = '0'): string {
   return (value + '').padStart(length, character);
 }
 
+/**
+ * Sum an array of numbers
+ *
+ * @example sum([1, 2, 3]) // 6
+ *
+ * @param {number[]} numbers The numbers to sum
+ *
+ * @returns {number} The sum of the numbers
+ */
+function sum(numbers: number[]): number {
+  return numbers.reduce((a, b) => a + b, 0);
+}
+
 const NumberHelper = {
   pad,
+  sum,
 };
 
 export default NumberHelper;
