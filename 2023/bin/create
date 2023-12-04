@@ -3,6 +3,12 @@
 # Creates all necessary files for a specific day challenge
 
 day=$1
+
+if [[ -z $day ]]; then
+  echo "Please provide a day number"
+  exit 1
+fi
+
 formatted_day=$(printf "%02d" $day)
 
 bin/download $day $formatted_day

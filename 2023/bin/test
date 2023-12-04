@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+day=$1
+
+if [[ -z $day ]]; then
+  jest
+else
+  formatted_day=$(printf "%02d" $day)
+  jest -- src/days/__tests__/day$formatted_day.test.ts
+fi

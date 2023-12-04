@@ -3,7 +3,7 @@
   "author": "@reobin",
   "scripts": {
     "start": "ts-node src/main.ts",
-    "test": "jest",
+    "test": "bin/test",
     "create": "bin/create",
     "remove": "bin/remove",
     "format": "prettier --write *"
