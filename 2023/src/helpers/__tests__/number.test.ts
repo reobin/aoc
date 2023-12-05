@@ -1,6 +1,6 @@
 import NumberHelper from '@/helpers/number';
 
-describe('NumberHelper.pad', () => {
+describe('NumberHelper.pad(value, length, character)', () => {
   test('should not pad number if length is achieved', () => {
     expect(NumberHelper.pad(1, 1)).toBe('1');
     expect(NumberHelper.pad(10, 2)).toBe('10');
@@ -12,7 +12,7 @@ describe('NumberHelper.pad', () => {
   });
 });
 
-describe('NumberHelper.sum', () => {
+describe('NumberHelper.sum(numbers)', () => {
   test('should return 0 if array is empty', () => {
     expect(NumberHelper.sum([])).toBe(0);
   });
@@ -22,12 +22,22 @@ describe('NumberHelper.sum', () => {
   });
 });
 
-describe('NumberHelper.multiply', () => {
+describe('NumberHelper.product(numbers)', () => {
   test('should return 0 if array is empty', () => {
-    expect(NumberHelper.multiply([])).toBe(1);
+    expect(NumberHelper.product([])).toBe(1);
   });
 
   test('should return multiplication of numbers', () => {
-    expect(NumberHelper.multiply([1, 2, 3])).toBe(6);
+    expect(NumberHelper.product([1, 2, 3])).toBe(6);
+  });
+});
+
+describe('NumberHelper.isNumber(value)', () => {
+  test('should return true if value is a number', () => {
+    expect(NumberHelper.isNumber('1')).toBe(true);
+  });
+
+  test('should return false if value is not a number', () => {
+    expect(NumberHelper.isNumber('a')).toBe(false);
   });
 });

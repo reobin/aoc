@@ -1,6 +1,6 @@
 import StringHelper from '@/helpers/string';
 
-describe('StringHelper.splitLines', () => {
+describe('StringHelper.splitLines(value)', () => {
   test('should split lines', () => {
     expect(StringHelper.splitLines('a\nb')).toEqual(['a', 'b']);
   });

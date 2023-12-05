@@ -30,20 +30,25 @@ function sum(numbers: number[]): number {
 /**
  * Multiply an array of numbers
  *
- * @example multiply([1, 2, 3]) // 6
+ * @example product([1, 2, 3]) // 6
  *
  * @param {number[]} numbers The numbers to multiply
  *
  * @returns {number} The product of the numbers
  */
-function multiply(numbers: number[]): number {
+function product(numbers: number[]): number {
   return numbers.reduce((a, b) => a * b, 1);
+}
+
+function isNumber(value: string): boolean {
+  return !isNaN(parseInt(value));
 }
 
 const NumberHelper = {
   pad,
   sum,
-  multiply,
+  product,
+  isNumber,
 };
 
 export default NumberHelper;

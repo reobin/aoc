@@ -26,7 +26,7 @@ function part2(input: string): number {
     getMinimumSet(games[gameNumber]),
   );
   const powers = minimumSets.map(set =>
-    NumberHelper.multiply(Object.values(set)),
+    NumberHelper.product(Object.values(set)),
   );
   return NumberHelper.sum(powers);
 }
