@@ -27,9 +27,23 @@ function sum(numbers: number[]): number {
   return numbers.reduce((a, b) => a + b, 0);
 }
 
+/**
+ * Multiply an array of numbers
+ *
+ * @example multiply([1, 2, 3]) // 6
+ *
+ * @param {number[]} numbers The numbers to multiply
+ *
+ * @returns {number} The product of the numbers
+ */
+function multiply(numbers: number[]): number {
+  return numbers.reduce((a, b) => a * b, 1);
+}
+
 const NumberHelper = {
   pad,
   sum,
+  multiply,
 };
 
 export default NumberHelper;

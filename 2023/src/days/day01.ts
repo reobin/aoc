@@ -1,15 +1,16 @@
 /* https://adventofcode.com/2023/day/1 */
 
 import NumberHelper from '../helpers/number';
+import StringHelper from '../helpers/string';
 
 function part1(input: string): number {
-  const lines = input.split('\n').filter(Boolean);
+  const lines = StringHelper.splitLines(input);
   const numbers = lines.map(getCalibrationValues);
   return NumberHelper.sum(numbers);
 }
 
 function part2(input: string): number {
-  const lines = input.split('\n').filter(Boolean);
+  const lines = StringHelper.splitLines(input);
   const transformedLines = lines.map(translate);
   const numbers = transformedLines.map(getCalibrationValues);
   return NumberHelper.sum(numbers);

@@ -11,3 +11,23 @@ describe('NumberHelper.pad', () => {
     expect(NumberHelper.pad(1, 3)).toBe('001');
   });
 });
+
+describe('NumberHelper.sum', () => {
+  test('should return 0 if array is empty', () => {
+    expect(NumberHelper.sum([])).toBe(0);
+  });
+
+  test('should return sum of numbers', () => {
+    expect(NumberHelper.sum([1, 2, 3])).toBe(6);
+  });
+});
+
+describe('NumberHelper.multiply', () => {
+  test('should return 0 if array is empty', () => {
+    expect(NumberHelper.multiply([])).toBe(1);
+  });
+
+  test('should return multiplication of numbers', () => {
+    expect(NumberHelper.multiply([1, 2, 3])).toBe(6);
+  });
+});
