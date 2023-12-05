@@ -1,7 +1,7 @@
 /* https://adventofcode.com/2023/day/1 */
 
-import NumberHelper from '../helpers/number';
-import StringHelper from '../helpers/string';
+import StringHelper from '@/helpers/string';
+import NumberHelper from '@/helpers/number';
 
 function part1(input: string): number {
   const lines = StringHelper.splitLines(input);

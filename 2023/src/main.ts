@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import SystemHelper from './helpers/system';
+import SystemHelper from '@/helpers/system';
 
 async function run() {
   const day = SystemHelper.getDay();

@@ -1,4 +1,4 @@
-import DayModule from '../day02';
+import DayModule from '@/days/day02';
 
 describe('part 1', () => {
   test('sample', () => {

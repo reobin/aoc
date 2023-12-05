@@ -1,4 +1,4 @@
-import NumberHelper from '../number';
+import NumberHelper from '@/helpers/number';
 
 describe('NumberHelper.pad', () => {
   test('should not pad number if length is achieved', () => {

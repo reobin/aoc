@@ -1,7 +1,7 @@
 /* https://adventofcode.com/2023/day/2 */
 
-import NumberHelper from '../helpers/number';
-import StringHelper from '../helpers/string';
+import NumberHelper from '@/helpers/number';
+import StringHelper from '@/helpers/string';
 
 type Color = 'red' | 'green' | 'blue';
 type Set = Record<Color, number>;

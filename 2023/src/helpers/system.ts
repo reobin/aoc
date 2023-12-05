@@ -1,4 +1,4 @@
-import NumberHelper from './number';
+import NumberHelper from '@/helpers/number';
 
 /**
  * Get the day number from the command line arguments.

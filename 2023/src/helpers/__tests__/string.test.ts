@@ -1,4 +1,4 @@
-import StringHelper from '../string';
+import StringHelper from '@/helpers/string';
 
 describe('StringHelper.splitLines', () => {
   test('should split lines', () => {
